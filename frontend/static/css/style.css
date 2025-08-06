@@ -1,0 +1,1089 @@
+/* 1. Root Variables: Define custom color palette and override Bootstrap variables for consistency. */
+:root {
+
+    /* Custom color palette */
+    
+    --secondary: #FFD700; /* Gold */
+    
+    --dark: #FFC000; /* Darker Gold */
+    
+    --primary-dark: #4c4b4b; /* Dark Gray */
+    --primary: #222; /* Darker Gray */
+    
+    --success: #28a745; /* Green */
+    
+    --info: #82ced9; /* Light Blue */
+    
+    --warning: #ffc107; /* Orange */
+    
+    --danger: #dc3545; /* Red */
+    
+    --light: #f4f4f4; /* Light Gray */
+    
+    
+    --white: #fff;
+    
+    --muted: #6c757d; /* Standard muted text color */
+    
+    
+    /* Override Bootstrap's variables for consistent styling */
+    
+    --bs-primary: var(--primary);
+    
+    --bs-secondary: var(--secondary);
+    
+    --bs-success: var(--success);
+    
+    --bs-info: var(--info);
+    
+    --bs-warning: var(--warning);
+    
+    --bs-danger: var(--danger);
+    
+    --bs-light: var(--light);
+    
+    --bs-dark: var(--dark);
+    
+    --bs-white: var(--white);
+    
+    --bs-table-bg: var(--bs-light); /* Corrected typo from original input */
+    
+    --bs-body-bg: var(--primary-dark); /* Default body background */
+    
+    --bs-body-color: var(--light); /* Default body text color for dark background */
+    
+    
+    
+    /* Required for rgba-based classes (e.g., for shadows, alerts) */
+    
+    --bs-primary-rgb: 51, 51, 51;
+    
+    --bs-secondary-rgb: 255, 215, 0;
+    
+    --bs-success-rgb: 40, 167, 69;
+    
+    --bs-info-rgb: 130, 206, 217;
+    
+    --bs-warning-rgb: 255, 193, 7;
+    
+    --bs-danger-rgb: 220, 53, 69;
+    
+    --bs-light-rgb: 244, 244, 244;
+    
+    --bs-dark-rgb: 255, 192, 0;
+    
+    --bs-white-rgb: 255, 255, 255;
+
+    /* Transitions for smooth hover and focus effects */
+    --transition: all 0.2s ease-in-out;
+}
+
+/* 2. Base Styles & Typography: General styling for body, main content, headings, and links. */
+body {
+    background-color: var(--primary-dark);
+    min-height: 100vh; /* Ensure body takes at least full viewport height */
+    display: flex;
+    flex-direction: column; /* Allows footer to stick to bottom */
+    color: var(--light); /* Corrected: Default text color for dark background */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+main {
+    flex: 1; /* Allows main content to grow and push footer down */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--white); /* Default heading color for dark background */
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+p {
+    /* Paragraphs inside light containers (like cards) will use this.
+       Paragraphs directly in body will inherit body's --light color. */
+    color: var(--primary);
+    margin-bottom: 1rem;
+}
+
+/* Links */
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Text utilities */
+/* Removed: .text-muted { color: var(--white) !important; } - relies on dark mode override */
+.font-weight-bold {
+    font-weight: 600 !important;
+}
+
+/* 3. Layout & Structure: Styles for overall page layout and header. */
+.container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Page Header Flex Container */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+/* Page Header Titles */
+.page-header h1, .page-header h2 {
+    color: var(--white);
+    font-weight: 700;
+    font-size: 1.75rem;
+    margin: 0;
+}
+
+/* Back Button in Header */
+.page-header .btn {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    border-radius: 0.375rem;
+    transition: var(--transition);
+}
+
+.page-header .btn:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--white);
+}
+
+/* 4. Navigation Components: Styles for Navbar, Dropdowns, Sidebar, and Tabs. */
+
+/* Navbar Brand */
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--white);
+}
+
+.navbar-brand i {
+    margin-right: 8px;
+}
+
+.navbar-brand:hover {
+    color: var(--secondary);
+}
+
+/* Navbar Navigation Links */
+.navbar-nav .nav-link {
+    font-weight: 500;
+    transition: var(--transition);
+    color: var(--light); /* Default link color in dark navbar */
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link:focus {
+    color: var(--secondary);
+}
+
+.navbar-nav .nav-link.active {
+    color: var(--white);
+    font-weight: 600;
+}
+
+/* Navbar Toggler (for mobile) */
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+/* Dropdown Menus */
+.dropdown-menu {
+    border: none;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 0.5rem;
+}
+
+.dropdown-item {
+    transition: var(--transition);
+}
+
+.dropdown-item:hover {
+    background-color: var(--light);
+    color: var(--primary);
+}
+
+.problem-description {
+    background-color: var(--white);
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+    border: 1px solid var(--white);
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+  
+
+/* Sidebar Navigation */
+.sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: var(--white);
+    box-shadow: 0 0 0.25rem rgba(0, 0, 0, 0.1);
+}
+
+.nav-pills .nav-link {
+    color: var(--primary);
+    border-radius: 0.375rem;
+    margin-bottom: 0.25rem;
+    transition: var(--transition);
+}
+
+.nav-pills .nav-link:hover {
+    background-color: var(--light);
+    color: var(--primary-dark);
+}
+
+.nav-pills .nav-link.active {
+    background-color: var(--primary);
+    color: var(--white);
+    font-weight: 600;
+}
+
+.nav-pills .nav-link i {
+    width: 20px;
+    text-align: center;
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+    border-bottom: 2px solid var(--light);
+}
+
+.nav-tabs .nav-link {
+    color: var(--white);
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary); /* Changed for better contrast on light background */
+    background-color: transparent;
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+}
+
+/* 5. Card Styles (General): Default styling for cards throughout the application. */
+.card {
+    border: 1px solid var(--white); /* Subtle border */
+    border-radius: 0.75rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    background-color: var(--white);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    background-color: var(--white);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    font-weight: 600;
+    color: var(--primary);
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    padding: 0.75rem 1rem;
+}
+
+.card-header.bg-primary {
+    background-color: var(--dark) !important;
+    color: var(--white);
+}
+
+.card-header.bg-success {
+    background-color: var(--success) !important;
+    color: var(--white);
+}
+
+.card-body {
+    padding: 1rem 1.25rem;
+    color: var(--primary);
+    background-color: var(--white);
+}
+
+.card-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0 0 0.75rem 0.75rem !important;
+}
+
+/* 6. Table Styles: General table styling and specific leaderboard table styles. */
+.table {
+    background-color: var(--white);
+    border: 1px solid var(--white);
+    border-collapse: collapse; /* For a true table look */
+    width: 100%;
+}
+
+.table th {
+    font-weight: 700;
+    background-color: var(--secondary); /* Gold background for headers */
+    color: var(--primary); /* Dark text on gold */
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--primary);
+    text-align: left;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+    transition: background-color 0.3s ease;
+    user-select: none;
+    cursor: default;
+    border: 1px solid var(--white); /* Consistent border for all cells */
+}
+
+.table th:hover {
+    background-color: var(--dark); /* Slightly darker gold on hover */
+    color: var(--primary-dark);
+}
+
+.table td {
+    border: 1px solid var(--white); /* Consistent border for all cells */
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--muted);
+    color: var(--white);
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+
+.table-responsive {
+    border-radius: 0.5rem;
+}
+
+/* Leaderboard specific table styles (if a dedicated table is used) */
+.leaderboard-table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+    word-wrap: break-word;
+    font-size: 0.95rem;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+    border: 1px solid var(--white);
+    padding: 0.75rem;
+    vertical-align: middle;
+}
+
+.leaderboard-row {
+    transition: background-color 0.2s;
+}
+
+.leaderboard-row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.leaderboard-cell.accepted {
+    background-color: var(--success) !important;
+    color: var(--white) !important;
+    font-weight: bold;
+}
+
+.leaderboard-cell.rejected {
+    background-color: var(--danger) !important;
+    color: var(--white) !important;
+    font-weight: bold;
+}
+
+.leaderboard-cell:hover {
+    opacity: 0.9;
+}
+
+/* 7. Form Elements: Styling for input fields, labels, and checkboxes. */
+.form-control {
+    transition: var(--transition);
+    border: 1px solid var(--white);
+    border-radius: 0.375rem;
+    color: var(--primary); /* Added: Explicit text color for better contrast */
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(51, 51, 51, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(51, 51, 51, 0.25);
+}
+
+/* Input groups */
+.input-group-text {
+    background-color: var(--primary); /* Changed: Darker background for better contrast */
+    border-color: var(--white);
+    color: var(--white); /* Changed: Lighter text for better contrast */
+    font-weight: 500;
+}
+
+/* 8. Button Styles: Consistent styling for various button types. */
+.btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+}
+
+.card-header .btn-primary{
+    font-size: 1.6rem;
+    background-color: transparent;
+    border: none
+}
+
+.card-header .btn-primary:hover{
+    background-color: transparent;
+    border: none
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--white);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+    color: var(--primary);
+}
+
+.btn-secondary:hover {
+    background-color: var(--dark);
+    border-color: var(--dark);
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+    color: var(--white);
+    background-color: var(--muted);
+    border-color: var(--muted);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--white);
+}
+
+.btn-outline-secondary {
+    color: var(--white);
+    background-color: var(--muted);
+    border-color: var(--muted);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--muted);
+    border-color: var(--muted);
+    color: var(--white);
+}
+
+/* Loading states for buttons */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 9. Badges & Alerts: Styling for status indicators and messages. */
+
+/* Badge styles */
+.badge {
+    font-weight: 500;
+    font-size: 0.75em;
+    border-radius: 0.375rem;
+    color: var(--primary);
+}
+
+.badge-accepted, .bg-success {
+    background-color: var(--success) !important;
+    color: var(--white) !important;
+}
+
+.badge-wrong-answer, .bg-danger {
+    background-color: var(--danger) !important;
+    color: var(--white) !important;
+}
+
+.badge-time-limit, .bg-warning {
+    background-color: var(--warning) !important;
+    color: var(--primary) !important;
+}
+
+.badge-compilation-error, .bg-info {
+    background-color: var(--info) !important;
+    color: var(--primary) !important;
+}
+
+.bg-light {
+    background-color: var(--primary) !important;
+    color: var(--white) !important;
+}
+
+.bg-primary {
+    background-color: var(--dark) !important;
+    color: var(--primary) !important;
+}
+
+.bg-secondary {
+    background-color: var(--muted) !important;
+    color: var(--white) !important;
+}
+.navbar-dark .navbar-brand {
+    color: var(--primary);
+}
+.navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke='rgba(34, 34, 34,1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+  }
+.navbar-dark .navbar-nav .nav-link {
+color: var(--primary);
+}
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--primary);
+    }
+.navbar-dark .navbar-nav .nav-link:focus {
+        color: var(--primary);
+        background-color: var(--secondary);
+        }
+/* Alert styles */
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+    border-left: 4px solid; /* Distinct left border for alerts */
+    color: var(--white);
+}
+
+.alert-info {
+    background-color: rgba(130, 206, 217, 0.1);
+    border-left-color: var(--info);
+    color: var(--primary);
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left-color: var(--success);
+    /* color: var(--success); */
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left-color: var(--danger);
+    /* color: var(--danger); */
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left-color: var(--warning);
+    /* color: var(--primary); */
+}
+
+/* 10. Specific Component Styles: Styling for unique elements like timers, code blocks, and hero sections. */
+
+/* Contest timer */
+.contest-timer {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+}
+
+/* List group items (general) */
+.list-group-item {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    transition: var(--transition);
+    background-color: var(--white);
+    color: var(--primary);
+}
+.list-group {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    transition: var(--transition);
+    background-color: var(--white);
+    color: var(--primary);
+}
+.list-group a h6 {
+    transition: var(--transition);
+    background-color: transparent;
+    color: var(--primary);
+}
+
+.list-group-item h5 {
+    transition: var(--transition);
+    background-color: transparent;
+    color: var(--primary);
+}
+
+.list-group-item:hover {
+    background-color: var(--muted);
+}
+
+.list-group-item-action:hover {
+    background-color: var(--muted);
+    color: var(--light);
+}
+
+/* Pagination */
+.pagination .page-link {
+    color: var(--primary);
+    border-color: var(--white);
+    transition: var(--transition);
+}
+
+.pagination .page-link:hover {
+    color: var(--primary-dark);
+    background-color: var(--light);
+    border-color: var(--primary);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--dark);
+    border-color: var(--primary);
+    color: var(--white);
+}
+
+/* Code display blocks */
+pre, .sample-io {
+    background-color: var(--primary-dark); /* instead of var(--); */
+    border-color: var(--primary-dark);
+    color: var(--white);    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--white);
+    overflow-x: auto;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    white-space: pre-wrap;
+
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+/* Jumbotron/Hero section */
+.bg-light.rounded-3 {
+    background: linear-gradient(135deg, var(--white) 0%, var(--white) 100%);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.display-5 {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* Hero subtitle/description */
+.col-md-8.fs-4.mx-auto, .hero-subtitle {
+    color: var(--muted);
+    font-weight: 400;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.col-md-8.fs-4.mx-auto::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--secondary), var(--dark));
+    margin: 1.5rem auto 0;
+    border-radius: 2px;
+}
+
+.hero-subtitle::before {
+    content: '🏆';
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-size: 1.2em;
+    opacity: 0.8;
+}
+
+.hero-subtitle strong {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Test case styling */
+.test-case {
+    background-color: rgba(244, 244, 244, 0.5);
+    border: 1px solid var(--white) !important;
+    border-radius: 0.5rem !important;
+    transition: var(--transition);
+}
+
+.test-case:hover {
+    background-color: var(--light);
+    border-color: var(--primary) !important;
+}
+
+/* 11. Submission Page Card Specific Styles (Leaderboard Table Style) */
+/* This section transforms cards on the submission page to resemble a leaderboard table.
+   Apply the class 'submission-list-card' to the card container on the submission page. */
+.submission-list-card {
+    border: 1px solid var(--white); /* Subtle border like a table */
+    border-radius: 0.75rem;
+    box-shadow: none; /* Remove general card shadow for a flatter, table-like appearance */
+    transition: none; /* Remove general card transition */
+    background-color: var(--white);
+}
+
+.submission-list-card:hover {
+    box-shadow: none !important; /* Ensure no shadow on hover */
+    transform: none !important; /* Ensure no transform on hover */
+    cursor: default !important; /* Indicate it's not a clickable card */
+}
+
+.submission-list-card .card-header {
+    background-color: var(--dark); /* Use dark gold for header, like a leaderboard */
+    color: var(--primary); /* Dark text on gold header */
+    font-weight: 600;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--primary); /* Stronger border for header */
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+    padding: 0.75rem 1rem;
+}
+
+.submission-list-card .card-body {
+    padding: 0; /* Remove padding from card body to allow list items to fill */
+    color: var(--primary);
+    background-color: var(--white);
+}
+.card-title {
+    margin-bottom: .5rem;
+    color: var(--primary)
+}
+/* Individual submission rows within the card (using list-group-item) */
+.submission-list-card .list-group-item {
+    border: none; /* Remove default list-group-item border */
+    border-bottom: 1px solid var(--white); /* Add bottom border for row separation */
+    padding: 0.75rem 1rem;
+    background-color: var(--white);
+    transition: background-color 0.2s;
+    display: flex; /* Use flexbox for column-like alignment within the row */
+    justify-content: space-between; /* Distribute content */
+    align-items: center; /* Vertically align items */
+}
+
+.submission-list-card .list-group-item:last-child {
+    border-bottom: none; /* No border on the last item for a clean look */
+}
+
+.submission-list-card .list-group-item:hover {
+    background-color: rgba(0, 0, 0, 0.02); /* Subtle hover effect for rows */
+}
+
+/* Full-width primary button within submission cards (e.g., "Submit Solution") */
+.submission-list-card .btn-primary {
+    width: 100%;
+    font-weight: 600;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem; /* Add some space above the button */
+}
+
+/* Accepted badge within submission rows */
+.submission-list-card .badge-success {
+    background-color: var(--success);
+    color: var(--white);
+    font-weight: 500;
+    padding: 0.4em 0.6em;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+}
+
+/* 12. Footer: Styling for the page footer. */
+footer {
+    background-color: var(--light) !important;
+    color: var(--muted);
+    margin-top: auto; /* Pushes footer to the bottom */
+    padding: 1rem 0;
+}
+
+footer .text-muted {
+    color: var(--muted) !important; /* Ensure footer text is muted */
+}
+
+/* Icons */
+.bi {
+    display: inline-block;
+    vertical-align: -.125em;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+    color: var(--primary);
+}
+/* 13. Accessibility & Utilities: Focus states and custom scrollbar. */
+
+/* Focus states for accessibility */
+.btn:focus,
+.form-control:focus,
+.form-check-input:focus,
+.nav-link:focus,
+.dropdown-item:focus {
+    outline: 2px solid var(--secondary); /* Use secondary color for better visibility */
+    outline-offset: 2px;
+}
+
+/* Custom scrollbar for better aesthetics */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--muted);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary);
+}
+
+/* 14. Responsive Adjustments: Media queries for different screen sizes. */
+@media (max-width: 768px) {
+    .sidebar {
+        height: auto;
+        position: relative;
+    }
+
+    .display-4, .display-5 {
+        font-size: 2rem;
+    }
+
+    /* Remove hover transforms on smaller screens for better touch experience */
+    .card:hover {
+        transform: none;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Revert to default shadow */
+    }
+
+    .btn:hover {
+        transform: none;
+    }
+
+    .contest-timer {
+        font-size: 1rem;
+    }
+
+    .col-md-8.fs-4.mx-auto,
+    .hero-subtitle {
+        font-size: 1.1rem !important;
+        padding: 0 1rem;
+    }
+    
+    .col-md-8.fs-4.mx-auto::after {
+        width: 40px;
+        height: 2px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .page-header h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* 15. Dark Theme Compatibility: Styles for users with dark mode preference. */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: var(--primary-dark);
+        color: var(--white);
+    }
+    
+    .card, .table, .list-group-item, .submission-list-card { /* Added .submission-list-card */
+        background-color: var(--white);
+        color: var(--primary);
+        border-color: var(--primary-dark);
+    }
+    
+    .form-control {
+        background-color: var(--white);
+        border-color: var(--primary-dark);
+        color: var(--primary);
+    }
+    
+    .table th {
+        background-color: var(--white);
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .card-header, .submission-list-card .card-header { /* Added .submission-list-card .card-header */
+        background-color: var(--dark);
+        color: var(--white);
+        border-bottom-color: var(--primary-dark);
+    }
+
+    .sidebar {
+        background-color: var(--primary);
+        box-shadow: 0 0 0.25rem rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-pills .nav-link {
+        color: var(--white);
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: var(--primary);
+        color: var(--secondary);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: var(--primary);
+        color: var(--white);
+    }
+
+    .navbar-brand, .navbar-nav .nav-link {
+        color: var(--white);
+    }
+
+    .navbar-nav .nav-link:hover,
+    .navbar-nav .nav-link:focus {
+        color: var(--secondary);
+    }
+
+    .dropdown-menu {
+        background-color: var(--primary);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+    }
+
+    .dropdown-item {
+        color: var(--white);
+    }
+
+    .dropdown-item:hover {
+        background-color: var(--primary);
+        color: var(--secondary);
+    }
+
+    .input-group-text {
+        background-color: var(--primary);
+        border-color: var(--primary-dark);
+        color: var(--white);
+    }
+
+    pre, .sample-io {
+        background-color: var(--white);
+        border-color: var(--primary-dark);
+        color: var(--primary-dark);
+    }
+
+    .test-case {
+        background-color: rgba(45, 45, 45, 0.5);
+        border-color: var(--primary-dark) !important;
+    }
+
+    .test-case:hover {
+        background-color: var(--primary);
+        border-color: var(--secondary) !important;
+    }
+
+    .alert-info {
+        background-color: rgba(130, 206, 217, 0.15);
+        /* color: var(--info); */
+    }
+    
+    .alert-success {
+        background-color: rgba(40, 167, 69, 0.15);
+        /* color: var(--success); */
+    }
+    .alert-danger {
+        background-color: rgba(220, 53, 69, 0.15);
+        /* color: var(--danger); */
+    }
+    .alert-warning {
+        background-color: rgba(255, 193, 7, 0.15);
+        /* color: var(--warning); */
+    }
+
+    .text-muted {
+        color: var(--primary) !important;
+    }
+
+    footer {
+        background-color: var(--primary) !important;
+        color: var(--muted);
+    }
+}
+
+/* 16. Print styles: Optimize layout for printing. */
+@media print {
+    .navbar,
+    .sidebar,
+    .btn,
+    footer {
+        display: none !important; /* Hide non-essential elements for print */
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid var(--white);
+    }
+}

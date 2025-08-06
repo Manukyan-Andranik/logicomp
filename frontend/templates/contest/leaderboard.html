@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}{{ contest.title }} - Leaderboard{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ contest.title }} - Leaderboard</h2>
+    <a href="{{ url_for('contest.index') }}" class="btn btn-primary">Back to Contest</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered leaderboard-table">
+      <thead class="thead-dark text-center">
+        <tr>
+          <th>#</th>
+          <th>Username</th>
+          {% for problem in problems %}
+          <th>Problem {{ loop.index }}</th>
+          {% endfor %}
+          <th>Total Score</th>
+          <th>Total Time</th>
+          <th>Last Submission</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in leaderboard %}
+        <tr>
+          <td class="font-weight-bold text-center">{{ loop.index }}</td>
+          <td class="text-center">{{ entry.user.username }}</td>
+
+          {% for problem in problems %}
+          {% set result = entry.problems.get(problem.id) %}
+          <td class="text-center leaderboard-cell {% if result %}accepted{% else %}rejected{% endif %}">
+            {% if result %}
+            <span data-toggle="tooltip" title="{{ result.attempts }} attempt(s)">
+              ✓ {{ "%.2f"|format(result.time) }}s
+            </span>
+            {% else %}
+            <span class="text-muted">✗</span>
+            {% endif %}
+          </td>
+          {% endfor %}
+
+          <td class="text-center font-weight-bold">{{ entry.total_score }}</td>
+          <td class="text-center">{{ "%.2f"|format(entry.total_time) }}s</td>
+          <td class="text-center">{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

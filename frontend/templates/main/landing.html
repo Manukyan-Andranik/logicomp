@@ -1,0 +1,54 @@
+<!-- frontend/templates/main/landing.html -->
+{% extends "base.html" %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5 text-center">
+            <h1 class="display-5 fw-bold">Welcome to LogiComp</h1>
+            <p class="col-md-8 fs-4 mx-auto">
+                A platform for managing and participating in programming competitions.
+                Please login or register to continue.
+            </p>
+            <div class="mt-4">
+                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg me-3">Login</a>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-secondary btn-lg">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-trophy fs-1 text-primary mb-3"></i>
+                    <h3>Compete</h3>
+                    <p>Test your skills against other programmers in timed contests</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-code-square fs-1 text-primary mb-3"></i>
+                    <h3>Solve Problems</h3>
+                    <p>Challenge yourself with algorithmic problems of varying difficulty</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
+                    <h3>Track Progress</h3>
+                    <p>See your ranking on live leaderboards and improve your skills</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

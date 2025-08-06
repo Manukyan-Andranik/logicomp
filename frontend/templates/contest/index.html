@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Contests{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>Contests</h1>
+    </div>
+    
+    <ul class="nav nav-tabs mb-4" id="contestTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button">
+                Active
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button">
+                Upcoming
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button">
+                Past
+            </button>
+        </li>
+    </ul>
+    
+    <div class="tab-content" id="contestTabsContent">
+        <div class="tab-pane fade show active" id="active" role="tabpanel">
+            {% if active_contests %}
+                <div class="row">
+                    {% for contest in active_contests %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">{{ contest.title }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">{{ contest.description|truncate(150) }}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge bg-light text-dark">
+                                            {{ contest.problems.count() }} problems
+                                        </span>
+                                        <span class="badge bg-light text-dark ms-2">
+                                            {{ contest.participants.count() }} participants
+                                        </span>
+                                    </div>
+                                    <div id="timer-{{ contest.id }}" class="contest-timer"></div>
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
+                                   class="btn btn-sm btn-primary">Enter Contest</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">No active contests at the moment.</div>
+            {% endif %}
+        </div>
+        
+        <div class="tab-pane fade" id="upcoming" role="tabpanel">
+            {% if upcoming_contests %}
+                <div class="list-group">
+                    {% for contest in upcoming_contests %}
+                    <div class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ contest.title }}</h5>
+                            <small>Starts in: 
+                                <span class="badge bg-warning text-dark" id="countdown-{{ contest.id }}"></span>
+                            </small>
+                        </div>
+                        <p class="mb-1">{{ contest.description|truncate(100) }}</p>
+                        <small>Starts: {{ contest.start_time.strftime('%Y-%m-%d %H:%M') }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">No upcoming contests scheduled.</div>
+            {% endif %}
+        </div>
+        
+        <div class="tab-pane fade" id="past" role="tabpanel">
+            {% if past_contests %}
+                <div class="list-group">
+                    {% for contest in past_contests %}
+                    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
+                       class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ contest.title }}</h5>
+                            <small class="text-muted">Ended</small>
+                        </div>
+                        <p class="mb-1">{{ contest.description|truncate(100) }}</p>
+                        <small class="text-muted">
+                            {{ contest.start_time.strftime('%Y-%m-%d') }} to 
+                            {{ contest.end_time.strftime('%Y-%m-%d') }}
+                        </small>
+                    </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">No past contests available.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Initialize contest timers
+document.addEventListener('DOMContentLoaded', function() {
+    // Active contest timers
+    "{% for contest in active_contests %}"
+    (function() {
+        const endTime = new Date("{{ contest.end_time.isoformat() }}");
+        
+        function updateTimer() {
+            const now = new Date();
+            const remaining = endTime - now;
+            
+            if (remaining <= 0) {
+                document.getElementById('timer-{{ contest.id }}').innerHTML = `
+                    <span class="badge bg-secondary">Contest ended</span>
+                `;
+                return;
+            }
+            
+            const hours = Math.floor(remaining / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+            
+            document.getElementById('timer-{{ contest.id }}').innerHTML = `
+                <span class="badge bg-success">
+                    Ends in: ${hours}h ${minutes}m ${seconds}s
+                </span>
+            `;
+        }
+        
+        updateTimer();
+        setInterval(updateTimer, 1000);
+    })();
+    "{% endfor %}"
+    
+    // Upcoming contest countdowns
+    "{% for contest in upcoming_contests %}"
+    (function() {
+        const startTime = new Date("{{ contest.start_time.isoformat() }}");
+        
+        function updateCountdown() {
+            const now = new Date();
+            const remaining = startTime - now;
+            
+            if (remaining <= 0) {
+                document.getElementById('countdown-{{ contest.id }}').textContent = 'Started!';
+                return;
+            }
+            
+            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+            
+            let text = '';
+            if (days > 0) text += `${days}d `;
+            text += `${hours}h ${minutes}m`;
+            
+            document.getElementById('countdown-{{ contest.id }}').textContent = text;
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 60000); // Update every minute
+    })();
+    "{% endfor %}"
+});
+</script>
+{% endblock %}

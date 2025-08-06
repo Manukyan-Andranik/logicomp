@@ -1,0 +1,8 @@
+.DS_Store
+participants.json
+styled_elements_report.txt
+test_cases/
+venv_olimp/
+__pycach__
+backend/static
+script.py

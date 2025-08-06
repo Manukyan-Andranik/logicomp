@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}{{ contest.title }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>{{ contest.title }}</h1>
+        <div id="contest-timer" class="contest-timer"></div>
+
+        <a href="/contest" class="btn btn-primary">
+            Back to Contests
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Contest Description</h5>
+        </div>
+        <div class="card-body">
+            {{ contest.description|safe }}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Problems</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="list-group list-group-flush">
+                {% for problem in problems %}
+                <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}"
+                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">{{loop.index}}. {{ problem.title }}</h6>
+                    </div>
+                    <span class="badge bg-primary rounded-pill">
+                        {% set submission_count = current_user.submissions.filter_by(problem_id=problem.id).count() %}
+                        {{ submission_count }} submission{% if submission_count != 1 %}s{% endif %}
+                    </span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('contest.leaderboard', contest_id=contest.id) }}" class="btn btn-outline-primary">
+            View Leaderboard
+        </a>
+    </div>
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('submission.my_submissions', contest_id=contest.id) }}" class="btn btn-outline-primary">
+            My Submissions
+        </a>
+    </div>
+</div>
+
+<script>
+    // Contest timer script
+    function updateTimer() {
+        const now = new Date();
+        const start = new Date("{{ contest.start_time.isoformat() }}");
+        const end = new Date("{{ contest.end_time.isoformat() }}");
+
+        let status, remaining;
+
+        if (now < start) {
+            status = "Contest starts in:";
+            remaining = start - now;
+        } else if (now < end) {
+            status = "Contest ends in:";
+            remaining = end - now;
+        } else {
+            document.getElementById('contest-timer').innerHTML = `
+            <span class="badge bg-secondary">Contest has ended</span>
+        `;
+            return;
+        }
+
+        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+        let timeString = '';
+        if (days > 0) timeString += `${days}d `;
+        if (hours > 0 || days > 0) timeString += `${hours}h `;
+        timeString += `${minutes}m ${seconds}s`;
+
+        document.getElementById('contest-timer').innerHTML = `
+        <span class="badge ${now < start ? 'bg-warning text-dark' : 'bg-success'}">
+            ${status} ${timeString}
+        </span>
+    `;
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+</script>
+{% endblock %}

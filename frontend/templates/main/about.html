@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">About LogiComp</h3>
+                </div>
+                <div class="card-body">
+                    <h4 class="mb-3">Our Mission</h4>
+                    <p>
+                        The LogiComp is designed to provide a comprehensive solution for organizing 
+                        and participating in programming competitions. Our goal is to make it easy for 
+                        educators and organizations to host coding contests while providing participants 
+                        with a seamless experience.
+                    </p>
+                    
+                    <h4 class="mb-3 mt-4">Features</h4>
+                    <ul>
+                        <li>Create and manage programming contests with multiple problems</li>
+                        <li>Automatic judging of submissions with detailed feedback</li>
+                        <li>Real-time leaderboards to track progress</li>
+                        <li>Secure authentication and participant management</li>
+                        <li>Support for multiple programming languages</li>
+                    </ul>
+                    
+                    <h4 class="mb-3 mt-4">Technology Stack</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Backend</h5>
+                            <ul>
+                                <li>Python with Flask framework</li>
+                                <li>PostgreSQL database</li>
+                                <li>SQLAlchemy ORM</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Frontend</h5>
+                            <ul>
+                                <li>HTML5, CSS3, JavaScript</li>
+                                <li>Bootstrap 5 for responsive design</li>
+                                <li>Jinja2 templating</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

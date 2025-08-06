@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Solution{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>{{ title }}</h1>
+  {% if contest %}
+  <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
+     class="btn btn-outline-secondary">Back to Contest</a>
+  {% endif %}
+</div>
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h3>Submit Solution for {{ problem.title }}</h3>
+      </div>
+      <div class="card-body">
+        <form method="POST" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+          
+          <div class="form-group mb-3">
+            {{ form.language.label }}
+            {{ form.language(class="form-control") }}
+          </div>
+          
+          <div class="form-group mb-3">
+            {{ form.code.label }}
+            {{ form.code(class="form-control", rows=15) }}
+            <small class="text-muted">Or upload a file below</small>
+          </div>
+          
+          <div class="form-group mb-3">
+            {{ form.source_file.label }}
+            {{ form.source_file(class="form-control") }}
+          </div>
+          
+          <div class="d-flex justify-content-between">
+            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" 
+               class="btn btn-secondary">
+              Cancel
+            </a>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const codeTextarea = document.querySelector('textarea[name="code"]');
+  const languageSelect = document.querySelector('select[name="language"]');
+
+  const placeholders = {
+    python: `def res(a, b):\n    return a + b`,
+    cpp: `#include <iostream>\nusing namespace std;\n\nint res(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << res(a, b) << endl;\n    return 0;\n}`,
+    javascript: `function res(a, b) {\nreturn a + b;\n}\nconst input = require('fs').readFileSync('/dev/stdin', 'utf8');\nconst [a, b] = input.trim().split(" ").map(Number);\nconsole.log(res(a, b));\n`,
+    java: `import java.util.*;\n\npublic class Solution {\n    public static int res(int a, int b) {\n        return a + b;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(res(a, b));\n    }\n}`
+  };
+
+  if (codeTextarea && languageSelect) {
+    codeTextarea.style.fontFamily = 'monospace';
+    codeTextarea.style.fontSize = '14px';
+
+    function updatePlaceholder() {
+      const lang = languageSelect.value.toLowerCase();
+      const key = lang.includes('python') ? 'python' :
+                  lang.includes('cpp') || lang.includes('c++') ? 'cpp' :
+                  lang.includes('javascript') || lang.includes('js') ? 'javascript' :
+                  lang.includes('java') ? 'java' : '';
+      codeTextarea.placeholder = placeholders[key] || '';
+    }
+
+    updatePlaceholder(); // set initial placeholder
+    languageSelect.addEventListener('change', updatePlaceholder);
+  }
+});
+</script>
+{% endblock %}

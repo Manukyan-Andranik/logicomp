@@ -1,0 +1,123 @@
+<!-- frontend/templates/submission/view.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ title }}</h1>
+        {% if contest %}
+        <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
+           class="btn btn-outline-secondary">Back to Contest</a>
+        {% endif %}
+    </div>
+
+    <h2>Submission #{{ submission.id }}</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Details</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Problem:</strong> {{ problem.title }}</p>
+                    <p><strong>Contest:</strong> {{ contest.title }}</p>
+                    <p><strong>Language:</strong> {{ submission.language }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Status:</strong> 
+                        <span class="badge 
+                            {% if submission.status == 'Accepted' %}bg-success
+                            {% elif submission.status == 'Wrong Answer' %}bg-danger
+                            {% elif submission.status == 'Time Limit Exceeded' %}bg-warning text-dark
+                            {% elif submission.status == 'Runtime Error' %}bg-danger
+                            {% elif submission.status == 'Compilation Error' %}bg-warning text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ submission.status }}
+                        </span>
+                    </p>
+                    <p><strong>Time:</strong> 
+                        {% if submission.execution_time %}
+                            {{ "%.2f"|format(submission.execution_time) }}s
+                        {% else %}
+                            -
+                        {% endif %}
+                    </p>
+                    <p><strong>Submitted:</strong> {{ submission.timestamp.strftime('%Y-%m-%d %H:%M') }}</p>
+                </div>
+            </div>
+            
+            {% if submission.error_message %}
+            <div class="alert alert-danger mt-3">
+                <h6>Error Details:</h6>
+                <pre class="mb-0">{{ submission.error_message }}</pre>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Source Code</h5>
+        </div>
+        <div class="card-body">
+            <pre><code>{{ submission.code }}</code></pre>
+        </div>
+    </div>
+
+    <!-- Submissions History Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Recent Submissions by You</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover submissions-table mb-0">
+                    <thead class="thead-light text-center">
+                        <tr>
+                            <th>ID</th>
+                            <th>Problem</th>
+                            <th>Status</th>
+                            <th>Language</th>
+                            <th>Time</th>
+                            <th>Submitted At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub in recent_submissions %}
+                        <tr>
+                            <td class="text-center">{{ sub.id }}</td>
+                            <td>{{ sub.problem.title }}</td>
+                            <td class="text-center">
+                                <span class="badge 
+                                    {% if sub.status == 'Accepted' %}bg-success
+                                    {% elif sub.status == 'Wrong Answer' %}bg-danger
+                                    {% elif sub.status == 'Time Limit Exceeded' %}bg-warning text-dark
+                                    {% elif sub.status == 'Runtime Error' %}bg-danger
+                                    {% elif sub.status == 'Compilation Error' %}bg-warning text-dark
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ sub.status }}
+                                </span>
+                            </td>
+                            <td class="text-center">{{ sub.language }}</td>
+                            <td class="text-center">
+                                {% if sub.execution_time %}
+                                    {{ "%.2f"|format(sub.execution_time) }}s
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ sub.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No recent submissions found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

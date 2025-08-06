@@ -1,0 +1,56 @@
+<!-- frontend/templates/admin/create_contest.html -->
+{% extends "base.html" %}
+
+{% block title %}Create Contest{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h3>Create New Contest</h3>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="{{ url_for('admin.create_contest') }}">
+          {{ form.hidden_tag() }}
+          
+          <div class="form-group mb-3">
+            {{ form.title.label }}
+            {{ form.title(class="form-control") }}
+          </div>
+          
+          <div class="form-group mb-3">
+            {{ form.description.label }}
+            {{ form.description(class="form-control", rows=5) }}
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                {{ form.start_time.label }}
+                {{ form.start_time(class="form-control") }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group mb-3">
+                {{ form.end_time.label }}
+                {{ form.end_time(class="form-control") }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group form-check mb-3">
+            {{ form.is_public(class="form-check-input") }}
+            {{ form.is_public.label(class="form-check-label") }}
+          </div>
+          
+          <div class="d-flex justify-content-between">
+            <a href="{{ url_for('admin.index') }}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Create Contest</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,106 @@
+<!-- frontend/templates/contest/problem.html -->
+{% extends "base.html" %}
+
+{% block title %}{{ contest.title }} - {{ problem.title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h2>Test Contest: Problem 1</h2>
+  <a href="/contest/1" class="btn btn-primary">
+    Back to Contest
+  </a>
+</div>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-header">
+        <h3>{{ problem.title }}</h3>
+      </div>
+      <div class="card-body">
+        <div class="mb-4">
+          <div class="problem-description p-4 rounded"
+            style="background-color: #f8f9fa; white-space: pre-wrap; font-family: 'Courier New', monospace; border: 1px solid #ddd;">
+            {{ problem.description }}
+          </div>
+        </div>
+
+
+        <div class="mt-4">
+          <h4>Expected Input/Output</h4>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header bg-primary">
+                  <h5>Input</h5>
+                </div>
+                <div class="card-body">
+                  <pre>{{ problem.expected_input }}</pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header bg-primary">
+                  <h5>Output</h5>
+                </div>
+                <div class="card-body">
+                  <pre>{{ problem.expected_output }}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+
+    <div class="card">
+      <div class="card-header">
+        <h5>Submit Your Solution</h5>
+      </div>
+
+      <div class="card-body">
+        <p class="text-muted">You can submit your solution in any programming language supported by the system.</p>
+        <p class="text-muted">Make sure to follow the input/output format specified in the problem description.</p>
+        <a href="{{ url_for('submission.submit', problem_id=problem.id) }}" class="btn btn-primary w-100">
+          Submit Solution
+        </a>
+      </div>
+    </div>
+
+
+    <div class="card">
+
+      <div class="card-header">
+        <h5>Your Submissions</h5>
+      </div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          {% for submission in submissions %}
+          <li class="list-group-item">
+            <div class="d-flex justify-content-between">
+              <span>{{ submission.timestamp.strftime('%H:%M') }}</span>
+              <span class="badge 
+                {% if submission.status == 'Accepted' %}badge-success
+                {% elif submission.status in ['Wrong Answer', 'Runtime Error'] %}badge-danger
+                {% elif submission.status == 'Compilation Error' %}badge-warning
+                {% else %}badge-primary{% endif %}">
+                {{ submission.status }}
+              </span>
+            </div>
+          </li>
+          {% else %}
+          <li class="list-group-item text-center text-muted">
+            No submissions yet
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
