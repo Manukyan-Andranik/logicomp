@@ -5,4 +5,11 @@ test_cases/
 venv_olimp/
 __pycach__
 backend/static
+backend/app/static
+ backend/__pycache__/*
 script.py
+.env
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo

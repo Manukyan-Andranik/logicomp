@@ -8,7 +8,13 @@
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>{{ contest.title }} - Leaderboard</h2>
-    <a href="{{ url_for('contest.index') }}" class="btn btn-primary">Back to Contest</a>
+    {% if current_user.role == 'admin' %}
+    <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
+      Back to Contest
+    </a>
+    {% else %}
+    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-primary">Back to Contest</a>
+    {% endif %}
   </div>
 
   <div class="table-responsive">
@@ -18,7 +24,7 @@
           <th>#</th>
           <th>Username</th>
           {% for problem in problems %}
-          <th>Problem {{ loop.index }}</th>
+            <th>Problem {{ loop.index }}</th>
           {% endfor %}
           <th>Total Score</th>
           <th>Total Time</th>
@@ -28,25 +34,37 @@
       <tbody>
         {% for entry in leaderboard %}
         <tr>
-          <td class="font-weight-bold text-center">{{ loop.index }}</td>
+          <td class="text-center font-weight-bold">{{ loop.index }}</td>
           <td class="text-center">{{ entry.user.username }}</td>
 
           {% for problem in problems %}
-          {% set result = entry.problems.get(problem.id) %}
-          <td class="text-center leaderboard-cell {% if result %}accepted{% else %}rejected{% endif %}">
-            {% if result %}
-            <span data-toggle="tooltip" title="{{ result.attempts }} attempt(s)">
-              ✓ {{ "%.2f"|format(result.time) }}s
-            </span>
+            {% set result = entry.problems.get(problem.id) %}
+            {% if result is none %}
+              <td class="text-center leaderboard-cell pending">
+                <span class="text-muted">–</span>
+              </td>
+            {% elif result.is_accepted %}
+              <td class="text-center leaderboard-cell accepted">
+                <span data-toggle="tooltip" title="{{ result.attempts }} attempt(s)">
+                  ✓ {{ "%.2f"|format(result.time) }}s
+                </span>
+              </td>
             {% else %}
-            <span class="text-muted">✗</span>
+              <td class="text-center leaderboard-cell rejected">
+                <span class="text-muted">✗ {{ result.attempts }}</span>
+              </td>
             {% endif %}
-          </td>
           {% endfor %}
 
           <td class="text-center font-weight-bold">{{ entry.total_score }}</td>
           <td class="text-center">{{ "%.2f"|format(entry.total_time) }}s</td>
-          <td class="text-center">{{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td class="text-center">
+            {% if entry.timestamp %}
+              {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}
+            {% else %}
+              N/A
+            {% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>

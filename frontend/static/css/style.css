@@ -366,7 +366,7 @@ a:hover {
 }
 
 .table-hover tbody tr:hover {
-    background-color: var(--muted);
+    background-color: var(--info);
     color: var(--white);
     transition: background-color 0.2s ease-in-out;
     cursor: pointer;
@@ -409,6 +409,12 @@ a:hover {
 
 .leaderboard-cell.rejected {
     background-color: var(--danger) !important;
+    color: var(--white) !important;
+    font-weight: bold;
+}
+
+.leaderboard-cell.pending {
+    background-color: var(--info) !important;
     color: var(--white) !important;
     font-weight: bold;
 }

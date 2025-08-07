@@ -1,4 +1,3 @@
-<!-- frontend/templates/main/landing.html -->
 {% extends "base.html" %}
 
 {% block title %}Welcome{% endblock %}
@@ -10,11 +9,9 @@
             <h1 class="display-5 fw-bold">Welcome to LogiComp</h1>
             <p class="col-md-8 fs-4 mx-auto">
                 A platform for managing and participating in programming competitions.
-                Please login or register to continue.
             </p>
             <div class="mt-4">
                 <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg me-3">Login</a>
-                <a href="{{ url_for('auth.register') }}" class="btn btn-outline-secondary btn-lg">Register</a>
             </div>
         </div>
     </div>

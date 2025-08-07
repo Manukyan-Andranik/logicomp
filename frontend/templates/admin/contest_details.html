@@ -5,14 +5,19 @@
 {% block content %}
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>{{ contest.title }}</h1>
+        <h1><i class="bi bi-trophy-fill me-2"></i>{{ contest.title }}</h1>
         <div>
-            <a href="/" 
-               class="btn btn-primary">Back to contests</a>
-            <a href="{{ url_for('admin.edit_contest', contest_id=contest.id) }}" 
-               class="btn btn-outline-primary me-2">Edit Contest</a>
-            <a href="{{ url_for('admin.add_problem', contest_id=contest.id) }}" 
-               class="btn btn-primary">Add Problem</a>
+            <a href="{{ url_for('admin.index') }}" class="btn btn-outline-primary me-2">
+                <i class="bi bi-arrow-left-circle me-1"></i> Back to Dashboard
+            </a>
+            <a href="{{ url_for('admin.edit_contest', contest_id=contest.id) }}"
+               class="btn btn-outline-primary me-2">
+                <i class="bi bi-pencil-square me-1"></i> Edit Contest
+            </a>
+            <a href="{{ url_for('admin.add_problem', contest_id=contest.id) }}"
+               class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle me-1"></i> Add Problem
+            </a>
         </div>
     </div>
     
@@ -26,30 +31,30 @@
                     <dl class="row mb-0">
                         <dt class="col-sm-4">Start Time</dt>
                         <dd class="col-sm-8">{{ contest.start_time.strftime('%Y-%m-%d %H:%M') }}</dd>
-                        
+
                         <dt class="col-sm-4">End Time</dt>
                         <dd class="col-sm-8">{{ contest.end_time.strftime('%Y-%m-%d %H:%M') }}</dd>
-                        
+
                         <dt class="col-sm-4">Status</dt>
                         <dd class="col-sm-8">
                             {% if contest.is_active() %}
-                                <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">Active</span>
                             {% elif contest.start_time > datetime.utcnow() %}
-                                <span class="badge bg-warning text-dark">Upcoming</span>
+                            <span class="badge bg-warning text-dark">Upcoming</span>
                             {% else %}
-                                <span class="badge bg-secondary">Ended</span>
+                            <span class="badge bg-secondary">Ended</span>
                             {% endif %}
                         </dd>
-                        
+
                         <dt class="col-sm-4">Visibility</dt>
                         <dd class="col-sm-8">
                             {% if contest.is_public %}
-                                <span class="badge bg-info text-dark">Public</span>
+                            <span class="badge bg-info text-dark">Public</span>
                             {% else %}
-                                <span class="badge bg-dark">Private</span>
+                            <span class="badge bg-dark">Private</span>
                             {% endif %}
                         </dd>
-                        
+
                         <dt class="col-sm-4">Participants</dt>
                         <dd class="col-sm-8">{{ contest.participants.count() }}</dd>
                     </dl>
@@ -62,24 +67,24 @@
                     <h5 class="mb-0">Actions</h5>
                 </div>
                 <div class="card-body d-flex flex-column">
-                    <a href="{{ url_for('admin.generate_credentials', contest_id=contest.id) }}" 
-                       class="btn btn-outline-success mb-3">
+                    <a href="{{ url_for('admin.generate_credentials', contest_id=contest.id) }}"
+                        class="btn btn-outline-success mb-3">
                         <i class="bi bi-key-fill"></i> Generate Participant Credentials
                     </a>
-                    <a href="{{ url_for('contest.leaderboard', contest_id=contest.id) }}" 
-                       class="btn btn-outline-info mb-3">
+                    <a href="{{ url_for('contest.leaderboard', contest_id=contest.id) }}"
+                        class="btn btn-outline-info mb-3">
                         <i class="bi bi-trophy-fill"></i> View Leaderboard
                     </a>
-                    <a href="{{ url_for('admin.view_submissions') }}?contest_id={{ contest.id }}" 
-                       class="btn btn-outline-secondary">
+                    <a href="{{ url_for('admin.view_submissions') }}?contest_id={{ contest.id }}"
+                        class="btn btn-outline-secondary">
                         <i class="bi bi-file-earmark-check"></i> View Submissions
                     </a>
                 </div>
-                
+
             </div>
         </div>
     </div>
-    
+
     <div class="card">
         <div class="card-header">
             <h5 class="mb-0">Problems</h5>
@@ -104,16 +109,17 @@
                             <td>{{ problem.time_limit }}s</td>
                             <td>{{ problem.submissions.count() }}</td>
                             <td>
-                                <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" 
-                                   class="btn btn-sm btn-outline-primary me-1">
+                                <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}"
+                                    class="btn btn-sm btn-outline-primary me-1">
                                     <i class="bi bi-eye"></i> View
                                 </a>
-                                <a href="{{ url_for('admin.edit_problem', problem_id=problem.id) }}" 
-                                   class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ url_for('admin.edit_problem', problem_id=problem.id) }}"
+                                    class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
+                                </a>
                             </td>
-                            
+
                         </tr>
                         {% endfor %}
                     </tbody>

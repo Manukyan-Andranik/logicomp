@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Submissions: {{ contest.title }}</h1>
         <div class="dropdown">
-            <a href="/contest/{{ contest.id }}" class="btn btn-primary">
+            <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
                 Back to Contest
               </a>
             <ul class="dropdown-menu">
@@ -44,7 +44,7 @@
                     <tbody>
                         {% for submission in submissions.items %}
                         <tr>
-                            <td>{{ submission.id }}</td>
+                            <td>{{ loop.index }}</td>
                             <td>{{ submission.author.username }}</td>
                             <td>{{ submission.problem.title }}</td>
                             <td>{{ submission.problem.contest.title }}</td>

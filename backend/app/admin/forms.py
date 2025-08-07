@@ -1,4 +1,3 @@
-# backend/app/admin/forms.py
 from flask_wtf import FlaskForm
 from datetime import datetime
 from wtforms import (

@@ -4,7 +4,12 @@
 
 {% block content %}
 <div class="container">
-    <h2>Add Problem to Contest</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Add Problem to Contest</h1>
+        <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
+            Back to Contest
+        </a>
+    </div>
     <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
 
@@ -43,7 +48,8 @@
                 <div class="mb-3">
                     {{ form.test_case_upload.json_file.label(class="form-label") }}
                     {{ form.test_case_upload.json_file(class="form-control") }}
-                    <small class="text-muted">Upload a JSON file with test cases (fields: expected_input, expected_output, is_sample)</small>
+                    <small class="text-muted">Upload a JSON file with test cases (fields: expected_input,
+                        expected_output, is_sample)</small>
                 </div>
 
                 <div class="form-check mb-3">
@@ -53,46 +59,26 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <h5>Manual Test Cases</h5>
-            <div id="test-cases">
-                {% for test_case_form in form.test_cases %}
-                <div class="test-case mb-3 p-3 border rounded">
-                    <div class="mb-3">
-                        {{ test_case_form.expected_input.label(class="form-label") }}
-                        {{ test_case_form.expected_input(class="form-control", rows=3) }}
-                    </div>
-                    <div class="mb-3">
-                        {{ test_case_form.expected_output.label(class="form-label") }}
-                        {{ test_case_form.expected_output(class="form-control", rows=3) }}
-                    </div>
-                    <div class="form-check mb-2">
-                        {{ test_case_form.is_sample(class="form-check-input") }}
-                        {{ test_case_form.is_sample.label(class="form-check-label") }}
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            <button type="button" id="add-test-case" class="btn btn-secondary mt-2">Add Test Case</button>
-        </div>
 
-        <div class="mt-3">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-    </form>
+</div>
+
+<div class="mt-3">
+    {{ form.submit(class="btn btn-primary") }}
+</div>
+</form>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const testCasesContainer = document.getElementById('test-cases');
-    const addButton = document.getElementById('add-test-case');
-    let testCaseCount = {{ form.test_cases|length }};
+    document.addEventListener('DOMContentLoaded', function () {
+        const testCasesContainer = document.getElementById('test-cases');
+        const addButton = document.getElementById('add-test-case');
+        let testCaseCount = "{{ form.test_cases|length }}";
 
-    addButton.addEventListener('click', function () {
-        const index = testCaseCount;
-        const newCase = document.createElement('div');
-        newCase.className = 'test-case mb-3 p-3 border rounded';
-        newCase.innerHTML = `
+        addButton.addEventListener('click', function () {
+            const index = testCaseCount;
+            const newCase = document.createElement('div');
+            newCase.className = 'test-case mb-3 p-3 border rounded';
+            newCase.innerHTML = `
             <div class="mb-3">
                 <label for="test_cases-${index}-expected_input" class="form-label">Expected Input</label>
                 <textarea name="test_cases-${index}-expected_input" class="form-control" rows="3"></textarea>
@@ -107,20 +93,20 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <button type="button" class="btn btn-sm btn-danger remove-test-case">Remove</button>
         `;
-        testCasesContainer.appendChild(newCase);
-        testCaseCount++;
-    });
+            testCasesContainer.appendChild(newCase);
+            testCaseCount++;
+        });
 
-    testCasesContainer.addEventListener('click', function (e) {
-        if (e.target.classList.contains('remove-test-case')) {
-            const testCases = document.querySelectorAll('.test-case');
-            if (testCases.length > 1) {
-                e.target.closest('.test-case').remove();
-            } else {
-                alert('At least one test case is required.');
+        testCasesContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-test-case')) {
+                const testCases = document.querySelectorAll('.test-case');
+                if (testCases.length > 1) {
+                    e.target.closest('.test-case').remove();
+                } else {
+                    alert('At least one test case is required.');
+                }
             }
-        }
+        });
     });
-});
 </script>
 {% endblock %}

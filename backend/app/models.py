@@ -37,7 +37,7 @@ class Contest(db.Model):
     is_public = db.Column(db.Boolean, default=False)
     problems = db.relationship('Problem', backref='contest', lazy='dynamic')
     participants = db.relationship('User', secondary='contest_participants', lazy='dynamic')
-    
+    participants_folder = db.Column(db.String(256), nullable=True)  # Path to the folder containing participant files
     def is_active(self):
         now = datetime.utcnow()
         return self.start_time <= now <= self.end_time
@@ -68,7 +68,6 @@ class Submission(db.Model):
     status = db.Column(db.String(50))  # 'Pending', 'Accepted', etc.
     execution_time = db.Column(db.Float)  # in seconds
 
-# Association table for many-to-many relationship between contests and participants
 contest_participants = db.Table('contest_participants',
     db.Column('contest_id', db.Integer, db.ForeignKey('contests.id')),
     db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
@@ -85,6 +84,13 @@ class TestCase(db.Model):
 
     problem = db.relationship('Problem', backref=db.backref('test_cases', lazy='dynamic'))
 
+class ParticipantsHistory(db.Model):
+    __tablename__ = 'participants_history'
+
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64))
+    email = db.Column(db.String(120))
+    contest_id = db.Column(db.Integer)
 
 
 @login.user_loader

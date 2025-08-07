@@ -35,8 +35,13 @@
                         <h6 class="mb-1">{{loop.index}}. {{ problem.title }}</h6>
                     </div>
                     <span class="badge bg-primary rounded-pill">
-                        {% set submission_count = current_user.submissions.filter_by(problem_id=problem.id).count() %}
-                        {{ submission_count }} submission{% if submission_count != 1 %}s{% endif %}
+                        {% set is_accepted = current_user.submissions.filter_by(problem_id=problem.id, status='Accepted').count() %}
+                        {% if is_accepted %}
+                            <i class="bi bi-check-circle-fill"></i> Accepted
+                        {% else %}
+                            {% set submission_count = current_user.submissions.filter_by(problem_id=problem.id).count() %}
+                            {{ submission_count }} submission{% if submission_count != 1 %}s{% endif %}
+                        {% endif %}
                     </span>
                 </a>
                 {% endfor %}

@@ -1,4 +1,3 @@
-# backend/config.py
 import os
 from dotenv import load_dotenv
 
@@ -6,8 +5,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, '.env'))
 
 class Config:
-    template_folder='../frontend/templates'  # Add this
-    static_folder='../frontend/static'       # Add this
+    template_folder='../frontend/templates'  
+    static_folder='../frontend/static'       
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'postgresql://olympiad:olympiad@localhost/olympiad'

@@ -1,4 +1,3 @@
-# backend/app/submission/routes.py
 from flask import render_template, redirect, url_for, flash, abort, request, current_app
 from flask_login import login_required, current_user
 from app import db
@@ -46,6 +45,7 @@ def submit(problem_id):
         submission = Submission(
             user_id=current_user.id,
             problem_id=problem.id,
+            contest_id=contest.id,
             code=source_code,
             language=form.language.data,
             status='Pending'
@@ -57,7 +57,7 @@ def submit(problem_id):
         # Start background judging
         Thread(target=judge_submission, args=(submission.id,)).start()
         
-        flash('Solution submitted and is being judged!')
+        flash('Solution submitted and is being judged!', 'info')
         return redirect(url_for('submission.view', submission_id=submission.id))
     
     return render_template('submission/submit.html', form=form, problem=problem, contest=contest)

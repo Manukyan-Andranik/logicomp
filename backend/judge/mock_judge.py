@@ -163,12 +163,10 @@ def judge_submission(submission_id: int):
         
         problem = submission.problem
         test_cases = TestCase.query.filter_by(problem_id=problem.id).all()
-        print(test_cases)
         submission.status = Verdict.ACCEPTED.value
         submission.execution_time = 0
         
         for test_case in test_cases:
-            print(test_case)
             verdict, output, exec_time = run_code(
                 submission.code,
                 submission.language,

@@ -1,4 +1,3 @@
-# backend/app/__init__.py
 import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -48,7 +47,6 @@ def create_app(config_class=Config):
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
 
-    # Add this to your create_app function
     @app.context_processor
     def inject_now():
         return {'now': datetime.utcnow()}

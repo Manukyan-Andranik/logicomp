@@ -1,4 +1,3 @@
-# backend/app/contest/routes.py
 from flask import render_template, redirect, url_for, flash, abort, request, current_app
 from flask_login import login_required, current_user
 from app import db
@@ -7,7 +6,6 @@ from app.models import Contest, Problem, Submission, User
 from datetime import datetime
 
 @bp.route('/')
-@login_required
 def index():
     now = datetime.utcnow()
     
@@ -33,12 +31,12 @@ def index():
 @login_required
 def contest_view(contest_id):
     contest = Contest.query.get_or_404(contest_id)
-    
-    if not contest.is_public and current_user not in contest.participants:
-        # abort(403)
-        flash("This contest is not active", "info")
-        return redirect(request.referrer or '/')
-    
+
+    if not current_user.role == 'admin':
+        if not contest.is_public or current_user not in contest.participants or not contest.is_active():
+            flash("This contest is not active", "danger")
+            return redirect(request.referrer or '/')
+        
     problems = contest.problems.order_by(Problem.id.asc()).all()
     return render_template('contest/view.html', contest=contest, problems=problems)
 
@@ -72,7 +70,6 @@ def leaderboard(contest_id):
     if not contest.is_public and current_user not in contest.participants:
         abort(403)
 
-    # Get all participants and problems (ordered by problem ID)
     participants = contest.participants.all()
     problems = contest.problems.order_by(Problem.id.asc()).all()
 
@@ -82,39 +79,51 @@ def leaderboard(contest_id):
         user_data = {
             'user': user,
             'problems': {},
+            'timestamp': None,
             'total_score': 0,
-            'total_time': 0
+            'total_time': 0,
+            'submissions_count': 0
         }
 
-        for problem in problems:
-            # Get best accepted submission: first by timestamp, then execution time
-            best_submission = Submission.query.filter_by(
-                user_id=user.id,
-                problem_id=problem.id,
-                status='Accepted'
-            ).order_by(
-                Submission.execution_time.asc(),
-                Submission.timestamp.asc()
-            ).first()
+        latest_timestamp = None
 
-            if best_submission:
+        for problem in problems:
+            submissions = Submission.query.filter_by(
+                user_id=user.id,
+                problem_id=problem.id
+            ).order_by(Submission.timestamp.asc()).all()
+
+            submission_count = len(submissions)
+            user_data['submissions_count'] += submission_count
+
+            accepted_submission = next((s for s in submissions if s.status == 'Accepted'), None)
+
+            if accepted_submission:
                 user_data['problems'][problem.id] = {
-                    'time': best_submission.execution_time,
-                    'attempts': Submission.query.filter_by(
-                        user_id=user.id,
-                        problem_id=problem.id
-                    ).count()
+                    'is_accepted': True,
+                    'time': accepted_submission.execution_time,
+                    'attempts': submission_count,
+                    'status': accepted_submission.status
                 }
                 user_data['total_score'] += 1
-                user_data['timestamp'] = best_submission.timestamp
-                user_data['total_time'] += best_submission.execution_time
+                user_data['total_time'] += accepted_submission.execution_time
+
+                if not latest_timestamp or accepted_submission.timestamp > latest_timestamp:
+                    latest_timestamp = accepted_submission.timestamp
+            elif submission_count > 0:
+                user_data['problems'][problem.id] = {
+                    'is_accepted': False,
+                    'attempts': submission_count
+                }
             else:
+                # No submission
                 user_data['problems'][problem.id] = None
 
+        user_data['timestamp'] = latest_timestamp
         leaderboard_data.append(user_data)
 
-    # Sort leaderboard: highest score first, then lowest total_time
-    leaderboard_data.sort(key=lambda x: ( -x['total_score'], x["timestamp"], x['total_time']))
+    # Sort: highest score first, then earliest timestamp, then lowest total_time
+    leaderboard_data.sort(key=lambda x: (-x['total_score'], x['timestamp'] or datetime.max, x['total_time']))
 
     return render_template(
         'contest/leaderboard.html',

@@ -28,9 +28,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('contest.index') }}">Contests</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.about') }}">About</a>
+                    </li>
                     {% if current_user.is_authenticated and current_user.role == 'admin' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a>
+                        <a class="nav-link" href="{{ url_for('admin.index') }}">Dashboard</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -49,9 +52,6 @@
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
                     </li>
                     {% endif %}
                 </ul>

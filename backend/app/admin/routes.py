@@ -1,9 +1,11 @@
-# backend/app/admin/routes.py
 import os
+import shutil
 import json
+from pathlib import Path
 from datetime import datetime
+
 from flask_login import login_required, current_user
-from flask import render_template, redirect, url_for, flash, request, current_app, abort
+from flask import render_template, redirect, url_for, flash, request, current_app, abort, jsonify
 
 from app import db, mail
 from app.admin import bp
@@ -15,15 +17,17 @@ from app.admin.forms import (
     TestCaseForm,
     EditProblemForm
 )
-from app.models import User, Contest, Problem, Submission, TestCase
+from app.models import User, Contest, Problem, Submission, TestCase, ParticipantsHistory, contest_participants
 from app.email import send_credentials_email
 from app.utils import generate_leaderboard_pdf, generate_leaderboard_excel
+
+
 
 @bp.route('/')
 @login_required
 def index():
     if not current_user.role == 'admin':
-        flash('You do not have permission to access this page.')
+        flash('You do not have permission to access this page.', 'danger')
         return redirect(url_for('main.index'))
     
     page = request.args.get('page', 1, type=int)
@@ -52,24 +56,49 @@ def index():
 @bp.route('/create_contest', methods=['GET', 'POST'])
 @login_required
 def create_contest():
-    if not current_user.role == 'admin':
+    if current_user.role != 'admin':
         abort(403)
     
     form = CreateContestForm()
     if form.validate_on_submit():
-        print("created")
-        contest = Contest(
-            title=form.title.data,
-            description=form.description.data,
-            start_time=form.start_time.data,
-            end_time=form.end_time.data,
-            is_public=form.is_public.data
-        )
-        db.session.add(contest)
-        db.session.commit()
-        flash('Contest created successfully!')
-        return redirect(url_for('admin.index'))
-    flash(f"Cant create contest: {form.errors}", "danger")
+        try:
+            # Step 1: Temporarily create the contest to get an ID
+            temp_contest = Contest(
+                title=form.title.data,
+                description=form.description.data,
+                start_time=form.start_time.data,
+                end_time=form.end_time.data,
+                is_public=form.is_public.data
+            )
+            db.session.add(temp_contest)
+            db.session.flush()  # Get ID without committing yet
+
+            # Step 2: Prepare folder and file path
+            root_dir = os.path.dirname(os.path.abspath(__file__))
+            participants_folder = Path(os.path.join(root_dir, f'../static/contest_{temp_contest.id}')).resolve()
+            participants_file_path = participants_folder / 'participants.json'
+
+            # Create folder and file
+            participants_folder.mkdir(parents=True, exist_ok=True)
+            if not participants_file_path.exists() or participants_file_path.stat().st_size == 0:
+                with open(participants_file_path, 'w', encoding='utf-8') as f:
+                    json.dump([], f, indent=2)
+            
+
+            # Step 3: Save the folder path in the contest
+            temp_contest.participants_folder = str(participants_folder)
+            db.session.commit()
+
+            flash('Contest created successfully!', 'success')
+            return redirect(url_for('admin.index'))
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Error creating contest: {str(e)}", "danger")
+
+    elif form.errors:
+        flash(f"Cannot create contest: {form.errors}", "danger")
+
     return render_template('admin/create_contest.html', form=form)
 
 @bp.route('/contest/<int:contest_id>')
@@ -96,13 +125,66 @@ def edit_contest(contest_id):
     
     return render_template('admin/edit_contest.html', form=form, contest=contest)
 
+
+@bp.route('/contest/<int:contest_id>/delete', methods=['GET', 'POST'])
+@login_required
+def delete_contest(contest_id):
+    contest = Contest.query.get_or_404(contest_id)
+
+    if not current_user.role == 'admin':
+        return redirect(url_for('admin.contest_details', contest_id=contest.id))
+
+    # Delete folder if exists
+    participants_folder = contest.participants_folder
+    if participants_folder and os.path.exists(participants_folder):
+        shutil.rmtree(participants_folder)
+
+    try:
+        # Process each participant
+        participants = contest.participants.all()
+        for participant in participants:
+            # Submissions by this participant in this contest
+            submissions = Submission.query.filter_by(user_id=participant.id, contest_id=contest.id).all()
+
+            # Save to history
+            history = ParticipantsHistory(
+                username=participant.username,
+                email=participant.email,
+                contest_id=contest.id
+            )
+            db.session.add(history)
+
+            # Delete all their submissions in this contest
+            for sub in submissions:
+                db.session.delete(sub)
+
+            # Remove from association table
+            contest.participants.remove(participant)
+
+            # Check if participant is in any other contest
+            other_contests = db.session.query(contest_participants).filter(
+                contest_participants.c.user_id == participant.id
+            ).count()
+
+            if other_contests == 0:
+                db.session.delete(participant)
+
+        # Delete contest (cascades will delete problems, test_cases, etc.)
+        db.session.delete(contest)
+        db.session.commit()
+
+        flash('Contest and related data deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting contest: {str(e)}', 'danger')
+
+    return redirect(url_for('admin.index'))
+
 @bp.route('/contest/<int:contest_id>/add_problem', methods=['GET', 'POST'])
 @login_required
 def add_problem(contest_id):
     form = CreateProblemForm()
     contest = Contest.query.get_or_404(contest_id)
-    print(form.expected_input.data,
-    form.expected_output.data)
     if form.validate_on_submit():
         # Create Problem (optional expected_input/output — legacy fallback)
         problem = Problem(
@@ -147,7 +229,6 @@ def add_problem(contest_id):
 
 
     return render_template("admin/add_problem.html", form=form, contest=contest)
-
 
 @bp.route('/problem/<int:problem_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -210,82 +291,79 @@ def edit_problem(problem_id):
 @login_required
 def generate_credentials(contest_id):
     contest = Contest.query.get_or_404(contest_id)
-    form = GenerateCredentialsForm()
-    
-    if form.validate_on_submit():
-        participants = []
-        
-        # If JSON file uploaded, parse it and generate credentials for those
 
-        if form.json_file.data:
-            try:
-                data = form.json_file.data.read().decode('utf-8')
-                json_data = json.loads(data)
-                
-                for idx, participant in enumerate(json_data):
-                    full_name = participant.get('full_name')
-                    email = participant.get('email')
-                    if not full_name or not email:
-                        flash(f"Skipping invalid entry at index {idx}: missing full_name or email.", "warning")
-                        continue
-                    
-                    username = email.split('@')[0]  # Or build username differently if needed
-                    password = User.generate_random_password()
-                    
-                    user = User.query.filter_by(username=username).first()
-                    if not user:
-                        user = User(username=username, email=email, role='participant')
-                        user.set_password(password)
-                        print(user.check_password(password))  # Debugging line
-                        print(f"Creating new user: {username}, {email}, {full_name}")
-                        db.session.add(user)
-                    
-                    if user not in contest.participants:
-                        contest.participants.append(user)
-                    
-                    participants.append({'username': username, 'password': password, 'email': email, 'full_name': full_name})
-                
-                db.session.commit()
-                
-                # Send emails
-                for participant in participants:
-                    print(f"Sending credentials to {participant['email']}",
-                          f"Username: {participant['username']},",
-                          f"Password: {participant['password']}")
-                    
-                    # TODO: Send email with credentials
-                    # send_credentials_email(
-                    #     participant['email'],
-                    #     participant['username'],
-                    #     participant['password'],
-                    #     contest
-                    # )
-                
-                flash(f'Generated credentials for {len(participants)} participants from JSON file.', 'success')
-                return redirect(url_for('admin.contest_details', contest_id=contest.id))
+    participants_file = f"{contest.participants_folder}/participants.json" 
+
+    if not os.path.exists(participants_file):    
+        flash("The contest does not have any participants yet.", "info")
+        return render_template('admin/contest_details.html', contest=contest, datetime=datetime)
+    with open(participants_file, 'r', encoding='utf-8') as f:
+        json_data = json.load(f)    
+    if not json_data:
+        flash("The contest does not have any participants yet.", "info")
+        return render_template('admin/contest_details.html', contest=contest, datetime=datetime)
+
+    participants = []
+    try:
+        for idx, participant in enumerate(json_data):
+            username = participant.get('username')
+            email = participant.get('email')
+            if not username or not email:
+                flash(f"Skipping invalid entry at index {idx}: missing username or email.", "warning")
+                continue
             
-            except Exception as e:
-                flash(f"Failed to process JSON file: {str(e)}", 'danger')
-                return render_template('admin/generate_credentials.html', form=form, contest=contest)
+            password = User.generate_random_password()
+            
+            user = User.query.filter_by(username=username).first()
+            if not user:
+                user = User(username=username, email=email, role='participant')
+                user.set_password(password)
+                db.session.add(user)
+            
+            if user not in contest.participants:
+                contest.participants.append(user)
+            
+            participants.append({'username': username, 'password': password, 'email': email, 'username': username})
         
-        else:
-            flash("Please provide either a JSON file.", "warning")
-
-    return render_template('admin/generate_credentials.html', form=form, contest=contest)
+        db.session.commit()
+        
+        # Send emails
+        for participant in participants:
+            print(f"Sending credentials to {participant['email']}",
+                    f"Username: {participant['username']},",
+                    f"Password: {participant['password']}")
+            
+            # TODO: Send email with credentials
+            # send_credentials_email(
+            #     participant['email'],
+            #     participant['username'],
+            #     participant['password'],
+            #     contest
+            # )
+        
+        flash(f'Generated credentials for {len(participants)} participants from JSON file.', 'success')
+        return redirect(url_for('admin.contest_details', contest_id=contest.id))
+        
+    except Exception as e:
+        flash(f"Failed to process JSON file: {str(e)}", 'danger')
+        return render_template('admin/contest_details.html', contest=contest, datetime=datetime)
 
 @bp.route('/submissions')
 @login_required
 def view_submissions():
     page = request.args.get('page', 1, type=int)
-    contest_id = request.args.get('contest_id', type=int) 
+    contest_id = request.args.get('contest_id', type=int)
     contest = Contest.query.get_or_404(contest_id)
-    submissions = Submission.query.filter_by(contest_id=contest_id).order_by(Submission.timestamp.desc()).paginate(
-        page=page, per_page=current_app.config['SUBMISSIONS_PER_PAGE'], error_out=False)
-    print(contest.id)
-    return render_template('admin/submissions.html', submissions=submissions, contest=contest)
 
+    submissions_pagination = Submission.query.filter_by(contest_id=contest_id)\
+        .order_by(Submission.timestamp.desc())\
+        .paginate(page=page, per_page=current_app.config['SUBMISSIONS_PER_PAGE'], error_out=False)
 
-
+    return render_template(
+        'admin/submissions.html',
+        submissions=submissions_pagination,  
+        contest=contest
+    )
 
 
 @bp.route('/contest/<int:contest_id>/export_reports', methods=['GET'])
@@ -340,15 +418,18 @@ def export_reports(contest_id):
     leaderboard_data.sort(key=lambda x: (-x['total_score'], x['total_time']))
 
     # Output folder
-    reports_dir = os.path.join(current_app.root_path, 'static', 'reports')
+    reports_dir = os.path.join(current_app.root_path, 'static')
     os.makedirs(reports_dir, exist_ok=True)
 
     # Generate PDF and Excel
-    pdf_path = os.path.join(reports_dir, f"contest_{contest.id}_leaderboard.pdf")
-    excel_path = os.path.join(reports_dir, f"contest_{contest.id}_leaderboard.xlsx")
+    pdf_path = os.path.join(reports_dir, f"contest_{contest.id}/leaderboard.pdf")
+    excel_path = os.path.join(reports_dir, f"contest_{contest.id}/leaderboard.xlsx")
 
     generate_leaderboard_pdf(pdf_path, contest, problems, leaderboard_data)
     generate_leaderboard_excel(excel_path, contest, problems, leaderboard_data)
 
     flash("PDF and Excel reports generated successfully.", "success")
     return redirect(url_for('admin.contest_details', contest_id=contest.id))
+
+
+
