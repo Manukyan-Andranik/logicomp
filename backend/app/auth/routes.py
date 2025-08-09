@@ -54,6 +54,10 @@ def register():
             participants = []
 
         # Add new participant
+        if any(p['username'] == form.username.data for p in participants):
+            flash('Username already exists. Please choose a different username.', 'error')
+            return redirect(url_for('auth.register', contest_id=contest_id))
+        
         participants.append({
             'username': form.username.data,
             'email': form.email.data,

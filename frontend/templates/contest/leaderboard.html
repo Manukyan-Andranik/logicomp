@@ -1,74 +1,85 @@
 {% extends "base.html" %}
 
-{% block title %}{{ contest.title }} - Leaderboard{% endblock %}
+{% block title %}<span data-translate-key="title_leaderboard">Leaderboard</span> - {{ contest.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .leaderboard-table th, .leaderboard-table td {
+        vertical-align: middle;
+    }
+    .accepted-cell { background-color: rgba(25, 135, 84, 0.3); }
+    .rejected-cell { background-color: rgba(220, 53, 69, 0.2); }
+</style>
+{% endblock %}
+
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-warning fw-bold"><i class="bi bi-trophy-fill me-2"></i><span data-translate-key="header_leaderboard">Leaderboard</span></h1>
+        <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-warning">
+            <i class="bi bi-arrow-left"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+        </a>
+    </div>
 
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>{{ contest.title }} - Leaderboard</h2>
-    {% if current_user.role == 'admin' %}
-    <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
-      Back to Contest
-    </a>
-    {% else %}
-    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-primary">Back to Contest</a>
-    {% endif %}
-  </div>
-
-  <div class="table-responsive">
-    <table class="table table-bordered leaderboard-table">
-      <thead class="thead-dark text-center">
-        <tr>
-          <th>#</th>
-          <th>Username</th>
-          {% for problem in problems %}
-            <th>Problem {{ loop.index }}</th>
-          {% endfor %}
-          <th>Total Score</th>
-          <th>Total Time</th>
-          <th>Last Submission</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for entry in leaderboard %}
-        <tr>
-          <td class="text-center font-weight-bold">{{ loop.index }}</td>
-          <td class="text-center">{{ entry.user.username }}</td>
-
-          {% for problem in problems %}
-            {% set result = entry.problems.get(problem.id) %}
-            {% if result is none %}
-              <td class="text-center leaderboard-cell pending">
-                <span class="text-muted">–</span>
-              </td>
-            {% elif result.is_accepted %}
-              <td class="text-center leaderboard-cell accepted">
-                <span data-toggle="tooltip" title="{{ result.attempts }} attempt(s)">
-                  ✓ {{ "%.2f"|format(result.time) }}s
-                </span>
-              </td>
-            {% else %}
-              <td class="text-center leaderboard-cell rejected">
-                <span class="text-muted">✗ {{ result.attempts }}</span>
-              </td>
-            {% endif %}
-          {% endfor %}
-
-          <td class="text-center font-weight-bold">{{ entry.total_score }}</td>
-          <td class="text-center">{{ "%.2f"|format(entry.total_time) }}s</td>
-          <td class="text-center">
-            {% if entry.timestamp %}
-              {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}
-            {% else %}
-              N/A
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+    <div class="card bg-dark text-light border-secondary">
+        <div class="table-responsive">
+            <table class="table table-dark table-bordered mb-0 leaderboard-table">
+                <thead class="text-center">
+                    <tr>
+                        <th class="text-warning">#</th>
+                        <th class="text-warning" data-translate-key="table_participant">Participant</th>
+                        <th class="text-warning" data-translate-key="table_solved">Solved</th>
+                        <th class="text-warning" data-translate-key="table_penalty">Penalty</th>
+                        {% for problem in problems %}
+                            <th class="text-warning">{{ problem.title[:1] }}</th> {# Show first letter of problem title #}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    {% for entry in leaderboard_data %}
+                    <tr>
+                        <td class="fw-bold">{{ loop.index }}</td>
+                        <td>{{ entry.user.username }}</td>
+                        <td class="fw-bold">{{ entry.total_score }}</td>
+                        <td class="text-muted small">{{ "%.0f"|format(entry.total_time) }}</td>
+                        
+                        {% for problem in problems %}
+                            {% set result = entry.problems.get(problem.id) %}
+                            {% if result and result.is_accepted %}
+                                <td class="accepted-cell">
+                                    <div>+{{ result.attempts }}</div>
+                                    <div class="small text-muted">{{ "%.0f"|format(result.time) }}</div>
+                                </td>
+                            {% else %}
+                                {% set attempts = entry.problems.get(problem.id, {}).get('attempts', 0) %}
+                                {% if attempts > 0 %}
+                                    <td class="rejected-cell">-{{ attempts }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const pageTranslations = {
+        en: {"title_leaderboard": "Leaderboard", "header_leaderboard": "Leaderboard", "btn_back_to_contest": "Back to Contest", "table_participant": "Participant", "table_solved": "Solved", "table_penalty": "Penalty"},
+        hy: {"title_leaderboard": "Առաջատարներ", "header_leaderboard": "Առաջատարներ", "btn_back_to_contest": "Վերադառնալ մրցույթ", "table_participant": "Մասնակից", "table_solved": "Լուծված", "table_penalty": "Տուգանային"},
+        ru: {"title_leaderboard": "Таблица лидеров", "header_leaderboard": "Таблица лидеров", "btn_back_to_contest": "Назад к конкурсу", "table_participant": "Участник", "table_solved": "Решено", "table_penalty": "Штраф"}
+    };
+    Object.keys(pageTranslations).forEach(lang => { if(window.translations[lang]) Object.assign(window.translations[lang], pageTranslations[lang]); });
+    if (typeof changeLanguage === 'function') { changeLanguage(localStorage.getItem('language') || 'en'); }
+});
+</script>
 {% endblock %}

@@ -8,9 +8,6 @@ from judge.mock_judge import judge_submission
 from datetime import datetime
 from threading import Thread
 
-
-
-
 def process_submission(app, submission):
     with app.app_context():
         problem = Problem.query.get(submission.problem_id)
