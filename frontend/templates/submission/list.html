@@ -77,19 +77,19 @@
     <nav aria-label="Submissions pagination" class="mt-4">
         <ul class="pagination justify-content-center">
             <li class="page-item {% if not submissions.has_prev %}disabled{% endif %}">
-                <a class="page-link" href="{{ url_for('submission.view_submissions', page=submissions.prev_num, contest_id=contest.id if contest else None) }}">Previous</a>
+                <a class="page-link" href="{{ url_for('submission.my_submissions', page=submissions.prev_num, contest_id=contest.id if contest else None) }}">Previous</a>
             </li>
             {% for page_num in submissions.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                 {% if page_num %}
                     <li class="page-item {% if submissions.page == page_num %}active{% endif %}">
-                        <a class="page-link" href="{{ url_for('submission.view_submissions', page=page_num, contest_id=contest.id if contest else None) }}">{{ page_num }}</a>
+                        <a class="page-link" href="{{ url_for('submission.my_submissions', page=page_num, contest_id=contest.id if contest else None) }}">{{ page_num }}</a>
                     </li>
                 {% else %}
                     <li class="page-item disabled"><span class="page-link">…</span></li>
                 {% endif %}
             {% endfor %}
             <li class="page-item {% if not submissions.has_next %}disabled{% endif %}">
-                <a class="page-link" href="{{ url_for('submission.view_submissions', page=submissions.next_num, contest_id=contest.id if contest else None) }}">Next</a>
+                <a class="page-link" href="{{ url_for('submission.my_submissions', page=submissions.next_num, contest_id=contest.id if contest else None) }}">Next</a>
             </li>
         </ul>
     </nav>
