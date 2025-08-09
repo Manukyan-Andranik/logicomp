@@ -12,4 +12,21 @@ class LoginForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField(
+        'Confirm Password', 
+        validators=[DataRequired(), EqualTo('password', message='Passwords must match.')]
+    )
     submit = SubmitField('Register')
+
+    # Ստուգում է, թե արդյոք օգտանունն արդեն զբաղված է
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user is not None:
+            raise ValidationError('This username is already taken. Please choose a different one.')
+
+    # Ստուգում է, թե արդյոք էլ-փոստն արդեն զբաղված է
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is not None:
+            raise ValidationError('This email address is already registered.')

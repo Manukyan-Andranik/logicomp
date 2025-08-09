@@ -3,82 +3,81 @@
 {% block title %}Submit Solution{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h1>{{ title }}</h1>
-  {% if contest %}
-  <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
-     class="btn btn-outline-secondary">Back to Contest</a>
-  {% endif %}
-</div>
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card">
-      <div class="card-header">
-        <h3>Submit Solution for {{ problem.title }}</h3>
-      </div>
-      <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
-          {{ form.hidden_tag() }}
-          
-          <div class="form-group mb-3">
-            {{ form.language.label }}
-            {{ form.language(class="form-control") }}
-          </div>
-          
-          <div class="form-group mb-3">
-            {{ form.code.label }}
-            {{ form.code(class="form-control", rows=15) }}
-            <small class="text-muted">Or upload a file below</small>
-          </div>
-          
-          <div class="form-group mb-3">
-            {{ form.source_file.label }}
-            {{ form.source_file(class="form-control") }}
-          </div>
-          
-          <div class="d-flex justify-content-between">
-            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" 
-               class="btn btn-secondary">
-              Cancel
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+        <h1 class="h3"><i class="bi bi-code-slash me-2"></i>{{ title }}</h1>
+        {% if contest %}
+            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back to Contest
             </a>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
+        {% endif %}
     </div>
-  </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-light border-bottom-0 pt-3">
+                    <h5 class="mb-0">Submit Solution for: <span class="fw-bold">{{ problem.title }}</span></h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.language.id }}" class="form-label fw-bold">Programming Language</label>
+                            {{ form.language(class="form-select form-select-lg") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.code.id }}" class="form-label fw-bold">Source Code</label>
+                            {{ form.code(class="form-control", rows=18, style="font-family: 'Courier New', Courier, monospace; font-size: 14px;") }}
+                            <small class="text-muted mt-1 d-block">Or upload a source file below.</small>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.source_file.id }}" class="form-label fw-bold">Upload File</label>
+                            {{ form.source_file(class="form-control") }}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle me-1"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle-fill me-1"></i> Submit Solution
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const codeTextarea = document.querySelector('textarea[name="code"]');
-  const languageSelect = document.querySelector('select[name="language"]');
+    const codeTextarea = document.querySelector('textarea[name="code"]');
+    const languageSelect = document.querySelector('select[name="language"]');
 
-  const placeholders = {
-    python: `def res(a, b):\n    return a + b`,
-    cpp: `#include <iostream>\nusing namespace std;\n\nint res(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << res(a, b) << endl;\n    return 0;\n}`,
-    javascript: `function res(a, b) {\nreturn a + b;\n}\nconst input = require('fs').readFileSync('/dev/stdin', 'utf8');\nconst [a, b] = input.trim().split(" ").map(Number);\nconsole.log(res(a, b));\n`,
-    java: `import java.util.*;\n\npublic class Solution {\n    public static int res(int a, int b) {\n        return a + b;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(res(a, b));\n    }\n}`
-  };
+    if (!codeTextarea || !languageSelect) return;
 
-  if (codeTextarea && languageSelect) {
-    codeTextarea.style.fontFamily = 'monospace';
-    codeTextarea.style.fontSize = '14px';
+    const placeholders = {
+        python: `# Your Python code here...\ndef solve():\n    # Read input and solve the problem\n    pass\nsolve()`,
+        cpp: `#include <iostream>\n\n// Your C++ code here...\nvoid solve() {\n    // Read input and solve the problem\n}\n\nint main() {\n    std::ios_base::sync_with_stdio(false);\n    std::cin.tie(NULL);\n    solve();\n    return 0;\n}`,
+        javascript: `// Your JavaScript code here...\nfunction solve() {\n    // Read input and solve the problem\n}\nsolve();`,
+        java: `import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    // Your Java code here...\n    public static void solve() {\n        // Read input and solve the problem\n    }\n\n    public static void main(String[] args) {\n        solve();\n    }\n}`
+    };
 
     function updatePlaceholder() {
-      const lang = languageSelect.value.toLowerCase();
-      const key = lang.includes('python') ? 'python' :
-                  lang.includes('cpp') || lang.includes('c++') ? 'cpp' :
-                  lang.includes('javascript') || lang.includes('js') ? 'javascript' :
-                  lang.includes('java') ? 'java' : '';
-      codeTextarea.placeholder = placeholders[key] || '';
+        const lang = languageSelect.value.toLowerCase();
+        const key = Object.keys(placeholders).find(k => lang.includes(k));
+        codeTextarea.placeholder = placeholders[key] || 'Write your code here...';
     }
 
-    updatePlaceholder(); // set initial placeholder
+    updatePlaceholder();
     languageSelect.addEventListener('change', updatePlaceholder);
-  }
 });
 </script>
 {% endblock %}

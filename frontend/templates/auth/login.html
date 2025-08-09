@@ -1,37 +1,116 @@
 {% extends "base.html" %}
-
-{% block title %}Login{% endblock %}
+{% block title %}<span data-translate-key="page_login">Login</span>{% endblock %}
+{% block extra_css %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<style>
+    body { overflow-x: hidden; overflow-y: auto; }
+    main.auth-main { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - var(--navbar-height)); padding: 2rem 0 !important; background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; }
+    .auth-card { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(15px) saturate(180%); border: 1px solid var(--border-color); border-radius: 1rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+    .auth-card .card-title { color: white; font-weight: 700; }
+    .form-control-modern { background: transparent !important; border: none !important; border-bottom: 2px solid var(--border-color) !important; border-radius: 0 !important; color: black !important; padding: .5rem 2.5rem .5rem 0 !important; box-shadow: none !important; transition: border-color 0.3s ease; }
+    .form-control-modern::placeholder { color: var(--text-muted); opacity: 1; }
+    .form-control-modern:focus { border-bottom-color: var(--primary) !important; }
+    .form-label { color: var(--text-muted); }
+    .password-wrapper { position: relative; }
+    .password-toggle { position: absolute; top: 50%; right: 5px; transform: translateY(-50%); color: var(--text-muted); cursor: pointer; transition: color 0.2s ease; }
+    .password-toggle:hover { color: var(--primary); }
+    .btn-auth { background: var(--primary); border: none; color: #000; font-weight: bold; padding: 12px 0; border-radius: 50px; transition: all 0.3s ease; }
+    .btn-auth:hover { background: var(--primary-dark); color: #000; box-shadow: 0 0 15px var(--primary); }
+    .extra-links span { color: var(--text-muted) !important; }
+    .extra-links a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
+    .extra-links a:hover { text-decoration: underline; }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h2 class="card-title text-center mb-4">Sign In</h2>
-                <form method="POST" action="{{ url_for('auth.login') }}">
-                    {{ form.hidden_tag() }}
-                    
-                    <div class="mb-3">
-                        {{ form.username.label(class="form-label") }}
-                        {{ form.username(class="form-control") }}
+<div class="auth-main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5 col-xl-4" data-aos="fade-up">
+                <div class="card auth-card">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-box-arrow-in-right fs-1" style="color: var(--primary);"></i>
+                            <h2 class="card-title mt-2" data-translate-key="login_title">Sign In</h2>
+                        </div>
+                        <form method="POST" action="{{ url_for('auth.login') }}">
+                            {{ form.hidden_tag() }}
+                            <div class="mb-4">
+                                {{ form.username.label(class="form-label", **{'data-translate-key': 'username_label'}) }}
+                                {{ form.username(class="form-control form-control-modern") }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.password.label(class="form-label", **{'data-translate-key': 'password_label'}) }}
+                                <div class="password-wrapper">
+                                    {{ form.password(class="form-control form-control-modern") }}
+                                    <i class="bi bi-eye-slash-fill password-toggle"></i>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    {{ form.remember_me(class="form-check-input") }}
+                                    {{ form.remember_me.label(class="form-check-label", **{'data-translate-key': 'remember_me_label'}) }}
+                                </div>
+                                <div class="extra-links">
+                                    <a href="#" data-translate-key="forgot_password">Forgot Password?</a>
+                                </div>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-auth"><span data-translate-key="login_button">Sign In</span></button>
+                            </div>
+                            <hr style="background-color: var(--border-color);" class="my-4">
+                            <div class="text-center extra-links">
+                                <span data-translate-key="no_account">Don't have an account?</span>
+                                <a href="{{ url_for('auth.register') }}" data-translate-key="sign_up">Sign Up</a>
+                            </div>
+                        </form>
                     </div>
-                    
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
-                    </div>
-                    
-                    <div class="mb-3 form-check">
-                        {{ form.remember_me(class="form-check-input") }}
-                        {{ form.remember_me.label(class="form-check-label") }}
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Sign In</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({ duration: 800, offset: 50, once: true });
+    
+    // ** ՈՒՂՂՎԱԾ ԵՎ ԱՇԽԱՏՈՂ ՍԿՐԻՊՏ "ԱՉՔԻ" ՀԱՄԱՐ **
+    document.querySelectorAll('.password-toggle').forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            // Գտնում ենք input-ը, որը գտնվում է նույն მშობლის (.password-wrapper) մեջ
+            const passwordField = this.previousElementSibling; 
+            if(passwordField) {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                this.classList.toggle('bi-eye-slash-fill');
+                this.classList.toggle('bi-eye-fill');
+            }
+        });
+    });
+
+    // Թարգմանություններ
+    const loginTranslations = {
+        'en': { 'page_login': 'Login', 'login_title': 'Sign In', 'username_label': 'Username', 'password_label': 'Password', 'remember_me_label': 'Remember Me', 'forgot_password': 'Forgot Password?', 'login_button': 'Sign In', 'no_account': "Don't have an account?", 'sign_up': 'Sign Up', 'username_placeholder': 'Enter your username', 'password_placeholder': 'Enter your password' },
+        'hy': { 'page_login': 'Մուտք', 'login_title': 'Մուտք Գործել', 'username_label': 'Օգտանուն', 'password_label': 'Գաղտնաբառ', 'remember_me_label': 'Հիշել ինձ', 'forgot_password': 'Մոռացե՞լ եք գաղտնաբառը', 'login_button': 'Մուտք Գործել', 'no_account': 'Չունե՞ք հաշիվ', 'sign_up': 'Գրանցվել', 'username_placeholder': 'Մուտքագրեք ձեր օգտանունը', 'password_placeholder': 'Մուտքագրեք ձեր գաղտնաբառը' },
+        'ru': { 'page_login': 'Вход', 'login_title': 'Войти', 'username_label': 'Имя пользователя', 'password_label': 'Пароль', 'remember_me_label': 'Запомнить меня', 'forgot_password': 'Забыли пароль?', 'login_button': 'Войти', 'no_account': 'Нет аккаунта?', 'sign_up': 'Зарегистрироваться', 'username_placeholder': 'Введите имя пользователя', 'password_placeholder': 'Введите ваш пароль' }
+    };
+    Object.keys(loginTranslations).forEach(lang => { Object.assign(window.translations[lang], loginTranslations[lang]); });
+    
+    // Էջի թարմացման ֆունկցիա
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en'; const langDict = window.translations[lang] || window.translations['en'];
+        document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.dataset.translateKey; if(langDict[key]) el.textContent = langDict[key]; });
+        // Թարգմանում ենք placeholder-ները
+        const userInput = document.querySelector('input[name="username"]'); const passInput = document.querySelector('input[name="password"]');
+        if(userInput) userInput.placeholder = langDict.username_placeholder || '';
+        if(passInput) passInput.placeholder = langDict.password_placeholder || '';
+    };
+    updatePageText(); window.addEventListener('languageChanged', updatePageText);
+});
+</script>
 {% endblock %}
