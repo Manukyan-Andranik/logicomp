@@ -10,7 +10,7 @@
             <p class="text-muted" data-translate-key="text_time_left">Time Left: <span id="countdown"></span></p>
         </div>
         <div>
-            <a href="{{ url_for('contest.my_submissions', contest_id=contest.id) }}" class="btn btn-sm btn-outline-light me-2"><i class="bi bi-card-checklist"></i> <span data-translate-key="btn_my_submissions">My Submissions</span></a>
+            <a href="{{ url_for('submission.my_submissions', contest_id=contest.id) }}" class="btn btn-sm btn-outline-light me-2"><i class="bi bi-card-checklist"></i> <span data-translate-key="btn_my_submissions">My Submissions</span></a>
             <a href="{{ url_for('contest.leaderboard', contest_id=contest.id) }}" class="btn btn-outline-warning"><i class="bi bi-trophy-fill me-2"></i><span data-translate-key="btn_leaderboard">Leaderboard</span></a>
         </div>
     </div>
@@ -21,7 +21,7 @@
         </div>
         <div class="list-group list-group-flush">
             {% for problem in problems %}
-            <a href="{{ url_for('contest.problem', contest_id=contest.id, problem_id=problem.id) }}" class="list-group-item list-group-item-action bg-dark text-light border-secondary">
+            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="list-group-item list-group-item-action bg-dark text-light border-secondary">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1 text-warning">{{ loop.index }}. {{ problem.title }}</h5>
                     {% set p_status = problem_statuses.get(problem.id) %}
