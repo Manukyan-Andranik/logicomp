@@ -1,80 +1,166 @@
 {% extends "base.html" %}
 
-{% block title %}Welcome{% endblock %}
+{% block title %}<span data-translate-key="page_welcome">Welcome</span>{% endblock %}
+
+{% block extra_css %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<!-- Welcome էջին հատուկ "մուգ և դեղին" ոճեր -->
+<style>
+    main { padding: 0 !important; }
+    
+    .hero-section {
+        padding: 6rem 0;
+        background: linear-gradient(45deg, #121212 0%, #000000 100%);
+        color: white;
+    }
+    .glowing-icon {
+        font-size: 4rem;
+        color: var(--primary); /* Դեղին */
+        text-shadow: 0 0 15px var(--primary), 0 0 25px var(--primary-dark);
+        animation: glowing-icon 2.5s ease-in-out infinite alternate;
+    }
+    @keyframes glowing-icon {
+        from { opacity: 0.8; transform: scale(1); } to { opacity: 1; transform: scale(1.05); text-shadow: 0 0 25px var(--primary), 0 0 40px var(--primary-dark); }
+    }
+    .hero-section .display-3 { text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .hero-section .btn-primary { 
+        background-color: var(--primary); border: none; color: #000; font-weight: bold;
+        padding: 12px 30px; border-radius: 50px;
+    }
+
+    .section-title h2 { font-weight: 700; color: white; }
+    .section-title p { color: var(--text-muted); }
+
+    .step-card {
+        background: #1a1a1a;
+        border: 1px solid var(--border-color);
+        padding: 2rem; border-radius: 1rem; transition: all 0.3s ease;
+    }
+    .step-card:hover { transform: translateY(-10px); background: #212121; }
+    .step-icon { font-size: 3rem; color: var(--primary); }
+
+    /* Մրցույթների քարտերի դիզայն */
+    .contest-card {
+        background: #212121; border: 1px solid var(--border-color);
+        border-radius: 1rem !important; overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .contest-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-color: var(--primary); }
+    .contest-card .card-header { background: #1a1a1a; border-bottom: 1px solid var(--border-color) !important; color: var(--primary) !important; font-weight: bold; }
+    .contest-card .card-body { color: var(--text-light); }
+    .contest-card .btn-outline-secondary { color: var(--text-muted); border-color: var(--text-muted); }
+    .contest-card .btn-outline-secondary:hover { color: #000; background: var(--primary); border-color: var(--primary); }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-5 fw-bold">Welcome to LogiComp</h1>
-            <p class="col-md-8 fs-4 mx-auto">
-                A platform for managing and participating in programming competitions.
-                Test your skills against other programmers and climb the leaderboard!
+<div class="content-wrapper">
+    <!-- Hero Section -->
+    <section class="hero-section text-center">
+        <div class="container" data-aos="fade-in">
+            <i class="bi bi-trophy-fill glowing-icon"></i>
+            <h1 class="display-3 fw-bold mt-4" data-translate-key="welcome_title">Welcome to LogiComp</h1>
+            <p class="lead col-md-8 mx-auto mt-3" data-translate-key="welcome_subtitle">
+                The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!
             </p>
-            <a href="{{ url_for('contest.index') }}" class="btn btn-primary btn-lg mt-3">View Contests</a>
+            <a href="{{ url_for('contest.index') }}" class="btn btn-primary btn-lg mt-4 shadow-lg">
+                <i class="bi bi-grid-3x3-gap-fill me-2"></i><span data-translate-key="view_contests">View Contests</span>
+            </a>
         </div>
-    </div>
-    
-    {% if active_contests %}
-    <h2 class="mb-4">Active Contests</h2>
-    <div class="row">
-        {% for contest in active_contests[:3] %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ contest.title }}</h5>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">{{ contest.description|truncate(100) }}</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="badge bg-light text-dark">
-                            {{ contest.problems.count() }} problems
-                        </span>
-                        <span id="home-timer-{{ contest.id }}" class="badge bg-success"></span>
-                    </div>
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
-                       class="btn btn-sm btn-primary">Enter Contest</a>
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" 
-                       class="btn btn-sm btn-primary">Register</a>
-                </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="section-title text-center mb-5" data-aos="fade-up">
+                <h2 data-translate-key="how_it_works_title">How It Works</h2>
+                <p data-translate-key="how_it_works_subtitle">Start your journey in 3 simple steps</p>
+            </div>
+            <div class="row text-center gy-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100"><div class="step-card h-100"><i class="bi bi-person-plus-fill step-icon mb-3"></i><h4 data-translate-key="step1_title">Register</h4><p class="mb-0 text-white-50" data-translate-key="step1_desc">Create your account and join a community of coders.</p></div></div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200"><div class="step-card h-100"><i class="bi bi-keyboard-fill step-icon mb-3"></i><h4 data-translate-key="step2_title">Compete</h4><p class="mb-0 text-white-50" data-translate-key="step2_desc">Choose a contest and solve challenges to earn points.</p></div></div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300"><div class="step-card h-100"><i class="bi bi-award-fill step-icon mb-3"></i><h4 data-translate-key="step3_title">Win</h4><p class="mb-0 text-white-50" data-translate-key="step3_desc">Climb the leaderboard and win amazing prizes and recognition.</p></div></div>
             </div>
         </div>
-        {% endfor %}
-    </div>
+    </section>
+
+    <!-- Active Contests Section -->
+    {% if active_contests %}
+    <section class="py-5" style="background-color: #1a1a1a;">
+        <div class="container">
+            <div class="section-title text-center mb-5" data-aos="fade-up">
+                <h2 data-translate-key="active_contests">Active Contests</h2>
+            </div>
+            <div class="row">
+                {% for contest in active_contests[:3] %}
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ 100 * loop.index }}">
+                    <div class="card contest-card h-100 shadow-sm">
+                        <div class="card-header"><h5 class="mb-0 text-truncate"><i class="bi bi-flag-fill me-2"></i>{{ contest.title }}</h5></div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text flex-grow-1" style="color: #ccc;">{{ contest.description|truncate(120) }}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-dark p-2 text-white-50"><i class="bi bi-code-slash"></i> <span data-translate-key="problems_count" data-count="{{ contest.problems.count() }}">{{ contest.problems.count() }} problems</span></span>
+                                <span id="home-timer-{{ contest.id }}" class="badge p-2 fw-bold d-flex align-items-center"><i class="bi bi-alarm me-1"></i><span class="timer-text"></span></span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent d-flex justify-content-between align-items-center pt-0 border-0">
+                            <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-person-plus-fill me-1"></i><span data-translate-key="register">Register</span></a>
+                            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-primary" style="background:var(--primary); color:#000; border:none; font-weight:500;"><span data-translate-key="enter_contest">Enter Contest</span><i class="bi bi-arrow-right-short ms-1"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
     {% endif %}
 </div>
+{% endblock %}
 
+{% block scripts %}
+{{ super() }} <!-- Կարևոր է ժառանգել base.html-ի սկրիպտերը -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-// Initialize home page contest timers
 document.addEventListener('DOMContentLoaded', function() {
-    "{% for contest in active_contests[:3] %}"
+    AOS.init({ duration: 800, offset: 50, once: true });
+    
+    // Ընդլայնում ենք base.html-ի թարգմանությունների գլոբալ օբյեկտը
+    const welcomeTranslations = {
+        'en': { 'page_welcome': 'Welcome', 'welcome_title': 'Welcome to LogiComp', 'welcome_subtitle': 'The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!', 'view_contests': 'View Contests', 'how_it_works_title': 'How It Works', 'how_it_works_subtitle': 'Start your journey in 3 simple steps', 'step1_title': 'Register', 'step1_desc': 'Create your account and join a community of coders.', 'step2_title': 'Compete', 'step2_desc': 'Choose a contest and solve challenges to earn points.', 'step3_title': 'Win', 'step3_desc': 'Climb the leaderboard and win amazing prizes and recognition.', 'active_contests': 'Active Contests', 'problems_count': '%s problems', 'register': 'Register', 'enter_contest': 'Enter Contest', 'timer_ended': 'Ended', 'timer_ends_in': 'Ends in', 'timer_d': 'd', 'timer_h': 'h', 'timer_m': 'm', 'timer_s': 's' },
+        'hy': { 'page_welcome': 'Բարի Գալուստ', 'welcome_title': 'Բարի Գալուստ LogiComp', 'welcome_subtitle': 'Ծրագրավորման մրցույթների լավագույն հարթակը։ Ստուգեք ձեր հմտությունները, մրցեք ուրիշների հետ և բարձրացեք առաջատարների աղյուսակում։', 'view_contests': 'Դիտել Մրցույթները', 'how_it_works_title': 'Ինչպես է աշխատում', 'how_it_works_subtitle': 'Սկսեք ձեր ճանապարհը 3 պարզ քայլով', 'step1_title': 'Գրանցվեք', 'step1_desc': 'Ստեղծեք ձեր հաշիվը և միացեք կոդերների համայնքին։', 'step2_title': 'Մրցեք', 'step2_desc': 'Ընտրեք մրցույթ և լուծեք խնդիրներ՝ միավորներ վաստակելու համար։', 'step3_title': 'Հաղթեք', 'step3_desc': 'Բարձրացեք առաջատարների աղյուսակում և շահեք մրցանակներ։', 'active_contests': 'Ակտիվ Մրցույթներ', 'problems_count': '%s խնդիր', 'register': 'Գրանցվել', 'enter_contest': 'Մուտք', 'timer_ended': 'Ավարտված է', 'timer_ends_in': 'Ավարտին՝', 'timer_d': 'օ', 'timer_h': 'ժ', 'timer_m': 'ր', 'timer_s': 'վ' },
+        'ru': { 'page_welcome': 'Добро пожаловать', 'welcome_title': 'Добро пожаловать в LogiComp', 'welcome_subtitle': 'Лучшая платформа для соревновательного программирования. Проверьте свои навыки, бросьте вызов другим и поднимитесь в таблице лидеров!', 'view_contests': 'Смотреть Конкурсы', 'how_it_works_title': 'Как это работает', 'how_it_works_subtitle': 'Начните свой путь за 3 простых шага', 'step1_title': 'Регистрация', 'step1_desc': 'Создайте аккаунт и присоединяйтесь к сообществу программистов.', 'step2_title': 'Соревнуйтесь', 'step2_desc': 'Выберите конкурс и решайте задачи, чтобы заработать очки.', 'step3_title': 'Побеждайте', 'step3_desc': 'Поднимайтесь в таблице лидеров и выигрывайте призы.', 'active_contests': 'Активные Конкурсы', 'problems_count': '%s задач', 'register': 'Регистрация', 'enter_contest': 'Войти', 'timer_ended': 'Завершено', 'timer_ends_in': 'Осталось', 'timer_d': 'д', 'timer_h': 'ч', 'timer_m': 'м', 'timer_s': 'с' },
+    };
+    Object.keys(welcomeTranslations).forEach(lang => { Object.assign(window.translations[lang], welcomeTranslations[lang]); });
+    
+    // Function to re-apply translations on this page after language change
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey; let translation = langDict[key];
+            if (translation) { if (el.dataset.count) { translation = translation.replace('%s', el.dataset.count); } el.textContent = translation; }
+        });
+    };
+    updatePageText();
+    window.addEventListener('languageChanged', updatePageText);
+    
+    // Contest Timer Logic
+    {% for contest in active_contests[:3] %}
     (function() {
-        const endTime = new Date("{{ contest.end_time.isoformat() }}");
-        
-        function updateTimer() {
-            const now = new Date();
-            const remaining = endTime - now;
-            
-            if (remaining <= 0) {
-                document.getElementById('home-timer-{{ contest.id }}').textContent = 'Ended';
-                return;
-            }
-            
-            const hours = Math.floor(remaining / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            
-            document.getElementById('home-timer-{{ contest.id }}').textContent = 
-                `Ends in: ${hours}h ${minutes}m`;
-        }
-        
-        updateTimer();
-        setInterval(updateTimer, 60000); // Update every minute
+        const timerContainer=document.getElementById('home-timer-{{ contest.id }}'); if (!timerContainer) return;
+        const timerElement=timerContainer.querySelector('.timer-text'); const endTime=new Date("{{ contest.end_time.isoformat() }}Z");
+        const updateTimer = () => {
+            const currentLang=localStorage.getItem('language')||'en', langDict=window.translations[currentLang], now=new Date(), remaining=endTime-now;
+            if (remaining <= 0){timerElement.textContent=langDict.timer_ended; timerContainer.classList.remove('bg-success'); timerContainer.classList.add('bg-danger'); clearInterval(timerInterval); return;}
+            timerContainer.classList.remove('bg-danger'); timerContainer.classList.add('bg-success');
+            const d=Math.floor(remaining/864e5), h=Math.floor(remaining%864e5/36e5), m=Math.floor(remaining%36e5/6e4), s=Math.floor(remaining%6e4/1e3);
+            let timerText=`${langDict.timer_ends_in} `;
+            if(d>0)timerText+=`${d}${langDict.timer_d} ${h}${langDict.timer_h}`; else if(h>0)timerText+=`${h}${langDict.timer_h} ${m}${langDict.timer_m}`; else timerText+=`${m}${langDict.timer_m} ${s}${langDict.timer_s}`;
+            timerElement.textContent=timerText;
+        };
+        updateTimer(); const timerInterval = setInterval(updateTimer, 1000);
     })();
-    "{% endfor %}"
+    {% endfor %}
 });
 </script>
 {% endblock %}

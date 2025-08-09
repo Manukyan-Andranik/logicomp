@@ -9,4 +9,5 @@ python-dotenv
 flask-wtf
 reportlab
 openpyxl
+flask_babel
 

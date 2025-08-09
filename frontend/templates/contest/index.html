@@ -1,182 +1,162 @@
 {% extends "base.html" %}
 
-{% block title %}Contests{% endblock %}
+{% block title %}<span data-translate-key="title_contests">Contests</span>{% endblock %}
+
+{% block extra_css %}
+<style>
+    .nav-tabs .nav-link {
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: var(--text-muted);
+    }
+    .nav-tabs .nav-link.active,
+    .nav-tabs .nav-link:hover {
+        color: var(--primary);
+        background-color: transparent;
+        border-bottom-color: var(--primary);
+    }
+    .contest-card-footer {
+        border-top: 1px solid var(--border-color) !important;
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="container">
-    <div class="page-header">
-        <h1>Contests</h1>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-warning fw-bold" data-translate-key="header_contests">Contests</h1>
     </div>
-    
+
+    <!-- Tabs Navigation -->
     <ul class="nav nav-tabs mb-4" id="contestTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button">
-                Active
-            </button>
+            <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active-contests-panel" type="button" role="tab" data-translate-key="tab_active">Active</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button">
-                Upcoming
-            </button>
+            <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming-contests-panel" type="button" role="tab" data-translate-key="tab_upcoming">Upcoming</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button">
-                Past
-            </button>
+            <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past-contests-panel" type="button" role="tab" data-translate-key="tab_past">Past</button>
         </li>
     </ul>
-    
-    <div class="tab-content" id="contestTabsContent">
-        <div class="tab-pane fade show active" id="active" role="tabpanel">
-            {% if active_contests %}
-                <div class="row">
+
+    <!-- Tabs Content -->
+    <div class="tab-content" id="contestTabsContent" style="background-color:#1a1a1a;">
+        <!-- Active Contests Tab -->
+        <div class="tab-pane fade show active" id="active-contests-panel" role="tabpanel">
+            <div class="row">
+                {% if active_contests %}
                     {% for contest in active_contests %}
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="mb-0">{{ contest.title }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">{{ contest.description|truncate(150) }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span class="badge bg-light text-dark">
-                                            {{ contest.problems.count() }} problems
-                                        </span>
-                                        <span class="badge bg-light text-dark ms-2">
-                                            {{ contest.participants.count() }} participants
-                                        </span>
-                                    </div>
-                                    <div id="timer-{{ contest.id }}" class="contest-timer"></div>
-                                </div>
-                            </div>
-                            <div class="card-footer bg-transparent">
-                                <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
-                                   class="btn btn-sm btn-primary">Enter Contest</a>
-                            </div>
-                            <div class="card-footer bg-transparent">
-                                <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" 
-                                   class="btn btn-sm btn-primary">Register</a>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card bg-dark text-light border-secondary h-100 d-flex flex-column">
+                            <div class="card-header bg-dark border-secondary"><h4 class="card-title text-warning mb-0">{{ contest.title }}</h4></div>
+                            <div class="card-body flex-grow-1"><p class="text-muted">{{ contest.description|truncate(120) }}</p></div>
+                            <div class="card-footer bg-dark contest-card-footer d-flex justify-content-between align-items-center">
+                                <div id="timer-{{ contest.id }}" class="contest-timer small"></div>
+                                <a href="{{ url_for('contest.view', contest_id=contest.id) }}" class="btn btn-warning"><span data-translate-key="btn_enter">Enter</span> <i class="bi bi-arrow-right-short"></i></a>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">No active contests at the moment.</div>
-            {% endif %}
+                {% else %}
+                    <div class="text-center py-5 text-muted"><p data-translate-key="text_no_active">No active contests right now.</p></div>
+                {% endif %}
+            </div>
         </div>
-        
-        <div class="tab-pane fade" id="upcoming" role="tabpanel">
-            {% if upcoming_contests %}
-                <div class="list-group">
+
+        <!-- Upcoming Contests Tab -->
+        <div class="tab-pane fade" id="upcoming-contests-panel" role="tabpanel" style="background-color:#1a1a1a;">
+             <div class="list-group" style="background-color:#1a1a1a;">
+                {% if upcoming_contests %}
                     {% for contest in upcoming_contests %}
-                    <div class="list-group-item">
+                    <div class="list-group-item bg-dark text-light border-secondary">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ contest.title }}</h5>
-                            <small>Starts in: 
-                                <span class="badge bg-warning text-dark" id="countdown-{{ contest.id }}"></span>
-                            </small>
+                            <h5 class="mb-1 text-warning">{{ contest.title }}</h5>
+                            <small class="text-muted"><span data-translate-key="text_starts_in">Starts in:</span> <span id="countdown-{{ contest.id }}"></span></small>
                         </div>
-                        <p class="mb-1">{{ contest.description|truncate(100) }}</p>
-                        <small>Starts: {{ contest.start_time.strftime('%Y-%m-%d %H:%M') }}</small>
+                        <p class="mb-1 text-muted">{{ contest.description|truncate(100) }}</p>
                     </div>
                     {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">No upcoming contests scheduled.</div>
-            {% endif %}
+                {% else %}
+                     <div class="text-center py-5 text-muted"><p data-translate-key="text_no_upcoming">No upcoming contests scheduled.</p></div>
+                {% endif %}
+            </div>
         </div>
-        
-        <div class="tab-pane fade" id="past" role="tabpanel">
-            {% if past_contests %}
-                <div class="list-group">
+
+        <!-- Past Contests Tab -->
+        <div class="tab-pane fade" id="past-contests-panel" role="tabpanel" style="background-color:#1a1a1a;">
+            <div class="list-group" style="background-color:#1a1a1a;">
+                 {% if past_contests %}
                     {% for contest in past_contests %}
-                    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
-                       class="list-group-item list-group-item-action">
+                    <a href="{{ url_for('contest.view', contest_id=contest.id) }}" class="list-group-item list-group-item-action bg-dark text-light border-secondary">
                         <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ contest.title }}</h5>
-                            <small class="text-muted">Ended</small>
+                            <h5 class="mb-1 text-warning">{{ contest.title }}</h5>
+                            <small class="text-muted" data-translate-key="status_ended">Ended</small>
                         </div>
-                        <p class="mb-1">{{ contest.description|truncate(100) }}</p>
-                        <small class="text-muted">
-                            {{ contest.start_time.strftime('%Y-%m-%d') }} to 
-                            {{ contest.end_time.strftime('%Y-%m-%d') }}
-                        </small>
                     </a>
                     {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">No past contests available.</div>
-            {% endif %}
+                {% else %}
+                     <div class="text-center py-5 text-muted"><p data-translate-key="text_no_past">No past contests available.</p></div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
+{{ super() }}
 <script>
-// Initialize contest timers
-document.addEventListener('DOMContentLoaded', function() {
-    // Active contest timers
-    "{% for contest in active_contests %}"
-    (function() {
-        const endTime = new Date("{{ contest.end_time.isoformat() }}");
-        
-        function updateTimer() {
-            const now = new Date();
-            const remaining = endTime - now;
-            
-            if (remaining <= 0) {
-                document.getElementById('timer-{{ contest.id }}').innerHTML = `
-                    <span class="badge bg-secondary">Contest ended</span>
-                `;
-                return;
-            }
-            
-            const hours = Math.floor(remaining / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-            
-            document.getElementById('timer-{{ contest.id }}').innerHTML = `
-                <span class="badge bg-success">
-                    Ends in: ${hours}h ${minutes}m ${seconds}s
-                </span>
-            `;
-        }
-        
-        updateTimer();
-        setInterval(updateTimer, 1000);
-    })();
-    "{% endfor %}"
+document.addEventListener('DOMContentLoaded', () => {
+    // TRANSLATIONS
+    const pageTranslations = {
+        en: { "title_contests": "Contests", "header_contests": "Contests", "tab_active": "Active", "tab_upcoming": "Upcoming", "tab_past": "Past", "btn_enter": "Enter", "text_ends_in": "Ends in:", "text_no_active": "No active contests right now.", "text_starts_in": "Starts in:", "text_no_upcoming": "No upcoming contests scheduled.", "status_ended": "Ended", "text_no_past": "No past contests available." },
+        hy: { "title_contests": "Մրցույթներ", "header_contests": "Մրցույթներ", "tab_active": "Ակտիվ", "tab_upcoming": "Սպասվող", "tab_past": "Անցած", "btn_enter": "Մուտք", "text_ends_in": "Ավարտվում է՝", "text_no_active": "Այս պահին ակտիվ մրցույթներ չկան։", "text_starts_in": "Սկսվում է՝", "text_no_upcoming": "Նախատեսված մրցույթներ չկան։", "status_ended": "Ավարտված", "text_no_past": "Անցած մրցույթներ չկան։" },
+        ru: { "title_contests": "Конкурсы", "header_contests": "Конкурсы", "tab_active": "Активные", "tab_upcoming": "Ожидаются", "tab_past": "Прошедшие", "btn_enter": "Войти", "text_ends_in": "Завершится через:", "text_no_active": "Сейчас нет активных конкурсов.", "text_starts_in": "Начнется через:", "text_no_upcoming": "Запланированных конкурсов нет.", "status_ended": "Завершён", "text_no_past": "Нет прошедших конкурсов." }
+    };
+    Object.keys(pageTranslations).forEach(lang => { if(window.translations[lang]) Object.assign(window.translations[lang], pageTranslations[lang]); });
     
-    // Upcoming contest countdowns
-    "{% for contest in upcoming_contests %}"
-    (function() {
-        const startTime = new Date("{{ contest.start_time.isoformat() }}");
-        
-        function updateCountdown() {
-            const now = new Date();
-            const remaining = startTime - now;
-            
-            if (remaining <= 0) {
-                document.getElementById('countdown-{{ contest.id }}').textContent = 'Started!';
-                return;
-            }
-            
-            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            
-            let text = '';
-            if (days > 0) text += `${days}d `;
-            text += `${hours}h ${minutes}m`;
-            
-            document.getElementById('countdown-{{ contest.id }}').textContent = text;
-        }
-        
-        updateCountdown();
-        setInterval(updateCountdown, 60000); // Update every minute
-    })();
-    "{% endfor %}"
+    // TIMERS
+    function setupTimers() {
+        "{% for contest in active_contests %}"
+        (function() {
+            const timerEl = document.getElementById('timer-{{ contest.id }}');
+            if(!timerEl) return;
+            const endTime = new Date("{{ contest.end_time.isoformat() }}Z").getTime();
+            setInterval(() => {
+                const remaining = endTime - new Date().getTime();
+                if(remaining <= 0) { timerEl.innerHTML = `<span class="badge bg-secondary" data-translate-key="status_ended">Ended</span>`; return; }
+                const h = Math.floor((remaining % (1000*60*60*24))/(1000*60*60));
+                const m = Math.floor((remaining % (1000*60*60))/(1000*60));
+                const s = Math.floor((remaining % (1000*60))/1000);
+                timerEl.innerHTML = `<span class="text-success" data-translate-key="text_ends_in">Ends in:</span> ${h}h ${m}m ${s}s`;
+            }, 1000);
+        })();
+        "{% endfor %}"
+
+        "{% for contest in upcoming_contests %}"
+        (function() {
+            const countdownEl = document.getElementById('countdown-{{ contest.id }}');
+            if(!countdownEl) return;
+            const startTime = new Date("{{ contest.start_time.isoformat() }}Z").getTime();
+             setInterval(() => {
+                const remaining = startTime - new Date().getTime();
+                if(remaining <= 0) { countdownEl.textContent = 'Started!'; return; }
+                const d = Math.floor(remaining / (1000*60*60*24));
+                const h = Math.floor((remaining % (1000*60*60*24))/(1000*60*60));
+                const m = Math.floor((remaining % (1000*60*60))/(1000*60));
+                let text = '';
+                if(d > 0) text += `${d}d `;
+                text += `${h}h ${m}m`;
+                countdownEl.textContent = text;
+            }, 60000);
+        })();
+        "{% endfor %}"
+    }
+
+    setupTimers();
+    if (typeof changeLanguage === 'function') { changeLanguage(localStorage.getItem('language') || 'en'); }
 });
 </script>
 {% endblock %}

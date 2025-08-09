@@ -75,8 +75,10 @@
                         class="btn btn-outline-info mb-3">
                         <i class="bi bi-trophy-fill"></i> View Leaderboard
                     </a>
-                    <a href="{{ url_for('admin.view_submissions') }}?contest_id={{ contest.id }}"
-                        class="btn btn-outline-secondary">
+                    <!-- templates/admin/contest_details.html ֆայլում -->
+
+                    <a href="{{ url_for('admin.view_submissions', contest_id=contest.id) }}"
+                       class="btn btn-outline-secondary">
                         <i class="bi bi-file-earmark-check"></i> View Submissions
                     </a>
                 </div>

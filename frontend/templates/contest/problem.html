@@ -1,111 +1,97 @@
 {% extends "base.html" %}
 
-{% block title %}{{ contest.title }} - {{ problem.title }}{% endblock %}
+{% block title %}{{ problem.title }}{% endblock %}
+
+{% block extra_css %}
+<!-- CodeMirror CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/material-darker.min.css">
+{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h2>Test Contest: Problem 1</h2>
-  {% if current_user.role == 'admin' %}
-  <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
-    Back to Contest
-  </a>
-  {% else %}
-  <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-primary">
-    Back to Contest
-  </a>
-  {% endif %}
-</div>
-
-<div class="row">
-  <div class="col-md-8">
-    <div class="card mb-4">
-      <div class="card-header">
-        <h3>{{ problem.title }}</h3>
-      </div>
-      <div class="card-body">
-        <div class="mb-4">
-          <div class="problem-description p-4 rounded"
-            style="background-color: #f8f9fa; white-space: pre-wrap; font-family: 'Courier New', monospace; border: 1px solid #ddd;">
-            {{ problem.description }}
-          </div>
-        </div>
-
-
-        <div class="mt-4">
-          <h4>Expected Input/Output</h4>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header bg-primary">
-                  <h5>Input</h5>
+<div class="container-fluid py-4 px-lg-4">
+    <div class="row">
+        <!-- Problem Description Column -->
+        <div class="col-lg-6 mb-4 mb-lg-0">
+            <div class="card bg-dark text-light border-secondary h-100">
+                <div class="card-header bg-dark border-secondary d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0 text-warning">{{ problem.title }}</h3>
+                     <a href="{{ url_for('contest.view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-warning"><i class="bi bi-arrow-left"></i> <span data-translate-key="btn_all_problems">All Problems</span></a>
                 </div>
                 <div class="card-body">
-                  <pre>{{ problem.expected_input }}</pre>
+                    <div class="problem-description">{{ problem.description | safe }}</div>
+                     <hr class="border-secondary">
+                     <h5 class="text-warning mt-4" data-translate-key="header_input_format">Input Format</h5>
+                     <pre class="bg-secondary p-3 rounded small"><code>{{ problem.expected_input }}</code></pre>
+                     <h5 class="text-warning mt-4" data-translate-key="header_output_format">Output Format</h5>
+                     <pre class="bg-secondary p-3 rounded small"><code>{{ problem.expected_output }}</code></pre>
                 </div>
-              </div>
             </div>
-
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header bg-primary">
-                  <h5>Output</h5>
-                </div>
-                <div class="card-body">
-                  <pre>{{ problem.expected_output }}</pre>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="col-md-4">
-
-    <div class="card">
-      <div class="card-header">
-        <h5>Submit Your Solution</h5>
-      </div>
-
-      <div class="card-body">
-        <p class="text-muted">You can submit your solution in any programming language supported by the system.</p>
-        <p class="text-muted">Make sure to follow the input/output format specified in the problem description.</p>
-        <a href="{{ url_for('submission.submit', problem_id=problem.id) }}" class="btn btn-primary w-100">
-          Submit Solution
-        </a>
-      </div>
-    </div>
-
-
-    <div class="card">
-
-      <div class="card-header">
-        <h5>Your Submissions</h5>
-      </div>
-      <div class="card-body p-0">
-        <ul class="list-group list-group-flush">
-          {% for submission in submissions %}
-          <li class="list-group-item">
-            <div class="d-flex justify-content-between">
-              <span>{{ submission.timestamp.strftime('%H:%M') }}</span>
-              <span class="badge 
-                {% if submission.status == 'Accepted' %}badge-success
-                {% elif submission.status in ['Wrong Answer', 'Runtime Error'] %}badge-danger
-                {% elif submission.status == 'Compilation Error' %}badge-warning
-                {% else %}badge-primary{% endif %}">
-                {{ submission.status }}
-              </span>
+        <!-- Submission Column -->
+        <div class="col-lg-6">
+            <div class="card bg-dark text-light border-secondary h-100">
+                <div class="card-header bg-dark border-secondary">
+                    <h5 class="mb-0 text-warning" data-translate-key="header_submit_solution">Submit Solution</h5>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <form method="POST" class="flex-grow-1 d-flex flex-column">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label for="{{ form.language.id }}" class="form-label small" data-translate-key="form_language">Language</label>
+                            {{ form.language(class="form-select bg-secondary text-white border-dark") }}
+                        </div>
+                        <div class="mb-3 flex-grow-1">
+                             <label for="code-editor" class="form-label small" data-translate-key="form_code">Your Code</label>
+                            {{ form.code(class="d-none") }}
+                             <div id="editor-container" style="height: 100%;"></div>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100"><i class="bi bi-send-fill me-2"></i><span data-translate-key="btn_submit">Submit</span></button>
+                    </form>
+                </div>
             </div>
-          </li>
-          {% else %}
-          <li class="list-group-item text-center text-muted">
-            No submissions yet
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<!-- CodeMirror JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/python/python.min.js"></script>
+<script>
+let editor; // Make editor global
+function initializeEditor() {
+    const textarea = document.getElementById("{{ form.code.id }}");
+    const container = document.getElementById("editor-container");
+    container.innerHTML = ''; // Clear previous editor if any
+
+    editor = CodeMirror(container, {
+        value: textarea.value,
+        lineNumbers: true,
+        mode: "text/x-c++src", // Default mode
+        theme: "material-darker",
+        indentUnit: 4,
+        lineWrapping: true
+    });
+    // Link editor to textarea
+    editor.on("change", () => {
+      textarea.value = editor.getValue();
+    });
+}
+initializeEditor();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const pageTranslations = {
+        en: {"btn_all_problems": "All Problems", "header_input_format": "Input Format", "header_output_format": "Output Format", "header_submit_solution": "Submit Solution", "form_language": "Language", "form_code": "Your Code", "btn_submit": "Submit"},
+        hy: {"btn_all_problems": "Բոլոր խնդիրները", "header_input_format": "Մուտքի ձևաչափ", "header_output_format": "Ելքի ձևաչափ", "header_submit_solution": "Ուղարկել լուծումը", "form_language": "Լեզու", "form_code": "Ձեր կոդը", "btn_submit": "Ուղարկել"},
+        ru: {"btn_all_problems": "Все задачи", "header_input_format": "Формат ввода", "header_output_format": "Формат вывода", "header_submit_solution": "Отправить решение", "form_language": "Язык", "form_code": "Ваш код", "btn_submit": "Отправить"}
+    };
+    Object.keys(pageTranslations).forEach(lang => { if(window.translations[lang]) Object.assign(window.translations[lang], pageTranslations[lang]); });
+    if (typeof changeLanguage === 'function') { changeLanguage(localStorage.getItem('language') || 'en'); }
+});
+</script>
 {% endblock %}

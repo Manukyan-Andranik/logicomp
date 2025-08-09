@@ -353,18 +353,30 @@ def generate_credentials(contest_id):
 def view_submissions():
     page = request.args.get('page', 1, type=int)
     contest_id = request.args.get('contest_id', type=int)
-    contest = Contest.query.get_or_404(contest_id)
+    
+    # Query-ն սկզբնականացնում ենք՝ բոլոր հանձնումները ստանալու համար
+    query = Submission.query
 
-    submissions_pagination = Submission.query.filter_by(contest_id=contest_id)\
-        .order_by(Submission.timestamp.desc())\
-        .paginate(page=page, per_page=current_app.config['SUBMISSIONS_PER_PAGE'], error_out=False)
-
-    return render_template(
-        'admin/submissions.html',
-        submissions=submissions_pagination,  
-        contest=contest
+    contest = None
+    if contest_id:
+        # Եթե կոնկրետ contest_id է տրված, ֆիլտրում ենք
+        contest = Contest.query.get_or_404(contest_id)
+        query = query.filter_by(contest_id=contest_id)
+    
+    submissions_pagination = query.order_by(Submission.timestamp.desc()).paginate(
+        page=page, per_page=10, error_out=False
     )
 
+    # Բոլոր մրցույթները ստանում ենք dropdown-ի համար
+    all_contests = Contest.query.order_by(Contest.title).all()
+
+    return render_template(
+        'admin/submissions.html', 
+        submissions=submissions_pagination,
+        contest=contest, # Սա կլինի None, եթե contest_id չկա
+        all_contests=all_contests, # Փոխանցում ենք dropdown-ի համար
+        title="Submissions"
+    )
 
 @bp.route('/contest/<int:contest_id>/export_reports', methods=['GET'])
 @login_required
