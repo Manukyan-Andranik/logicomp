@@ -14,6 +14,8 @@ def send_email(subject, sender, recipients, text_body, html_body):
     Thread(target=send_async_email, args=(current_app._get_current_object(), msg)).start()
 
 def send_credentials_email(email, username, password, contest):
+    contest_url = f"{current_app.config['BASE_URL']}contest/{contest.id}"
+    print(contest_url)
     send_email(
         f'Your credentials for {contest.title}',
         sender=current_app.config['ADMINS'][0],
@@ -25,5 +27,6 @@ def send_credentials_email(email, username, password, contest):
         html_body=render_template('email/credentials.html',
                                 username=username,
                                 password=password,
-                                contest=contest)
-    )
+                                contest=contest,
+                                contest_url=contest_url
+    ))

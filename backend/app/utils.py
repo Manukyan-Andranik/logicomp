@@ -5,13 +5,11 @@ from reportlab.lib import colors
 from openpyxl import Workbook
 import secrets
 import string
+from flask_mail import Message
 
 def generate_random_password(length=12):
     alphabet = string.ascii_letters + string.digits
     return ''.join(secrets.choice(alphabet) for i in range(length))
-
-
-
 
 def generate_leaderboard_pdf(file_path, contest, problems, leaderboard_data):
     doc = SimpleDocTemplate(file_path, pagesize=A4)

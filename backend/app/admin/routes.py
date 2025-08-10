@@ -334,12 +334,12 @@ def generate_credentials(contest_id):
                     f"Password: {participant['password']}")
             
             # TODO: Send email with credentials
-            # send_credentials_email(
-            #     participant['email'],
-            #     participant['username'],
-            #     participant['password'],
-            #     contest
-            # )
+            send_credentials_email(
+                participant['email'],
+                participant['username'],
+                participant['password'],
+                contest
+            )
         
         flash(f'Generated credentials for {len(participants)} participants from JSON file.', 'success')
         return redirect(url_for('admin.contest_details', contest_id=contest.id))

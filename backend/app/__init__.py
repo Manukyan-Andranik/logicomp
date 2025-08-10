@@ -14,7 +14,7 @@ login.login_view = 'auth.login'
 migrate = Migrate()
 mail = Mail()
 bootstrap = Bootstrap()
-
+    
 def create_app(config_class=Config):
     base_dir = os.path.abspath(os.path.dirname(__file__))
     template_path = os.path.join(base_dir, '../../frontend/templates')
@@ -50,7 +50,7 @@ def create_app(config_class=Config):
     @app.context_processor
     def inject_now():
         return {'now': datetime.utcnow()}
-
+    
     return app
 
 from app import models
