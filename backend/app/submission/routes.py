@@ -66,11 +66,12 @@ def view(submission_id):
     submission = Submission.query.get_or_404(submission_id)
     if submission.user_id != current_user.id and current_user.role != 'admin':
         abort(403)
-    
+    recent_submissions = Submission.query.filter_by(user_id=current_user.id).order_by(Submission.timestamp.desc()).limit(10).all()
     return render_template('submission/view.html', 
                          submission=submission,
                          problem=submission.problem,
-                         contest=submission.problem.contest)
+                         contest=submission.problem.contest,
+                         recent_submissions=recent_submissions)
 
 @bp.route('/my_submissions', methods=['GET'])
 @login_required

@@ -1,0 +1,54 @@
+:root {
+    --primary: #FFC107;
+    --primary-dark: #FFA000;
+    --dark: #121212; 
+    --text-light: #e0e0e0;
+    --text-muted: #888;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --navbar-height: 70px;
+}
+
+body {
+    padding-top: var(--navbar-height);
+    background-color: var(--dark);
+    color: var(--text-light);
+}
+
+.navbar.glassmorphism {
+    height: var(--navbar-height); position: fixed;
+    top: 0; width: 100%; z-index: 1030;
+    backdrop-filter: blur(10px) saturate(180%);
+    background-color: rgba(18, 18, 18, 0.75) !important;
+    border-bottom: 1px solid transparent; transition: all 0.3s ease;
+}
+.navbar.glassmorphism.scrolled {
+     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+     border-bottom: 1px solid var(--border-color);
+}
+
+.navbar-brand { font-weight: 700 !important; color: #fff !important; }
+.navbar-dark .nav-link { color: rgba(255, 255, 255, 0.8) !important; }
+.navbar-dark .nav-link:hover, .navbar-dark .nav-link:focus { color: var(--primary) !important; }
+
+.dropdown-menu {
+    background-color: rgba(30, 30, 30, 0.9) !important;
+    border: 1px solid var(--border-color) !important; backdrop-filter: blur(10px);
+}
+.dropdown-item { color: var(--text-light) !important; }
+.dropdown-item:hover, .dropdown-item:focus, .dropdown-item.active {
+    background-color: var(--primary) !important; color: #000 !important;
+}
+
+.flag-icon { 
+    width: 22px; height: 16px; object-fit: cover; 
+    border-radius: 3px; box-shadow: 0 0 3px rgba(0,0,0,0.5);
+}
+
+.site-footer {
+    background-color: #000; color: var(--text-muted); padding: 30px 0; margin-top: auto;
+}
+.site-footer p {
+     color: var(--text-muted);
+}
+.site-footer a { color: var(--primary); }
+.site-footer a:hover { color: var(--primary-dark); }
