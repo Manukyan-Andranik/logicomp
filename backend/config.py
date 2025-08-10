@@ -13,6 +13,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'postgresql://olympiad:olympiad@localhost/olympiad'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    BASE_URL = "http://127.0.0.1:5002/" #"https://logiclab.am/logicomp/"
     
     ADMINS = ['admin@olympiad.example.com']
     SUBMISSIONS_PER_PAGE = 10
