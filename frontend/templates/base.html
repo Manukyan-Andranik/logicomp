@@ -180,6 +180,8 @@
                 langSelectorBtn.innerHTML = activeLinkContent.replace('<span', '<span class="d-none d-lg-inline ms-2"');
             }
             for (const key in langLinks) { langLinks[key].classList.toggle('active', key === lang); }
+            updatePageTitle(lang);  // <-- Add this line to update <title>
+
         };
 
         window.changeLanguage = (lang) => {
@@ -194,6 +196,12 @@
         };
         setInitialLanguage();
     });
+    function updatePageTitle(lang) {
+    const langDict = window.translations[lang] || window.translations['en'];
+    const newTitle = langDict['site_title'] || 'Olympiad Platform';
+    document.title = newTitle;
+}
+
     </script>
     {% endblock %}
 </body>
