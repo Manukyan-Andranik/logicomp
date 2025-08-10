@@ -94,9 +94,9 @@
                                 <p class="text-white-50" style="color: white !important;">{{ contest.description|truncate(120) }}</p>
                                 <div class="d-flex justify-content-start align-items-center text-white-50 small mt-3">
                                     <span class="me-3">
-                                        <i class="bi bi-code-slash me-1" style="color:white;" ></i>
+                                        <i class="bi bi-code-slash me-1" style="color: white !important;"></i>
                                         <strong class="text-white">{{ contest.problems.count() }}</strong>
-                                        <span data-translate-key="text_problems" style="color:white;">Problems</span>
+                                        <span data-translate-key="text_problems" style="color: white !important;">Problems</span>
                                     </span>
                                 </div>
                             </div>
@@ -192,53 +192,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const setupTimer = (elementId, isoTime, type) => {
         const timerEl = document.getElementById(elementId);
         if(!timerEl) return;
-
-        if (window.timerIntervals && window.timerIntervals[elementId]) {
-            clearInterval(window.timerIntervals[elementId]);
-        }
-
+        if (window.timerIntervals && window.timerIntervals[elementId]) clearInterval(window.timerIntervals[elementId]);
         const targetTime = new Date(isoTime).getTime();
-
         const update = () => {
-            const lang = localStorage.getItem('language') || 'en';
-            const dict = window.translations[lang];
-            const remaining = targetTime - new Date().getTime();
-
+            const lang = localStorage.getItem('language') || 'en'; const dict = window.translations[lang]; const remaining = targetTime - new Date().getTime();
             if (remaining <= 0) {
-                if (type === 'active') {
-                    timerEl.textContent = dict.status_ended;
-                    timerEl.className = 'badge bg-secondary fs-6';
-                } else {
-                    timerEl.textContent = dict.status_started;
-                    timerEl.className = 'badge bg-success fs-6';
-                }
-                if (window.timerIntervals && window.timerIntervals[elementId]) {
-                    clearInterval(window.timerIntervals[elementId]);
-                }
+                if (type === 'active') { timerEl.textContent = dict.status_ended; timerEl.className = 'badge bg-secondary fs-6'; } 
+                else { timerEl.textContent = dict.status_started; timerEl.className = 'badge bg-success fs-6'; }
+                if (window.timerIntervals && window.timerIntervals[elementId]) clearInterval(window.timerIntervals[elementId]);
                 return;
             }
-            
-            const d = Math.floor(remaining / 86400000);
-            const h = Math.floor((remaining % 86400000) / 3600000);
-            const m = Math.floor((remaining % 3600000) / 60000);
-            const s = Math.floor((remaining % 60000) / 1000);
-            
-            let text = d > 0 ? `${d}${dict.timer_d} ${h}${dict.timer_h}` :
-                       h > 0 ? `${h}${dict.timer_h} ${m}${dict.timer_m}` :
-                       m > 0 ? `${m}${dict.timer_m} ${s}${dict.timer_s}` :
-                               `${s}${dict.timer_s}`;
-            
+            const d = Math.floor(remaining / 86400000), h = Math.floor((remaining % 86400000) / 3600000), m = Math.floor((remaining % 3600000) / 60000), s = Math.floor((remaining % 60000) / 1000);
+            let text = d > 0 ? `${d}${dict.timer_d} ${h}${dict.timer_h}` : h > 0 ? `${h}${dict.timer_h} ${m}${dict.timer_m}` : m > 0 ? `${m}${dict.timer_m} ${s}${dict.timer_s}` : `${s}${dict.timer_s}`;
             const prefix = type === 'active' ? dict.timer_ends_in : dict.timer_starts_in;
             timerEl.textContent = `${prefix} ${text}`;
             timerEl.className = type === 'active' ? 'badge bg-success fs-6' : 'badge bg-primary fs-6';
         };
-        
-        if (!window.timerIntervals) { window.timerIntervals = {}; }
+        if (!window.timerIntervals) window.timerIntervals = {};
         window.timerIntervals[elementId] = setInterval(update, 1000);
-        update(); // Initial call
+        update();
     };
 
+    // ========== ՈՒՂՂՎԱԾ ՏԱՐԲԵՐԱԿ ==========
+    // Այս ֆունկցիան թարմացնում է էջի բոլոր տեքստերը
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            if (langDict[key]) {
+                el.textContent = langDict[key];
+            }
+        });
+    };
+
+    // Այս ֆունկցիան սկսում է էջի բոլոր դինամիկ մասերը
     const initializePage = () => {
+        // Թարմացնում ենք ստատիկ տեքստերը
+        updatePageText();
+
+        // Գործարկում ենք թայմերները
         "{% for contest in active_contests %}"
         setupTimer('timer-{{ contest.id }}', "{{ contest.end_time.isoformat() }}Z", 'active');
         "{% endfor %}"
@@ -248,7 +241,9 @@ document.addEventListener('DOMContentLoaded', () => {
         "{% endfor %}"
     };
 
+    // Գործարկում ենք էջը բացելիս
     initializePage();
+    // Գործարկում ենք ամեն անգամ, երբ լեզուն փոխվում է
     window.addEventListener('languageChanged', initializePage);
 });
 </script>
