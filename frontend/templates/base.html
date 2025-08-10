@@ -20,6 +20,8 @@
             --text-muted: #888;
             --border-color: rgba(255, 255, 255, 0.1);
             --navbar-height: 70px;
+            --footer-bg:rgba(18, 18, 18, 0.75) !important;
+
         }
         
         body {
@@ -32,7 +34,7 @@
             height: var(--navbar-height); position: fixed;
             top: 0; width: 100%; z-index: 1030;
             backdrop-filter: blur(10px) saturate(180%);
-            background-color: rgba(18, 18, 18, 0.75) !important;
+            background-color: var(--navbar-bg) !important;
             border-bottom: 1px solid transparent; transition: all 0.3s ease;
         }
         .navbar.glassmorphism.scrolled {
@@ -59,7 +61,7 @@
         }
 
         .site-footer {
-            background-color: #000; color: var(--text-muted); padding: 30px 0; margin-top: auto;
+            background-color: var(--footer-bg);
         }
         .site-footer p {
              color: var(--text-muted);

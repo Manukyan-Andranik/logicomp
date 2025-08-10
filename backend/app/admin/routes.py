@@ -291,7 +291,8 @@ def edit_problem(problem_id):
 @login_required
 def generate_credentials(contest_id):
     contest = Contest.query.get_or_404(contest_id)
-
+    base_url = request.url.replace(request.path, '', 1)
+    contest_url = f"{base_url}/contest/{contest.id}"
     participants_file = f"{contest.participants_folder}/participants.json" 
 
     if not os.path.exists(participants_file):    
@@ -319,6 +320,9 @@ def generate_credentials(contest_id):
                 user = User(username=username, email=email, role='participant')
                 user.set_password(password)
                 db.session.add(user)
+
+            else:
+                User.update_password(user, password)
             
             if user not in contest.participants:
                 contest.participants.append(user)
@@ -338,7 +342,8 @@ def generate_credentials(contest_id):
                 participant['email'],
                 participant['username'],
                 participant['password'],
-                contest
+                contest,
+                contest_url=contest_url
             )
         
         flash(f'Generated credentials for {len(participants)} participants from JSON file.', 'success')

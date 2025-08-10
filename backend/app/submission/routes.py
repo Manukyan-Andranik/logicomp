@@ -27,11 +27,21 @@ def process_submission(app, submission):
 def submit(problem_id):
     problem = Problem.query.get_or_404(problem_id)
     contest = Contest.query.get_or_404(problem.contest_id)
-    my_submissions = Submission.query.filter_by(user_id=current_user.id, problem_id=problem.id).order_by(Submission.timestamp.desc()).all()
+    
+    # Get the user's last submission for this problem
+    my_submissions = Submission.query.filter_by(
+        user_id=current_user.id, 
+        problem_id=problem.id
+    ).order_by(Submission.timestamp.desc()).all()
+    
+    # Set initial code - either from last submission or None for default
+    initial_code = None
+    initial_language = None
     if my_submissions:
-        last_submission_code = my_submissions[0].code
-        print(f"Last submission code: {last_submission_code}")  # Print first 30 characters for brevity
-        
+        initial_code = my_submissions[0].code
+        initial_language = my_submissions[0].language
+        print(f"Last submission code found: {initial_code[:50]}...")  # Print first 50 characters for debugging
+    
     if not contest.is_active():
         flash('Contest is not currently active.', 'info')
         return redirect(url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id))
@@ -39,9 +49,19 @@ def submit(problem_id):
     form = SubmitSolutionForm()
     if form.validate_on_submit():
         source_code = form.code.data
-        if not source_code:
-            source_code = form.source_file.data.read().decode('utf-8', errors='ignore')
-
+        
+        # If no code in textarea, try to read from uploaded file
+        if not source_code and form.source_file.data:
+            try:
+                source_code = form.source_file.data.read().decode('utf-8', errors='ignore')
+            except Exception as e:
+                flash('Error reading uploaded file.', 'error')
+                return redirect(url_for('submission.submit', problem_id=problem_id))
+        
+        # Validate that we have source code
+        if not source_code or not source_code.strip():
+            flash('Please provide source code either in the text area or upload a file.', 'error')
+            return redirect(url_for('submission.submit', problem_id=problem_id))
 
         submission = Submission(
             user_id=current_user.id,
@@ -52,16 +72,28 @@ def submit(problem_id):
             status='Pending'
         )
 
-        db.session.add(submission)
-        db.session.commit()
-        
-        # Start background judging
-        Thread(target=judge_submission, args=(submission.id,)).start()
-        
-        flash('Solution submitted and is being judged!', 'info')
-        return redirect(url_for('submission.view', submission_id=submission.id))
+        try:
+            db.session.add(submission)
+            db.session.commit()
+            
+            # Start background judging
+            Thread(target=judge_submission, args=(submission.id,)).start()
+            
+            flash('Solution submitted and is being judged!', 'info')
+            return redirect(url_for('submission.view', submission_id=submission.id))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error submitting solution. Please try again.', 'error')
+            return redirect(url_for('submission.submit', problem_id=problem_id))
     
-    return render_template('submission/submit.html', form=form, problem=problem, contest=contest, last_submission_code=my_submissions[0].code if my_submissions else None)
+    return render_template(
+        'submission/submit.html',
+        form=form,
+        problem=problem,
+        contest=contest,
+        initial_code=initial_code,  # This will be None if no previous submissions
+        initial_language=initial_language  # This will be None if no previous submissions
+    )
 
 
 @bp.route('/submission/<int:submission_id>')

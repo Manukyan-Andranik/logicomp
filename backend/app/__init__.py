@@ -25,7 +25,6 @@ def create_app(config_class=Config):
                 static_folder=static_path)
     
     app.config.from_object(config_class)
-
     db.init_app(app)
     login.init_app(app)
     migrate.init_app(app, db)

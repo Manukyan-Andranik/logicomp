@@ -26,6 +26,10 @@ class User(UserMixin, db.Model):
         characters = string.ascii_letters + string.digits + string.punctuation
         return ''.join(random.choice(characters) for _ in range(length))
 
+    def update_password(self, new_password):
+        self.set_password(new_password)
+        db.session.commit()
+
 class Contest(db.Model):
     __tablename__ = 'contests'
     

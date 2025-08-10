@@ -35,6 +35,14 @@
         min-height: 400px;
         white-space: pre-wrap;
     }
+    
+    /* Fix button text colors */
+    .btn-secondary {
+        color: white !important;
+    }
+    .btn-secondary:hover {
+        color: white !important;
+    }
 </style>
 {% endblock %}
 
@@ -68,7 +76,7 @@
                         
                         <div class="mb-3">
                             <label for="{{ form.code.id }}" class="form-label fw-bold" data-translate-key="label_code">Source Code</label>
-                            {{ form.code(class="form-control form-control-dark code-textarea", rows=18, id="code-textarea", value=initial_code if initial_code else '') }}
+                            {{ form.code(class="form-control form-control-dark code-textarea", rows=18, id="code-textarea", value=initial_code or "") }}
                             <small class="text-muted mt-2 d-block" data-translate-key="text_or_upload">Or upload a source file below.</small>
                         </div>
                         
@@ -77,9 +85,9 @@
                             {{ form.source_file(class="form-control form-control-dark") }}
                         </div>
                         
-                        <div style="color:black;" class="d-flex justify-content-between align-items-center border-top border-secondary pt-4 mt-4">
-                            <a style="color:black;" href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="btn btn-secondary">
-                                <i class="bi bi-x-lg me-1"></i> <span data-translate-key="btn_cancel" style="color:black;">Cancel</span>
+                        <div class="d-flex justify-content-between align-items-center border-top border-secondary pt-4 mt-4">
+                            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="btn btn-secondary">
+                                <i class="bi bi-x-lg me-1"></i> <span data-translate-key="btn_cancel">Cancel</span>
                             </a>
                             <button type="submit" class="btn btn-warning btn-lg fw-bold">
                                 <i class="bi bi-check-circle-fill me-2"></i> <span data-translate-key="btn_submit">Submit Solution</span>
@@ -96,106 +104,83 @@
 {% block scripts %}
 {{ super() }}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const codeTextarea = document.getElementById('code-textarea');
-    const languageSelect = document.querySelector('select[name="language"]');
-
-    if (!codeTextarea || !languageSelect) return;
-
-    const initialCode = codeTextarea.value.trim();
-
-    const defaultCodes = {
-        python: `# Your Python code here...
-def solve():
-    # Read input and solve the problem
-    pass
-solve()
-`,
-        cpp: `#include <iostream>
-using namespace std;
-// Your C++ code here...
-void solve() {
-    // Read input and solve the problem
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    solve();
-    return 0;
-}
-`,
-        javascript: `// Your JavaScript code here...
-function solve() {
-    // Read input and solve the problem
-}
-solve();
-`,
-        java: `import java.util.*;
-import java.io.*;
-
-public class Main {
-    // Your Java code here...
-    public static void solve() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const codeTextarea = document.getElementById('code-textarea');
+        const languageSelect = document.querySelector('select[name="language"]');
+    
+        if (!codeTextarea || !languageSelect) return;
+    
+        // Data from backend
+        const initialCode = `{{ initial_code | safe | replace('\n', '\\n') | replace('\r', '\\r') | replace('\t', '\\t') | replace('"', '\\"') | replace("'", "\\'") if initial_code else '' }}`.trim();
+        const initialLanguage = `{{ initial_language | safe | lower if initial_language else '' }}`;
+    
+        const defaultCodes = {
+            python: `# Your Python code here...
+    def solve():
+        # Read input and solve the problem
+        pass
+    `,
+            cpp: `#include <iostream>
+    using namespace std;
+    // Your C++ code here...
+    void solve() {
         // Read input and solve the problem
     }
-
-    public static void main(String[] args) {
+    
+    int main() {
+        ios_base::sync_with_stdio(false);
+        cin.tie(nullptr);
         solve();
+        return 0;
     }
-}
-`
-    };
-
-    function updateCodeContent() {
-        const lang = languageSelect.value.toLowerCase();
-        const key = Object.keys(defaultCodes).find(k => lang.includes(k));
-        const defaultCode = defaultCodes[key] || '';
-
-        if (!codeTextarea.value.trim() || codeTextarea.value === codeTextarea.dataset.lastDefault) {
-            codeTextarea.value = defaultCode;
-            codeTextarea.dataset.lastDefault = defaultCode;
+    `,
+            javascript: `// Your JavaScript code here...
+    function solve() {
+        // Read input and solve the problem
+    }
+    solve();
+    `,
+            java: `import java.util.*;
+    import java.io.*;
+    
+    public class Main {
+        // Your Java code here...
+        public static void solve() {
+            // Read input and solve the problem
+        }
+    
+        public static void main(String[] args) {
+            solve();
         }
     }
-
-    // Only set default code if no initial code present
-    if (!initialCode) {
-        updateCodeContent();
-    } else {
-        codeTextarea.dataset.lastDefault = initialCode;
-    }
-
-    languageSelect.addEventListener('change', updateCodeContent);
-
-    // Translations
-    const pageTranslations = {
-        'en': { 'page_title': 'Submit Solution', 'header_submit_solution_for': 'Submit Solution for: %s', 'btn_back_to_contest': 'Back to Contest', 'label_language': 'Programming Language', 'label_code': 'Source Code', 'text_or_upload': 'Or upload a source file below.', 'label_upload': 'Upload File', 'btn_cancel': 'Cancel', 'btn_submit': 'Submit Solution' },
-        'hy': { 'page_title': 'Ուղարկել Լուծումը', 'header_submit_solution_for': 'Ուղարկել լուծումը՝ %s', 'btn_back_to_contest': 'Վերադառնալ', 'label_language': 'Ծրագրավորման Լեզու', 'label_code': 'Ելակետային Կոդ', 'text_or_upload': 'Կամ վերբեռնեք ֆայլը ստորև։', 'label_upload': 'Վերբեռնել Ֆայլ', 'btn_cancel': 'Չեղարկել', 'btn_submit': 'Ուղարկել Լուծումը' },
-        'ru': { 'page_title': 'Отправить Решение', 'header_submit_solution_for': 'Отправить решение для: %s', 'btn_back_to_contest': 'Назад к контесту', 'label_language': 'Язык Программирования', 'label_code': 'Исходный Код', 'text_or_upload': 'Или загрузите исходный файл ниже.', 'label_upload': 'Загрузить Файл', 'btn_cancel': 'Отмена', 'btn_submit': 'Отправить Решение' }
-    };
-    Object.keys(pageTranslations).forEach(lang => {
-        if (!window.translations[lang]) { window.translations[lang] = {}; }
-        Object.assign(window.translations[lang], pageTranslations[lang]);
-    });
-
-    const updatePageText = () => {
-        const lang = localStorage.getItem('language') || 'en';
-        const langDict = window.translations[lang] || window.translations['en'];
-        
-        document.querySelectorAll('[data-translate-key]').forEach(el => {
-            const key = el.dataset.translateKey;
-            let translation = langDict[key];
-            if (translation) {
-                if (key === 'header_submit_solution_for') {
-                    translation = translation.replace('%s', el.dataset.problemTitle);
-                }
-                el.textContent = translation;
+    `
+        };
+    
+        function getDefaultCodeFor(lang) {
+            const key = Object.keys(defaultCodes).find(k => lang.includes(k));
+            return defaultCodes[key] || '';
+        }
+    
+        // Initialize textarea
+        if (initialCode) {
+            codeTextarea.value = initialCode;
+        } else {
+            codeTextarea.value = getDefaultCodeFor(languageSelect.value.toLowerCase());
+        }
+    
+        // On language change
+        languageSelect.addEventListener('change', function() {
+            const lang = languageSelect.value.toLowerCase();
+    
+            if (initialLanguage && lang === initialLanguage) {
+                // Restore original code if it exists, otherwise default
+                codeTextarea.value = initialCode || getDefaultCodeFor(lang);
+            } else {
+                codeTextarea.value = getDefaultCodeFor(lang);
             }
         });
-    };
+    });
+    </script>
     
-    updatePageText();
-    window.addEventListener('languageChanged', updatePageText);
-});
-</script>
+    
 {% endblock %}
