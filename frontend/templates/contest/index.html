@@ -180,7 +180,6 @@
 {{ super() }}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // TRANSLATIONS SETUP
     const pageTranslations = {
         en: { "title_contests": "Contests", "header_contests": "Contests", "tab_active": "Active", "tab_upcoming": "Upcoming", "tab_past": "Past", "btn_enter": "Enter", "btn_details": "Details", "btn_register": "Register", "text_problems": "Problems", "text_no_active_title": "No Active Contests", "text_no_active_desc": "Please check the 'Upcoming' tab for future events.", "text_no_upcoming_title": "No Upcoming Contests", "text_no_upcoming_desc": "Stay tuned for future announcements.", "text_no_past_title": "No Past Contests", "text_no_past_desc": "Completed contests will appear here.", "status_ended": "Ended", "status_started": "Started", "timer_ends_in": "Ends in", "timer_starts_in": "Starts in", "timer_d": "d", "timer_h": "h", "timer_m": "m", "timer_s": "s" },
         hy: { "title_contests": "Մրցույթներ", "header_contests": "Մրցույթներ", "tab_active": "Ակտիվ", "tab_upcoming": "Սպասվող", "tab_past": "Անցած", "btn_enter": "Մուտք", "btn_details": "Մանրամասներ", "btn_register": "Գրանցվել", "text_problems": "խնդիր", "text_no_active_title": "Ակտիվ մրցույթներ չկան", "text_no_active_desc": "Խնդրում ենք ստուգել «Սպասվող» բաժինը։", "text_no_upcoming_title": "Սպասվող մրցույթներ չկան", "text_no_upcoming_desc": "Հետևեք հետագա հայտարարություններին։", "text_no_past_title": "Անցած մրցույթներ չկան", "text_no_past_desc": "Ավարտված մրցույթները կհայտնվեն այստեղ։", "status_ended": "Ավարտված", "status_started": "Սկսված", "timer_ends_in": "Ավարտին՝", "timer_starts_in": "Մեկնարկին՝", "timer_d": "օ", "timer_h": "ժ", "timer_m": "ր", "timer_s": "վ" },
@@ -188,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     Object.keys(pageTranslations).forEach(lang => { if(window.translations && window.translations[lang]) Object.assign(window.translations[lang], pageTranslations[lang]); });
     
-    // TIMER LOGIC
     const setupTimer = (elementId, isoTime, type) => {
         const timerEl = document.getElementById(elementId);
         if(!timerEl) return;
@@ -213,8 +211,6 @@ document.addEventListener('DOMContentLoaded', () => {
         update();
     };
 
-    // ========== ՈՒՂՂՎԱԾ ՏԱՐԲԵՐԱԿ ==========
-    // Այս ֆունկցիան թարմացնում է էջի բոլոր տեքստերը
     const updatePageText = () => {
         const lang = localStorage.getItem('language') || 'en';
         const langDict = window.translations[lang] || window.translations['en'];
@@ -226,12 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Այս ֆունկցիան սկսում է էջի բոլոր դինամիկ մասերը
     const initializePage = () => {
-        // Թարմացնում ենք ստատիկ տեքստերը
         updatePageText();
-
-        // Գործարկում ենք թայմերները
         "{% for contest in active_contests %}"
         setupTimer('timer-{{ contest.id }}', "{{ contest.end_time.isoformat() }}Z", 'active');
         "{% endfor %}"
@@ -241,9 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "{% endfor %}"
     };
 
-    // Գործարկում ենք էջը բացելիս
     initializePage();
-    // Գործարկում ենք ամեն անգամ, երբ լեզուն փոխվում է
     window.addEventListener('languageChanged', initializePage);
 });
 </script>

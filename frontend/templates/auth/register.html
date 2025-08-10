@@ -65,7 +65,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     AOS.init({ duration: 800, offset: 50, once: true });
     
-    // ** ՈՒՂՂՎԱԾ ԵՎ ԱՇԽԱՏՈՂ ՍԿՐԻՊՏ "ԱՉՔԻ" ՀԱՄԱՐ **
     document.querySelectorAll('.password-toggle').forEach(toggle => {
         toggle.addEventListener('click', function() {
             const passwordField = this.previousElementSibling;
@@ -78,7 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Թարգմանություններ
     const registerTranslations = {
         'en': { 'page_register': 'Register', 'register_title': 'Create an Account', 'register_for_contest': 'for contest', 'username_label': 'Username', 'email_label': 'Email Address', 'password_label': 'Password', 'confirm_password_label': 'Confirm Password', 'register_button_text': 'Create Account', 'have_account': 'Already have an account?', 'sign_in': 'Sign In', 'username_placeholder': 'e.g. johndoe', 'email_placeholder': 'e.g. john.doe@example.com', 'password_placeholder': 'Enter a strong password' },
         'hy': { 'page_register': 'Գրանցում', 'register_title': 'Ստեղծել Հաշիվ', 'register_for_contest': 'մրցույթի համար', 'username_label': 'Օգտանուն', 'email_label': 'Էլ․ հասցե', 'password_label': 'Գաղտնաբառ', 'confirm_password_label': 'Հաստատեք Գաղտնաբառը', 'register_button_text': 'Ստեղծել Հաշիվ', 'have_account': 'Արդեն ունե՞ք հաշիվ', 'sign_in': 'Մուտք', 'username_placeholder': 'օր.՝ poghosyan', 'email_placeholder': 'օր.՝ poghos@example.com', 'password_placeholder': 'Մուտքագրեք հուսալի գաղտնաբառ' },
@@ -86,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     Object.keys(registerTranslations).forEach(lang => { Object.assign(window.translations[lang], registerTranslations[lang]); });
     
-    // Էջի թարմացման ֆունկցիա
     const updatePageText = () => {
         const lang = localStorage.getItem('language') || 'en'; const langDict = window.translations[lang] || window.translations['en'];
         document.querySelectorAll('[data-translate-key]').forEach(el => {
@@ -94,12 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if(el.type === 'submit') { if(langDict.register_button_text) el.value = langDict.register_button_text; }
             else if (langDict[key]) el.textContent = langDict[key];
         });
-        // Թարգմանում ենք բոլոր placeholder-ները
         const userInput = document.querySelector('input[name="username"]'), emailInput = document.querySelector('input[name="email"]'), passInput = document.querySelector('input[name="password"]'), confPassInput = document.querySelector('input[name="confirm_password"]');
         if(userInput) userInput.placeholder = langDict.username_placeholder || ' ';
         if(emailInput) emailInput.placeholder = langDict.email_placeholder || ' ';
         if(passInput) passInput.placeholder = langDict.password_placeholder || ' ';
-        if(confPassInput) confPassInput.placeholder = langDict.password_placeholder || ' '; // Can reuse password placeholder
+        if(confPassInput) confPassInput.placeholder = langDict.password_placeholder || ' '; 
     };
     updatePageText(); window.addEventListener('languageChanged', updatePageText);
 });

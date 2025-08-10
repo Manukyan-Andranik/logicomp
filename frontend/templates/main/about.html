@@ -3,10 +3,8 @@
 {% block title %}<span data-translate-key="page_about">About Us</span>{% endblock %}
 
 {% block extra_css %}
-<!-- AOS գրադարան՝ էլեմենտների սահուն անիմացիայի համար -->
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-<!-- About էջին հատուկ ոճեր՝ համահունչ "մուգ և դեղին" թեմային -->
 <style>
     /* Հանում ենք main-ի ստանդարտ padding-ը՝ full-width սեկցիաների համար */
     main { padding: 0 !important; }
@@ -32,8 +30,8 @@
         font-size: 3rem; color: var(--primary); margin-bottom: 1.5rem; display: block;
     }
 
-    /* Տեխնոլոգիաների բլոկ */
-    .tech-stack-section { background-color: #000; }
+    /* Աջակցվող Լեզուների բլոկ */
+    .languages-section { background-color: #000; }
     .tech-icon-wrapper {
         display: flex; justify-content: center; align-items: center;
         transition: all 0.3s ease;
@@ -42,7 +40,7 @@
         transform: scale(1.1);
     }
     .tech-icon {
-        font-size: 3.5rem; height: 56px; width: auto; color: #888;
+        font-size: 4rem; height: 64px; width: auto; color: #888;
         transition: color 0.3s ease; vertical-align: middle;
     }
     .tech-icon-wrapper:hover .tech-icon { color: var(--primary); }
@@ -80,7 +78,7 @@
         </div>
     </section>
     
-    <!-- ==================== ԱՎԵԼԱՑՎԱԾ Է՝ Our Vision Section ==================== -->
+    <!-- ==================== Our Vision Section ==================== -->
     <section class="py-5" style="background-color: #0f0f0f;">
         <div class="container">
             <div class="row align-items-center g-5">
@@ -117,32 +115,22 @@
         </div>
     </section>
 
-    <!-- ==================== Tech Stack Section (ԲԱՐԵԼԱՎՎԱԾ) ==================== -->
-    <section class="py-5 tech-stack-section">
+    <!-- ==================== Supported Languages Section ==================== -->
+    <section class="py-5 languages-section">
         <div class="container">
             <div class="text-center mb-5" data-aos="fade-up">
-                <h2 class="fw-bold" data-translate-key="tech_stack_title">Technology Stack</h2>
-                <p class="text-white-50" data-translate-key="tech_stack_subtitle">Built with modern and scalable technologies.</p>
+                <h2 class="fw-bold" data-translate-key="supported_languages_title">Supported Languages</h2>
             </div>
             
-            <div class="row row-cols-4 row-cols-md-7 g-4 justify-content-center" data-aos="zoom-in-up">
+            <div class="row row-cols-2 row-cols-sm-4 g-5 justify-content-center" data-aos="zoom-in-up">
                 <div class="col tech-icon-wrapper">
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" class="tech-icon" alt="Python Logo" title="Python">
                 </div>
                 <div class="col tech-icon-wrapper">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flask/flask-original.svg" class="tech-icon" alt="Flask Logo" title="Flask">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" class="tech-icon" alt="Java Logo" title="Java">
                 </div>
                 <div class="col tech-icon-wrapper">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg" class="tech-icon" alt="PostgreSQL Logo" title="PostgreSQL">
-                </div>
-                <div class="col tech-icon-wrapper">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" class="tech-icon" alt="Bootstrap 5 Logo" title="Bootstrap 5">
-                </div>
-                <div class="col tech-icon-wrapper">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg" class="tech-icon" alt="HTML5 Logo" title="HTML5">
-                </div>
-                <div class="col tech-icon-wrapper">
-                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg" class="tech-icon" alt="CSS3 Logo" title="CSS3">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" class="tech-icon" alt="C++ Logo" title="C++">
                 </div>
                 <div class="col tech-icon-wrapper">
                     <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" class="tech-icon" alt="JavaScript Logo" title="JavaScript">
@@ -156,13 +144,12 @@
 
 
 {% block scripts %}
-{{ super() }} <!-- Կարևոր է ժառանգել base.html-ի սկրիպտերը -->
+{{ super() }} 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     AOS.init({ duration: 800, offset: 50, once: true });
     
-    // Ընդլայնում ենք base.html-ի թարգմանությունների գլոբալ օբյեկտը այս էջի համար
     const aboutTranslations = {
         'en': {
             'page_about': 'About Us', 'about_title': 'About LogiComp', 'about_subtitle': 'Discover the mission, vision, and the technology that powers our platform.',
@@ -171,16 +158,16 @@ document.addEventListener('DOMContentLoaded', function() {
             'features_title': 'Platform Features', 'feature1_title': 'Contest Management', 'feature1_desc': 'Easily create and manage contests with multiple, complex problems.',
             'feature2_title': 'Automatic Judging', 'feature2_desc': 'Instant, reliable feedback on submissions across various test cases.',
             'feature3_title': 'Real-time Leaderboard', 'feature3_desc': 'Track progress and competition standings live as they happen.',
-            'tech_stack_title': 'Technology Stack', 'tech_stack_subtitle': 'Built with modern and scalable technologies.'
+            'supported_languages_title': 'Supported Languages', 
         },
         'hy': {
             'page_about': 'Մեր մասին', 'about_title': 'LogiComp-ի մասին', 'about_subtitle': 'Բացահայտեք մեր առաքելությունը, տեսլականը և մեր հարթակը սնուցող տեխնոլոգիաները։',
             'mission_title': 'Մեր Առաքելությունը', 'mission_desc': 'Տրամադրել կայուն, անխափան և արդար հարթակ ծրագրավորման մրցույթների համար։ Մեր նպատակն է հզորացնել դասախոսներին և կազմակերպություններին՝ կոդավորման միջոցառումներ անցկացնելու համար՝ միաժամանակ ոգեշնչելով մասնակիցներին սովորել, աճել և ցուցադրել իրենց հմտությունները։',
-            'vision_title': 'Մեր Տեսլականը', 'vision_desc': 'Դառնալ մրցակցային ծրագրավորման առաջատար համաշխարհային կենտրոն՝ խթանելով նորարարությունը և զարգացնելով տեխնոլոգիական տաղանդների հաջորդ սերունդը։ Մենք պատկերացնում ենք մի ապագա, որտեղ յուրաքանչյուրը, ցանկացած վայրում, կարող է օգտվել համաշխարհային կարգի գործիքներից՝ իրեն մարտահրավեր նետելու համար։',
+            'vision_title': 'Մեր Տեսլականը', 'vision_desc': 'Դառնալ մրցակցային ծրագրավորման առաջատար համաշխարհային կենտրոն՝ խթանելով նորարարությունը և զարգացնելով տեхնոլոգիական տաղանդների հաջորդ սերունդը։ Մենք պատկերացնում ենք մի ապագա, որտեղ յուրաքանչյուրը, ցանկացած վայրում, կարող է օգտվել համաշխարհային կարգի գործիքներից՝ իրեն մարտահրավեր նետելու համար։',
             'features_title': 'Հարթակի Առանձնահատկությունները', 'feature1_title': 'Մրցույթների Կառավարում', 'feature1_desc': 'Հեշտությամբ ստեղծեք և կառավարեք մրցույթներ՝ բազմաթիվ բարդ խնդիրներով։',
             'feature2_title': 'Ավտոմատ Ստուգում', 'feature2_desc': 'Ակնթարթային, հուսալի արձագանք տարբեր թեստային դեպքերի համար։',
             'feature3_title': 'Իրական Ժամանակի Աղյուսակ', 'feature3_desc': 'Հետևեք առաջընթացին և մրցակցության դիրքերին ուղիղ եթերում։',
-            'tech_stack_title': 'Տեխնոլոգիաների Պահոց', 'tech_stack_subtitle': 'Կառուցված է ժամանակակից և ընդլայնվող տեխնոլոգիաներով։'
+            'supported_languages_title': 'Աջակցվող Լեզուներ',
         },
         'ru': {
             'page_about': 'О нас', 'about_title': 'О LogiComp', 'about_subtitle': 'Узнайте о миссии, видении и технологиях, на которых работает наша платформа.',
@@ -189,15 +176,13 @@ document.addEventListener('DOMContentLoaded', function() {
             'features_title': 'Возможности Платформы', 'feature1_title': 'Управление Конкурсами', 'feature1_desc': 'Легко создавайте и управляйте конкурсами с множеством сложных задач.',
             'feature2_title': 'Автоматическая Проверка', 'feature2_desc': 'Мгновенная, надежная обратная связь по решениям на различных тестах.',
             'feature3_title': 'Таблица Лидеров в Реальном Времени', 'feature3_desc': 'Отслеживайте прогресс и турнирную таблицу в прямом эфире.',
-            'tech_stack_title': 'Стек Технологий', 'tech_stack_subtitle': 'Создано с использованием современных и масштабируемых технологий.'
+            'supported_languages_title': 'Поддерживаемые Языки',
         }
     };
     Object.keys(aboutTranslations).forEach(lang => {
         if (!window.translations[lang]) { window.translations[lang] = {}; }
         Object.assign(window.translations[lang], aboutTranslations[lang]);
     });
-    
-    // Ֆունկցիա՝ այս էջի տեքստերը թարմացնելու համար
     const updatePageText = () => {
         const lang = localStorage.getItem('language') || 'en';
         const langDict = window.translations[lang] || window.translations['en'];
@@ -208,13 +193,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (el.dataset.count) {
                     translation = translation.replace('%s', el.dataset.count);
                 }
-                // HTML-ի փոխարեն օգտագործում ենք textContent, եթե թարգմանությունները չեն պարունակում HTML թեգեր
                 el.textContent = translation;
             }
         });
     };
-    
-    // Սկզբնական թարմացում + լսում ենք base.html-ի իրադարձությանը
     updatePageText();
     window.addEventListener('languageChanged', updatePageText);
 });

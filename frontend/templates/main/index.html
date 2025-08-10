@@ -4,7 +4,6 @@
 
 {% block extra_css %}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<!-- Welcome էջին հատուկ "մուգ և դեղին" ոճեր -->
 <style>
     main { padding: 0 !important; }
     
@@ -39,12 +38,8 @@
     .feature-card:hover, .step-card:hover { transform: translateY(-10px); background: #212121; }
     .feature-icon, .step-icon { font-size: 3rem; color: var(--primary); }
     
-    /* CTA բաժին */
     .cta-section { background: linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1350&q=80') center center; background-size: cover; }
 
-    /* ========================================================== */
-    /* ԱԿՏԻՎ ՄՐՑՈՒՅԹՆԵՐԻ ՔԱՐՏԵՐԻ ՆՈՐ ԴԻԶԱՅՆ (contests.html-ից) */
-    /* ========================================================== */
     .contest-card {
         background: #1a1a1a;
         border: 1px solid var(--border-color);
@@ -163,8 +158,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     AOS.init({ duration: 800, offset: 50, once: true });
-    
-    // Translations for this page
     const welcomeTranslations = {
         'en': { 'page_welcome': 'Welcome', 'welcome_title': 'Welcome to LogiComp', 'welcome_subtitle': 'The ultimate platform for competitive programming.', 'view_contests': 'View Contests', 'how_it_works_title': 'How It Works', 'how_it_works_subtitle': 'Start your journey in 3 simple steps', 'step1_title': 'Register', 'step1_desc': 'Create your account and join a community of coders.', 'step2_title': 'Compete', 'step2_desc': 'Choose a contest and solve challenges to earn points.', 'step3_title': 'Win', 'step3_desc': 'Climb the leaderboard and win amazing prizes.', 'why_choose_us_title': 'Why Choose LogiComp?', 'why_choose_us_subtitle': 'The features that make us stand out', 'feature1_title': 'Instant Judging', 'feature1_desc': 'Get immediate, accurate feedback on your code.', 'feature2_title': 'Live Leaderboards', 'feature2_desc': 'Track your progress in real-time against others.', 'feature3_title': 'Diverse Problems', 'feature3_desc': 'Challenge yourself with a wide variety of problems.', 'feature4_title': 'Growing Community', 'feature4_desc': 'Join a vibrant community and learn from others.', 'active_contests': 'Active Contests', 'text_problems': 'problems', 'view_details': 'Details', 'register_to_join': 'Register', 'enter_contest': 'Enter', 'timer_ended': 'Ended', 'timer_ends_in': 'Ends in', 'timer_d': 'd', 'timer_h': 'h', 'timer_m': 'm', 'timer_s': 's' },
         'hy': { 'page_welcome': 'Բարի Գալուստ', 'welcome_title': 'Բարի Գալուստ LogiComp', 'welcome_subtitle': 'Ծրագրավորման մրցույթների լավագույն հարթակը։', 'view_contests': 'Դիտել Մրցույթները', 'how_it_works_title': 'Ինչպես է աշխատում', 'how_it_works_subtitle': 'Սկսեք ձեր ճանապարհը 3 պարզ քայլով', 'step1_title': 'Գրանցվեք', 'step1_desc': 'Ստեղծեք ձեր հաշիվը և միացեք կոդերների համայնքին։', 'step2_title': 'Մրցեք', 'step2_desc': 'Ընտրեք մրցույթ և լուծեք խնդիրներ՝ միավորներ վաստակելու համար։', 'step3_title': 'Հաղթեք', 'step3_desc': 'Բարձրացեք առաջատարների աղյուսակում և շահեք մրցանակներ։', 'why_choose_us_title': 'Ինչու՞ ընտրել LogiComp-ը', 'why_choose_us_subtitle': 'Առանձնահատկություններ, որոնք մեզ առանձնացնում են', 'feature1_title': 'Ակնթարթային Ստուգում', 'feature1_desc': 'Ստացեք անմիջական, ճշգրիտ արձագանք ձեր կոդի վերաբերյալ։', 'feature2_title': 'Կենդանի Աղյուսակներ', 'feature2_desc': 'Հետևեք ձեր առաջընթացին իրական ժամանակում։', 'feature3_title': 'Բազմազան Խնդիրներ', 'feature3_desc': 'Մարտահրավեր նետեք ինքներդ ձեզ տարբեր խնդիրներով։', 'feature4_title': 'Աճող Համայնք', 'feature4_desc': 'Միացեք ակտիվ համայնքին և սովորեք ուրիշներից։', 'active_contests': 'Ակտիվ Մրցույթներ', 'text_problems': 'խնդիր', 'view_details': 'Մանրամասներ', 'register_to_join': 'Գրանցվել', 'enter_contest': 'Մուտք', 'timer_ended': 'Ավարտված է', 'timer_ends_in': 'Ավարտին՝', 'timer_d': 'օ', 'timer_h': 'ժ', 'timer_m': 'ր', 'timer_s': 'վ' },
@@ -174,8 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!window.translations[lang]) { window.translations[lang] = {}; }
         Object.assign(window.translations[lang], welcomeTranslations[lang]);
     });
-    
-    // Function to re-apply translations
     const updatePageText = () => {
         const lang = localStorage.getItem('language') || 'en';
         const langDict = window.translations[lang] || window.translations['en'];
@@ -186,8 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     updatePageText();
     window.addEventListener('languageChanged', updatePageText);
-    
-    // Contest Timer Logic
     {% for contest in active_contests[:3] %}
     (function() {
         const timerContainer = document.getElementById('home-timer-{{ contest.id }}'); if (!timerContainer) return;

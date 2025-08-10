@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.querySelectorAll('.password-toggle').forEach(toggle => {
         toggle.addEventListener('click', function() {
-            // Գտնում ենք input-ը, որը գտնվում է նույն მშობლის (.password-wrapper) մեջ
             const passwordField = this.previousElementSibling; 
             if(passwordField) {
                 const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';

@@ -10,7 +10,6 @@
     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-    <!-- Գլոբալ ոճեր՝ "Մուգ և Դեղին" դիզայնի համար -->
     <style>
         :root {
             --primary: #FFC107; /* Հիմնական շեշտադրման գույն՝ վառ դեղին */
@@ -111,7 +110,6 @@
                     
                     {% if current_user.is_authenticated %}
                         {% if current_user.role == 'admin' %}
-                        <!-- Ադմինի դեպքում -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-shield-lock-fill me-1"></i>{{ current_user.username }}
@@ -123,7 +121,6 @@
                             </ul>
                         </li>
                         {% else %}
-                        <!-- Սովորական User-ի դեպքում -->
                         <li class="nav-item dropdown">
                              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                <i class="bi bi-person-fill me-1"></i>{{ current_user.username }}
@@ -134,7 +131,6 @@
                         </li>
                         {% endif %}
                     {% else %}
-                        <!-- Դեռ մուտք չգործած User-ի դեպքում -->
                         <li class="nav-item">
                             <a class="btn btn-primary btn-sm ms-2" style="background: var(--primary); border: none; color: #000; font-weight: 500;" href="{{ url_for('auth.login') }}" data-translate-key="nav_login">Login</a>
                         </li>
@@ -182,7 +178,7 @@
                 langSelectorBtn.innerHTML = activeLinkContent.replace('<span', '<span class="d-none d-lg-inline ms-2"');
             }
             for (const key in langLinks) { langLinks[key].classList.toggle('active', key === lang); }
-            updatePageTitle(lang);  // <-- Add this line to update <title>
+            updatePageTitle(lang);  
 
         };
 

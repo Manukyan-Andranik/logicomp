@@ -3,9 +3,8 @@
 {% block title %}<span data-translate-key="page_index">Home</span>{% endblock %}
 
 {% block extra_css %}
-<!-- AOS գրադարան՝ անիմացիաների համար -->
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<!-- Գլխավոր էջի հատուկ ոճեր -->
+
 <style>
     main { padding: 0 !important; }
 
@@ -152,7 +151,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     AOS.init({ duration: 800, offset: 50, once: true });
     
-    // Թարգմանություններ գլխավոր էջի համար
     const indexTranslations = {
         'en': {
             'page_index': 'Home', 'hero_title': 'Welcome to LogiComp', 'hero_subtitle': 'The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!',
@@ -183,13 +181,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Ընդլայնում ենք գլոբալ թարգմանությունների օբյեկտը
     Object.keys(indexTranslations).forEach(lang => {
         if (!window.translations[lang]) { window.translations[lang] = {}; }
         Object.assign(window.translations[lang], indexTranslations[lang]);
     });
     
-    // Ֆունկցիա՝ էջի տեքստը թարմացնելու համար
     const updatePageText = () => {
         const lang = localStorage.getItem('language') || 'en';
         const langDict = window.translations[lang] || window.translations['en'];
@@ -201,7 +197,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
     
-    // Սկզբնական թարմացում և լեզվի փոփոխությանը լսել
     updatePageText();
     window.addEventListener('languageChanged', updatePageText);
 });

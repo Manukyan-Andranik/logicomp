@@ -6,7 +6,6 @@
 <div class="container">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        {# Եթե contest օբյեկտը փոխանցվել է, ցույց ենք տալիս կոնկրետ մրցույթի անունը #}
         {% if contest %}
             <h1>Submissions: {{ contest.title }}</h1>
         {% else %}
@@ -14,26 +13,21 @@
         {% endif %}
         
         <div>
-            {# "Back" կոճակը ցույց ենք տալիս միայն, եթե կոնկրետ մրցույթի մեջ ենք #}
             {% if contest %}
                 <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-secondary me-2">
                     <i class="bi bi-arrow-left"></i> Back to Contest
                 </a>
             {% endif %}
 
-            {# Dropdown մենյու՝ այլ մրցույթների հանձնումները դիտելու համար #}
             <div class="dropdown d-inline-block">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="contestFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     Filter by Contest
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="contestFilterDropdown">
-                    {# Հղում դեպի բոլոր հանձնումները՝ առանց ֆիլտրի #}
                     <li><a class="dropdown-item" href="{{ url_for('admin.view_submissions') }}">All Submissions</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    {# Ցուցադրում ենք բոլոր մրցույթները #}
                     {% for c in all_contests %}
                     <li>
-                        {# ՃԻՇՏ url_for կանչ #}
                         <a class="dropdown-item" href="{{ url_for('admin.view_submissions', contest_id=c.id) }}">
                             {{ c.title }}
                         </a>
@@ -97,12 +91,8 @@
         </div>
     </div>
     
-    {# =================================================================== #}
-    {# ՈՒՂՂՎԱԾ PAGINATION ԲԼՈԿ                                           #}
-    {# =================================================================== #}
     <nav aria-label="Submissions pagination" class="mt-4">
         <ul class="pagination justify-content-center">
-            {# "Previous" կոճակ #}
             {% if submissions.has_prev %}
                 <li class="page-item">
                     <a class="page-link" href="{{ url_for('admin.view_submissions', page=submissions.prev_num, contest_id=request.args.get('contest_id')) }}">Previous</a>
@@ -111,7 +101,6 @@
                 <li class="page-item disabled"><span class="page-link">Previous</span></li>
             {% endif %}
             
-            {# Էջերի համարները #}
             {% for page_num in submissions.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                 {% if page_num %}
                     {% if submissions.page == page_num %}
@@ -128,7 +117,6 @@
                 {% endif %}
             {% endfor %}
             
-            {# "Next" կոճակ #}
             {% if submissions.has_next %}
                 <li class="page-item">
                     <a class="page-link" href="{{ url_for('admin.view_submissions', page=submissions.next_num, contest_id=request.args.get('contest_id')) }}">Next</a>
