@@ -33,6 +33,7 @@
         font-family: 'SF Mono', 'Courier New', monospace;
         font-size: 0.9rem;
         min-height: 400px;
+        white-space: pre-wrap;
     }
 </style>
 {% endblock %}
@@ -40,7 +41,12 @@
 {% block content %}
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 page-header">
-        <h1 class="d-flex align-items-center"><i class="bi bi-cloud-upload-fill me-3"></i><span data-translate-key="header_submit_solution_for" data-problem-title="{{ problem.title }}">Submit Solution for: {{ problem.title }}</span></h1>
+        <h1 class="d-flex align-items-center">
+            <i class="bi bi-cloud-upload-fill me-3"></i>
+            <span data-translate-key="header_submit_solution_for" data-problem-title="{{ problem.title }}">
+                Submit Solution for: {{ problem.title }}
+            </span>
+        </h1>
         {% if contest %}
             <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
@@ -62,7 +68,7 @@
                         
                         <div class="mb-3">
                             <label for="{{ form.code.id }}" class="form-label fw-bold" data-translate-key="label_code">Source Code</label>
-                            {{ form.code(class="form-control form-control-dark code-textarea", rows=18) }}
+                            {{ form.code(class="form-control form-control-dark code-textarea", rows=18, id="code-textarea", value=initial_code if initial_code else '') }}
                             <small class="text-muted mt-2 d-block" data-translate-key="text_or_upload">Or upload a source file below.</small>
                         </div>
                         
@@ -91,26 +97,75 @@
 {{ super() }}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const codeTextarea = document.querySelector('textarea[name="code"]');
+    const codeTextarea = document.getElementById('code-textarea');
     const languageSelect = document.querySelector('select[name="language"]');
 
     if (!codeTextarea || !languageSelect) return;
 
-    const placeholders = {
-        python: `# Your Python code here...\ndef solve():\n    # Read input and solve the problem\n    pass\nsolve()`,
-        cpp: `#include <iostream>\n\n// Your C++ code here...\nvoid solve() {\n    // Read input and solve the problem\n}\n\nint main() {\n    std::ios_base::sync_with_stdio(false);\n    std::cin.tie(NULL);\n    solve();\n    return 0;\n}`,
-        javascript: `// Your JavaScript code here...\nfunction solve() {\n    // Read input and solve the problem\n}\nsolve();`,
-        java: `import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    // Your Java code here...\n    public static void solve() {\n        // Read input and solve the problem\n    }\n\n    public static void main(String[] args) {\n        solve();\n    }\n}`
-    };
+    const initialCode = codeTextarea.value.trim();
 
-    function updatePlaceholder() {
-        const lang = languageSelect.value.toLowerCase();
-        const key = Object.keys(placeholders).find(k => lang.includes(k));
-        codeTextarea.placeholder = placeholders[key] || 'Write your code here...';
+    const defaultCodes = {
+        python: `# Your Python code here...
+def solve():
+    # Read input and solve the problem
+    pass
+solve()
+`,
+        cpp: `#include <iostream>
+using namespace std;
+// Your C++ code here...
+void solve() {
+    // Read input and solve the problem
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}
+`,
+        javascript: `// Your JavaScript code here...
+function solve() {
+    // Read input and solve the problem
+}
+solve();
+`,
+        java: `import java.util.*;
+import java.io.*;
+
+public class Main {
+    // Your Java code here...
+    public static void solve() {
+        // Read input and solve the problem
     }
 
-    updatePlaceholder();
-    languageSelect.addEventListener('change', updatePlaceholder);
+    public static void main(String[] args) {
+        solve();
+    }
+}
+`
+    };
+
+    function updateCodeContent() {
+        const lang = languageSelect.value.toLowerCase();
+        const key = Object.keys(defaultCodes).find(k => lang.includes(k));
+        const defaultCode = defaultCodes[key] || '';
+
+        if (!codeTextarea.value.trim() || codeTextarea.value === codeTextarea.dataset.lastDefault) {
+            codeTextarea.value = defaultCode;
+            codeTextarea.dataset.lastDefault = defaultCode;
+        }
+    }
+
+    // Only set default code if no initial code present
+    if (!initialCode) {
+        updateCodeContent();
+    } else {
+        codeTextarea.dataset.lastDefault = initialCode;
+    }
+
+    languageSelect.addEventListener('change', updateCodeContent);
 
     // Translations
     const pageTranslations = {

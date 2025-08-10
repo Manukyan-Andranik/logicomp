@@ -27,7 +27,11 @@ def process_submission(app, submission):
 def submit(problem_id):
     problem = Problem.query.get_or_404(problem_id)
     contest = Contest.query.get_or_404(problem.contest_id)
-    
+    my_submissions = Submission.query.filter_by(user_id=current_user.id, problem_id=problem.id).order_by(Submission.timestamp.desc()).all()
+    if my_submissions:
+        last_submission_code = my_submissions[0].code
+        print(f"Last submission code: {last_submission_code}")  # Print first 30 characters for brevity
+        
     if not contest.is_active():
         flash('Contest is not currently active.', 'info')
         return redirect(url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id))
@@ -57,7 +61,7 @@ def submit(problem_id):
         flash('Solution submitted and is being judged!', 'info')
         return redirect(url_for('submission.view', submission_id=submission.id))
     
-    return render_template('submission/submit.html', form=form, problem=problem, contest=contest)
+    return render_template('submission/submit.html', form=form, problem=problem, contest=contest, last_submission_code=my_submissions[0].code if my_submissions else None)
 
 
 @bp.route('/submission/<int:submission_id>')

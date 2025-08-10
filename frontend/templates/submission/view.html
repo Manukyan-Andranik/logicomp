@@ -63,6 +63,9 @@
             <pre><code>{{ submission.code }}</code></pre>
         </div>
     </div>
+    <a href="{{ url_for('submission.submit', problem_id=problem.id) }}" class="btn btn-warning w-100 fw-bold mt-2">
+        <i class="bi bi-cloud-upload-fill me-2"></i><span data-translate-key="btn_submit_page">Go to Submission Page</span>
+    </a>
 
     <!-- Submissions History Table -->
     <div class="card">

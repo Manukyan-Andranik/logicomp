@@ -1,9 +1,9 @@
-# judge/mock_judge.py
 import subprocess
 import os
 import time
 import tempfile
-from enum import Enum, auto
+import re
+from enum import Enum
 from typing import Tuple
 from app.models import TestCase
 
@@ -33,33 +33,60 @@ def run_code(code: str, language: str, input_data: str, time_limit: int) -> Tupl
         filename = filename_map[language]
         code_path = os.path.join(temp_dir, filename)
 
-        # === Auto-wrap for minimal code submission ===
-        if language == 'python' and 'def res' in code and 'print' not in code:
-            code += "\n\nif __name__ == '__main__':\n    a, b = map(int, input().split())\n    print(res(a, b))\n"
+        # === Detect function name ===
+        func_name = None
 
-        elif language == 'java' and 'public static int res' in code and 'Scanner' not in code:
-            code += (
-                "\n\npublic class Solution {\n"
-                "    public static int res(int a, int b) {\n"
-                "        // your logic here\n"
-                "        return a + b;\n"
-                "    }\n"
-                "    public static void main(String[] args) {\n"
-                "        java.util.Scanner sc = new java.util.Scanner(System.in);\n"
-                "        int a = sc.nextInt();\n"
-                "        int b = sc.nextInt();\n"
-                "        System.out.println(res(a, b));\n"
-                "    }\n"
-                "}\n"
-            )
+        if language == 'python':
+            # Match function def: def func_name(
+            m = re.search(r'def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(', code)
+            if m:
+                func_name = m.group(1)
 
-        elif language == 'javascript' and 'function res' in code and 'console.log' not in code:
-            code += (
-                "\n\nconst fs = require('fs');\n"
-                "const input = fs.readFileSync(0, 'utf8').trim().split(' ').map(Number);\n"
-                "console.log(res(input[0], input[1]));\n"
-            )
+            # Auto-wrap minimal code submissions
+            if func_name and 'print' not in code:
+                code += (
+                    "\n\nif __name__ == '__main__':\n"
+                    "    a, b = map(int, input().split())\n"
+                    f"    print({func_name}(a, b))\n"
+                )
 
+        elif language == 'java':
+            # Match function signature e.g. public static int funcName(
+            m = re.search(r'public static (?:int|void|String|double|float|long|boolean) ([a-zA-Z_][a-zA-Z0-9_]*)\s*\(', code)
+            if m:
+                func_name = m.group(1)
+
+            # If function found but no Scanner/input handling, auto-wrap
+            if func_name and 'Scanner' not in code:
+                code = (
+                    "public class Solution {\n"
+                    f"    public static int {func_name}(int a, int b) {{\n"
+                    "        // your logic here\n"
+                    "        return a + b;\n"
+                    "    }\n"
+                    "    public static void main(String[] args) {\n"
+                    "        java.util.Scanner sc = new java.util.Scanner(System.in);\n"
+                    "        int a = sc.nextInt();\n"
+                    "        int b = sc.nextInt();\n"
+                    f"        System.out.println({func_name}(a, b));\n"
+                    "    }\n"
+                    "}\n"
+                )
+
+        elif language == 'javascript':
+            # Match function definition: function funcName(
+            m = re.search(r'function\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(', code)
+            if m:
+                func_name = m.group(1)
+
+            if func_name and 'console.log' not in code:
+                code += (
+                    "\n\nconst fs = require('fs');\n"
+                    "const input = fs.readFileSync(0, 'utf8').trim().split(' ').map(Number);\n"
+                    f"console.log({func_name}(input[0], input[1]));\n"
+                )
+
+        # Write code to file
         with open(code_path, 'w') as f:
             f.write(code)
 
@@ -154,18 +181,18 @@ def judge_submission(submission_id: int):
     """Judge a submission against all test cases"""
     from app import create_app, db
     from app.models import Submission, TestCase
-    
+
     app = create_app()
     with app.app_context():
         submission = Submission.query.get(submission_id)
         if not submission:
             return
-        
+
         problem = submission.problem
         test_cases = TestCase.query.filter_by(problem_id=problem.id).all()
         submission.status = Verdict.ACCEPTED.value
         submission.execution_time = 0
-        
+
         for test_case in test_cases:
             verdict, output, exec_time = run_code(
                 submission.code,
@@ -173,9 +200,9 @@ def judge_submission(submission_id: int):
                 test_case.expected_input,
                 problem.time_limit
             )
-            
+
             submission.execution_time = max(submission.execution_time, exec_time)
-            
+
             if verdict != Verdict.ACCEPTED:
                 submission.status = verdict.value
                 submission.error_message = output
@@ -190,5 +217,4 @@ def judge_submission(submission_id: int):
                 )
                 break
 
-        
         db.session.commit()
