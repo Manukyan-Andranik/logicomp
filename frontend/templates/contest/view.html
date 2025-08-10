@@ -2,31 +2,75 @@
 
 {% block title %}{{ contest.title }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    main { background-color: #121212; }
+    .contest-header { color: white; }
+    .contest-header h1 { font-weight: 700; }
+    
+    .countdown-badge {
+        background-color: rgba(255, 204, 0, 0.1);
+        border: 1px solid var(--primary);
+        color: var(--primary);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 500;
+    }
+
+    .problem-list-card {
+        background-color: #1a1a1a;
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+    }
+    .problem-list-card .card-header {
+        background-color: #212121;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .problem-item {
+        background-color: #1a1a1a !important;
+        color: var(--text-light) !important;
+        border-top: 1px solid var(--border-color) !important;
+        transition: background-color 0.2s ease;
+        padding: 1rem 1.25rem;
+    }
+    .problem-item:first-child { border-top: none !important; }
+    .problem-item:hover { background-color: #252525 !important; }
+    .problem-item .problem-title { color: white; font-weight: 500; }
+</style>
+{% endblock %}
+
+
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="text-warning fw-bold">{{ contest.title }}</h1>
-            <p class="text-muted" data-translate-key="text_time_left">Time Left: <span id="countdown"></span></p>
+<div class="container py-5">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4 contest-header">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-flag-fill display-4 text-warning me-4"></i>
+            <div>
+                <h1 class="mb-0">{{ contest.title }}</h1>
+                <div class="countdown-badge mt-2 d-inline-flex align-items-center">
+                    <i class="bi bi-alarm me-2"></i>
+                    <span id="countdown"></span>
+                </div>
+            </div>
         </div>
-        <div>
-            <a href="{{ url_for('submission.my_submissions', contest_id=contest.id) }}" class="btn btn-sm btn-outline-light me-2"><i class="bi bi-card-checklist"></i> <span data-translate-key="btn_my_submissions">My Submissions</span></a>
-            <a href="{{ url_for('contest.leaderboard', contest_id=contest.id) }}" class="btn btn-outline-warning"><i class="bi bi-trophy-fill me-2"></i><span data-translate-key="btn_leaderboard">Leaderboard</span></a>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('submission.my_submissions', contest_id=contest.id) }}" class="btn btn-outline-secondary"><i class="bi bi-card-checklist me-1"></i> <span data-translate-key="btn_my_submissions">My Submissions</span></a>
+            <a href="{{ url_for('contest.leaderboard', contest_id=contest.id) }}" class="btn btn-warning"><i class="bi bi-trophy-fill me-1"></i><span data-translate-key="btn_leaderboard">Leaderboard</span></a>
         </div>
     </div>
 
-    <div class="card bg-dark text-light border-secondary">
-        <div class="card-header bg-dark border-secondary">
-            <h5 class="mb-0 text-warning" data-translate-key="header_problems">Problems</h5>
+    <div class="card problem-list-card">
+        <div class="card-header">
+            <h5 class="mb-0" data-translate-key="header_problems">Problems</h5>
         </div>
         <div class="list-group list-group-flush">
             {% for problem in problems %}
-            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="list-group-item list-group-item-action bg-dark text-light border-secondary">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1 text-warning">{{ loop.index }}. {{ problem.title }}</h5>
-
+            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="list-group-item list-group-item-action problem-item">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <h5 class="mb-1 problem-title">{{ loop.index }}. {{ problem.title }}</h5>
                 </div>
-                <p class="mb-1 text-muted">{{ problem.description | striptags | truncate(100) }}</p>
+                <p class="mb-1 text-muted small">{{ problem.description | striptags | truncate(120) }}</p>
             </a>
             {% endfor %}
         </div>
@@ -37,29 +81,72 @@
 {% block scripts %}
 {{ super() }}
 <script>
-function startCountdown(endTimeStr) {
-    const countdownElement = document.getElementById('countdown');
-    if (!countdownElement) return;
-    const endTime = new Date(endTimeStr).getTime();
-    const update = () => {
-        const remaining = endTime - new Date().getTime();
-        if(remaining < 0) { countdownElement.textContent = "Finished"; return; }
-        const d=Math.floor(remaining/(1000*60*60*24)),h=Math.floor((remaining%(1000*60*60*24))/(1000*60*60)),m=Math.floor((remaining%(1000*60*60))/(1000*60)),s=Math.floor((remaining%(1000*60))/1000);
-        countdownElement.textContent = `${d}d ${h}h ${m}m ${s}s`;
-    };
-    update();
-    setInterval(update, 1000);
-}
-startCountdown("{{ contest.end_time.isoformat() }}Z");
-
 document.addEventListener('DOMContentLoaded', () => {
     const pageTranslations = {
-        en: {"btn_my_submissions": "My Submissions", "btn_leaderboard": "Leaderboard", "header_problems": "Problems", "text_solved": "Solved", "text_attempted": "Attempted", "text_time_left": "Time Left:"},
-        hy: {"btn_my_submissions": "Իմ հանձնումները", "btn_leaderboard": "Առաջատարներ", "header_problems": "Խնդիրներ", "text_solved": "Լուծված", "text_attempted": "Փորձ արված", "text_time_left": "Մնացել է:"},
-        ru: {"btn_my_submissions": "Мои посылки", "btn_leaderboard": "Таблица лидеров", "header_problems": "Задачи", "text_solved": "Решено", "text_attempted": "Были попытки", "text_time_left": "Осталось времени:"}
+        en: {"btn_my_submissions": "My Submissions", "btn_leaderboard": "Leaderboard", "header_problems": "Problems", "text_time_left": "Time Left:", "timer_finished": "Finished", "timer_d": "d", "timer_h": "h", "timer_m": "m", "timer_s": "s" },
+        hy: {"btn_my_submissions": "Իմ Ուղարկումները", "btn_leaderboard": "Առաջատարներ", "header_problems": "Խնդիրներ", "text_time_left": "Մնացել է՝", "timer_finished": "Ավարտված է", "timer_d": "օ", "timer_h": "ժ", "timer_m": "ր", "timer_s": "վ" },
+        ru: {"btn_my_submissions": "Мои Посылки", "btn_leaderboard": "Таблица лидеров", "header_problems": "Задачи", "text_time_left": "Осталось:", "timer_finished": "Завершено", "timer_d": "д", "timer_h": "ч", "timer_m": "м", "timer_s": "с" }
     };
-    Object.keys(pageTranslations).forEach(lang => { if(window.translations[lang]) Object.assign(window.translations[lang], pageTranslations[lang]); });
-    if (typeof changeLanguage === 'function') { changeLanguage(localStorage.getItem('language') || 'en'); }
+    Object.keys(pageTranslations).forEach(lang => {
+        if (!window.translations[lang]) { window.translations[lang] = {}; }
+        Object.assign(window.translations[lang], pageTranslations[lang]);
+    });
+
+    const countdownElement = document.getElementById('countdown');
+    const endTime = new Date("{{ contest.end_time.isoformat() }}Z").getTime();
+    let countdownInterval;
+
+    function updateCountdown() {
+        if (!countdownElement) return;
+        const lang = localStorage.getItem('language') || 'en';
+        const dict = window.translations[lang];
+        const remaining = endTime - new Date().getTime();
+
+        if (remaining < 0) {
+            countdownElement.textContent = dict.timer_finished;
+            clearInterval(countdownInterval);
+            return;
+        }
+        
+        const d = Math.floor(remaining / 86400000);
+        const h = Math.floor((remaining % 86400000) / 3600000);
+        const m = Math.floor((remaining % 3600000) / 60000);
+        const s = Math.floor((remaining % 60000) / 1000);
+        
+        let text = `${dict.text_time_left} `;
+        if (d > 0) text += `${d}${dict.timer_d} ${h}${dict.timer_h}`;
+        else text += `${h}${dict.timer_h} ${m}${dict.timer_m} ${s}${dict.timer_s}`;
+        
+        countdownElement.textContent = text;
+    }
+
+    const updateStaticText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            if (langDict[key]) {
+                // To avoid replacing the span#countdown inside the p tag
+                if (el.id !== 'countdown') {
+                    const childSpan = el.querySelector('span');
+                    if (childSpan) {
+                       el.firstChild.nodeValue = langDict[key] + ' ';
+                    } else {
+                       el.textContent = langDict[key];
+                    }
+                }
+            }
+        });
+    };
+
+    updateStaticText();
+    updateCountdown();
+    countdownInterval = setInterval(updateCountdown, 1000);
+    
+    window.addEventListener('languageChanged', () => {
+        updateStaticText();
+        updateCountdown();
+    });
 });
 </script>
 {% endblock %}

@@ -51,18 +51,11 @@
                                     {{ form.remember_me(class="form-check-input") }}
                                     {{ form.remember_me.label(class="form-check-label", **{'data-translate-key': 'remember_me_label'}) }}
                                 </div>
-                                <div class="extra-links">
-                                    <a href="#" data-translate-key="forgot_password">Forgot Password?</a>
-                                </div>
                             </div>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-auth"><span data-translate-key="login_button">Sign In</span></button>
                             </div>
                             <hr style="background-color: var(--border-color);" class="my-4">
-                            <div class="text-center extra-links">
-                                <span data-translate-key="no_account">Don't have an account?</span>
-                                <a href="{{ url_for('auth.register') }}" data-translate-key="sign_up">Sign Up</a>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -79,7 +72,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     AOS.init({ duration: 800, offset: 50, once: true });
     
-    // ** ՈՒՂՂՎԱԾ ԵՎ ԱՇԽԱՏՈՂ ՍԿՐԻՊՏ "ԱՉՔԻ" ՀԱՄԱՐ **
     document.querySelectorAll('.password-toggle').forEach(toggle => {
         toggle.addEventListener('click', function() {
             // Գտնում ենք input-ը, որը գտնվում է նույն მშობლის (.password-wrapper) մեջ
@@ -93,19 +85,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Թարգմանություններ
     const loginTranslations = {
-        'en': { 'page_login': 'Login', 'login_title': 'Sign In', 'username_label': 'Username', 'password_label': 'Password', 'remember_me_label': 'Remember Me', 'forgot_password': 'Forgot Password?', 'login_button': 'Sign In', 'no_account': "Don't have an account?", 'sign_up': 'Sign Up', 'username_placeholder': 'Enter your username', 'password_placeholder': 'Enter your password' },
-        'hy': { 'page_login': 'Մուտք', 'login_title': 'Մուտք Գործել', 'username_label': 'Օգտանուն', 'password_label': 'Գաղտնաբառ', 'remember_me_label': 'Հիշել ինձ', 'forgot_password': 'Մոռացե՞լ եք գաղտնաբառը', 'login_button': 'Մուտք Գործել', 'no_account': 'Չունե՞ք հաշիվ', 'sign_up': 'Գրանցվել', 'username_placeholder': 'Մուտքագրեք ձեր օգտանունը', 'password_placeholder': 'Մուտքագրեք ձեր գաղտնաբառը' },
-        'ru': { 'page_login': 'Вход', 'login_title': 'Войти', 'username_label': 'Имя пользователя', 'password_label': 'Пароль', 'remember_me_label': 'Запомнить меня', 'forgot_password': 'Забыли пароль?', 'login_button': 'Войти', 'no_account': 'Нет аккаунта?', 'sign_up': 'Зарегистрироваться', 'username_placeholder': 'Введите имя пользователя', 'password_placeholder': 'Введите ваш пароль' }
+        'en': { 'page_login': 'Login', 'login_title': 'Sign In', 'username_label': 'Username', 'password_label': 'Password', 'remember_me_label': 'Remember Me', 'login_button': 'Sign In',  'username_placeholder': 'Enter your username', 'password_placeholder': 'Enter your password' },
+        'hy': { 'page_login': 'Մուտք', 'login_title': 'Մուտք Գործել', 'username_label': 'Օգտանուն', 'password_label': 'Գաղտնաբառ', 'remember_me_label': 'Հիշել ինձ', 'login_button': 'Մուտք Գործել', 'username_placeholder': 'Մուտքագրեք ձեր օգտանունը', 'password_placeholder': 'Մուտքագրեք ձեր գաղտնաբառը' },
+        'ru': { 'page_login': 'Вход', 'login_title': 'Войти', 'username_label': 'Имя пользователя', 'password_label': 'Пароль', 'remember_me_label': 'Запомнить меня','login_button': 'Войти','username_placeholder': 'Введите имя пользователя', 'password_placeholder': 'Введите ваш пароль' }
     };
     Object.keys(loginTranslations).forEach(lang => { Object.assign(window.translations[lang], loginTranslations[lang]); });
-    
-    // Էջի թարմացման ֆունկցիա
     const updatePageText = () => {
         const lang = localStorage.getItem('language') || 'en'; const langDict = window.translations[lang] || window.translations['en'];
         document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.dataset.translateKey; if(langDict[key]) el.textContent = langDict[key]; });
-        // Թարգմանում ենք placeholder-ները
         const userInput = document.querySelector('input[name="username"]'); const passInput = document.querySelector('input[name="password"]');
         if(userInput) userInput.placeholder = langDict.username_placeholder || '';
         if(passInput) passInput.placeholder = langDict.password_placeholder || '';

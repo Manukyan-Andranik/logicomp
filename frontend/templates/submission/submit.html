@@ -1,50 +1,82 @@
 {% extends "base.html" %}
 
-{% block title %}Submit Solution{% endblock %}
+{% block title %}<span data-translate-key="page_title">Submit Solution</span>{% endblock %}
+
+{% block extra_css %}
+<style>
+    main { background-color: #121212; }
+    .page-header h1 { color: white; font-weight: 700; }
+    
+    .submission-card {
+        background: #1a1a1a;
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+    }
+    .submission-card .card-header {
+        background-color: #212121;
+        border-bottom: 1px solid var(--border-color);
+        color: white;
+    }
+    .submission-card .card-body { color: var(--text-light); }
+
+    .form-control-dark, .form-select-dark {
+        background-color: #0d0d0d !important;
+        color: #e0e0e0 !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 0.5rem !important;
+    }
+    .form-control-dark:focus, .form-select-dark:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25) !important;
+    }
+    .code-textarea {
+        font-family: 'SF Mono', 'Courier New', monospace;
+        font-size: 0.9rem;
+        min-height: 400px;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
-        <h1 class="h3"><i class="bi bi-code-slash me-2"></i>{{ title }}</h1>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 page-header">
+        <h1 class="d-flex align-items-center"><i class="bi bi-cloud-upload-fill me-3"></i><span data-translate-key="header_submit_solution_for" data-problem-title="{{ problem.title }}">Submit Solution for: {{ problem.title }}</span></h1>
         {% if contest %}
             <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Back to Contest
+                <i class="bi bi-arrow-left me-1"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
             </a>
         {% endif %}
     </div>
 
     <div class="row justify-content-center">
         <div class="col-lg-10">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-light border-bottom-0 pt-3">
-                    <h5 class="mb-0">Submit Solution for: <span class="fw-bold">{{ problem.title }}</span></h5>
-                </div>
-                <div class="card-body">
+            <div class="card submission-card">
+                <div class="card-body p-4">
                     <form method="POST" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
                         
-                        <div class="mb-3">
-                            <label for="{{ form.language.id }}" class="form-label fw-bold">Programming Language</label>
-                            {{ form.language(class="form-select form-select-lg") }}
+                        <div class="mb-4">
+                            <label for="{{ form.language.id }}" class="form-label fw-bold" data-translate-key="label_language">Programming Language</label>
+                            {{ form.language(class="form-select form-select-dark") }}
                         </div>
                         
                         <div class="mb-3">
-                            <label for="{{ form.code.id }}" class="form-label fw-bold">Source Code</label>
-                            {{ form.code(class="form-control", rows=18, style="font-family: 'Courier New', Courier, monospace; font-size: 14px;") }}
-                            <small class="text-muted mt-1 d-block">Or upload a source file below.</small>
+                            <label for="{{ form.code.id }}" class="form-label fw-bold" data-translate-key="label_code">Source Code</label>
+                            {{ form.code(class="form-control form-control-dark code-textarea", rows=18) }}
+                            <small class="text-muted mt-2 d-block" data-translate-key="text_or_upload">Or upload a source file below.</small>
                         </div>
                         
                         <div class="mb-4">
-                            <label for="{{ form.source_file.id }}" class="form-label fw-bold">Upload File</label>
-                            {{ form.source_file(class="form-control") }}
+                            <label for="{{ form.source_file.id }}" class="form-label fw-bold" data-translate-key="label_upload">Upload File</label>
+                            {{ form.source_file(class="form-control form-control-dark") }}
                         </div>
                         
-                        <div class="d-flex justify-content-between align-items-center border-top pt-3">
-                            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="btn btn-secondary">
-                                <i class="bi bi-x-circle me-1"></i> Cancel
+                        <div style="color:black;" class="d-flex justify-content-between align-items-center border-top border-secondary pt-4 mt-4">
+                            <a style="color:black;" href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="btn btn-secondary">
+                                <i class="bi bi-x-lg me-1"></i> <span data-translate-key="btn_cancel" style="color:black;">Cancel</span>
                             </a>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="bi bi-check-circle-fill me-1"></i> Submit Solution
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold">
+                                <i class="bi bi-check-circle-fill me-2"></i> <span data-translate-key="btn_submit">Submit Solution</span>
                             </button>
                         </div>
                     </form>
@@ -56,6 +88,7 @@
 {% endblock %}
 
 {% block scripts %}
+{{ super() }}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const codeTextarea = document.querySelector('textarea[name="code"]');
@@ -78,6 +111,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
     updatePlaceholder();
     languageSelect.addEventListener('change', updatePlaceholder);
+
+    // Translations
+    const pageTranslations = {
+        'en': { 'page_title': 'Submit Solution', 'header_submit_solution_for': 'Submit Solution for: %s', 'btn_back_to_contest': 'Back to Contest', 'label_language': 'Programming Language', 'label_code': 'Source Code', 'text_or_upload': 'Or upload a source file below.', 'label_upload': 'Upload File', 'btn_cancel': 'Cancel', 'btn_submit': 'Submit Solution' },
+        'hy': { 'page_title': 'Ուղարկել Լուծումը', 'header_submit_solution_for': 'Ուղարկել լուծումը՝ %s', 'btn_back_to_contest': 'Վերադառնալ', 'label_language': 'Ծրագրավորման Լեզու', 'label_code': 'Ելակետային Կոդ', 'text_or_upload': 'Կամ վերբեռնեք ֆայլը ստորև։', 'label_upload': 'Վերբեռնել Ֆայլ', 'btn_cancel': 'Չեղարկել', 'btn_submit': 'Ուղարկել Լուծումը' },
+        'ru': { 'page_title': 'Отправить Решение', 'header_submit_solution_for': 'Отправить решение для: %s', 'btn_back_to_contest': 'Назад к контесту', 'label_language': 'Язык Программирования', 'label_code': 'Исходный Код', 'text_or_upload': 'Или загрузите исходный файл ниже.', 'label_upload': 'Загрузить Файл', 'btn_cancel': 'Отмена', 'btn_submit': 'Отправить Решение' }
+    };
+    Object.keys(pageTranslations).forEach(lang => {
+        if (!window.translations[lang]) { window.translations[lang] = {}; }
+        Object.assign(window.translations[lang], pageTranslations[lang]);
+    });
+
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            let translation = langDict[key];
+            if (translation) {
+                if (key === 'header_submit_solution_for') {
+                    translation = translation.replace('%s', el.dataset.problemTitle);
+                }
+                el.textContent = translation;
+            }
+        });
+    };
+    
+    updatePageText();
+    window.addEventListener('languageChanged', updatePageText);
 });
 </script>
 {% endblock %}

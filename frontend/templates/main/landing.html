@@ -1,51 +1,209 @@
 {% extends "base.html" %}
 
-{% block title %}Welcome{% endblock %}
+{% block title %}<span data-translate-key="page_index">Home</span>{% endblock %}
+
+{% block extra_css %}
+<!-- AOS գրադարան՝ անիմացիաների համար -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<!-- Գլխավոր էջի հատուկ ոճեր -->
+<style>
+    main { padding: 0 !important; }
+
+    .hero-section {
+        padding: 6rem 0;
+        background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.7)), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1350&q=80') center center;
+        background-size: cover;
+    }
+    .hero-section .display-4 { text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+    .hero-section .btn-primary { 
+        background-color: var(--primary); border: none; color: #000; font-weight: bold;
+        padding: 12px 30px; border-radius: 50px; transition: all 0.3s;
+    }
+    .hero-section .btn-outline-light {
+        padding: 12px 30px; border-radius: 50px; font-weight: bold;
+    }
+    .hero-section .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3); }
+
+    .feature-card {
+        background: #1a1a1a;
+        border: 1px solid var(--border-color);
+        padding: 2.5rem 2rem; border-radius: 1rem; text-align: center;
+        transition: all 0.3s ease;
+    }
+    .feature-card:hover { transform: translateY(-10px); background: #212121; border-color: var(--primary); }
+    .feature-icon { font-size: 3.5rem; color: var(--primary); margin-bottom: 1.5rem; }
+
+    .contest-card {
+        background: #212121; border: 1px solid var(--border-color);
+        border-radius: 1rem !important; overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .contest-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-color: var(--primary); }
+    .contest-card .card-header { background: #1a1a1a; border-bottom: 1px solid var(--border-color) !important; color: var(--primary) !important; font-weight: bold; }
+    
+    .cta-section {
+        background-color: #000;
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="container">
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-5 fw-bold">Welcome to LogiComp</h1>
-            <p class="col-md-8 fs-4 mx-auto">
-                A platform for managing and participating in programming competitions.
+<div class="content-wrapper">
+    <!-- ==================== Hero Section ==================== -->
+    <section class="hero-section text-center text-white">
+        <div class="container" data-aos="fade-in">
+            <h1 class="display-4 fw-bold" data-translate-key="hero_title">Welcome to LogiComp</h1>
+            <p class="lead col-md-8 mx-auto mt-3" data-translate-key="hero_subtitle">
+                The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!
             </p>
             <div class="mt-4">
-                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg me-3">Login</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('contest.index') }}" class="btn btn-primary btn-lg shadow-lg">
+                        <i class="bi bi-grid-3x3-gap-fill me-2"></i><span data-translate-key="view_contests">View Contests</span>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg me-2">
+                        <i class="bi bi-box-arrow-in-right me-2"></i><span data-translate-key="login">Login</span>
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg shadow-lg">
+                        <i class="bi bi-person-plus-fill me-2"></i><span data-translate-key="register">Register</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-trophy fs-1 text-primary mb-3"></i>
-                    <h3>Compete</h3>
-                    <p>Test your skills against other programmers in timed contests</p>
+    <!-- ==================== Features Section ==================== -->
+    <section class="py-5" style="background-color: #121212;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card h-100">
+                        <i class="bi bi-trophy-fill feature-icon"></i>
+                        <h4 class="text-white" data-translate-key="feature1_title">Compete</h4>
+                        <p class="text-white-50" data-translate-key="feature1_desc">Test your skills against other programmers in timed contests.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card h-100">
+                        <i class="bi bi-code-square feature-icon"></i>
+                        <h4 class="text-white" data-translate-key="feature2_title">Solve Problems</h4>
+                        <p class="text-white-50" data-translate-key="feature2_desc">Challenge yourself with algorithmic problems of varying difficulty.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card h-100">
+                        <i class="bi bi-graph-up-arrow feature-icon"></i>
+                        <h4 class="text-white" data-translate-key="feature3_title">Track Progress</h4>
+                        <p class="text-white-50" data-translate-key="feature3_desc">See your ranking on live leaderboards and improve your skills.</p>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-code-square fs-1 text-primary mb-3"></i>
-                    <h3>Solve Problems</h3>
-                    <p>Challenge yourself with algorithmic problems of varying difficulty</p>
+    </section>
+    
+    <!-- ==================== ԱՎԵԼԱՑՎԱԾ Է՝ Active Contests Section ==================== -->
+    {% if active_contests %}
+    <section class="py-5" style="background-color: #1a1a1a;">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold text-white" data-translate-key="active_contests_title">Active Contests</h2>
+                <p class="text-white-50" data-translate-key="active_contests_subtitle">Join now and start coding!</p>
+            </div>
+            <div class="row">
+                {% for contest in active_contests[:3] %}
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ 100 * loop.index }}">
+                    <div class="card contest-card h-100 shadow-sm">
+                        <div class="card-header"><h5 class="mb-0 text-truncate"><i class="bi bi-flag-fill me-2"></i>{{ contest.title }}</h5></div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text flex-grow-1" style="color: #ccc;">{{ contest.description|truncate(100) }}</p>
+                            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-warning mt-auto align-self-start">
+                                <span data-translate-key="enter_contest">Enter Contest</span><i class="bi bi-arrow-right-short ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
-                    <h3>Track Progress</h3>
-                    <p>See your ranking on live leaderboards and improve your skills</p>
-                </div>
-            </div>
+    </section>
+    {% endif %}
+
+    <!-- ==================== ԱՎԵԼԱՑՎԱԾ Է՝ Final CTA Section ==================== -->
+    {% if not current_user.is_authenticated %}
+    <section class="py-5 text-center cta-section">
+        <div class="container" data-aos="zoom-in">
+            <h2 class="fw-bold text-white" data-translate-key="cta_title">Ready to Join?</h2>
+            <p class="lead text-white-50" data-translate-key="cta_subtitle">Create an account in seconds and start your competitive journey.</p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg mt-3 shadow-lg">
+                <span data-translate-key="create_account_now">Create Account Now</span>
+            </a>
         </div>
-    </div>
+    </section>
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({ duration: 800, offset: 50, once: true });
+    
+    // Թարգմանություններ գլխավոր էջի համար
+    const indexTranslations = {
+        'en': {
+            'page_index': 'Home', 'hero_title': 'Welcome to LogiComp', 'hero_subtitle': 'The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!',
+            'login': 'Login', 'register': 'Register', 'view_contests': 'View Contests',
+            'feature1_title': 'Compete', 'feature1_desc': 'Test your skills against other programmers in timed contests.',
+            'feature2_title': 'Solve Problems', 'feature2_desc': 'Challenge yourself with algorithmic problems of varying difficulty.',
+            'feature3_title': 'Track Progress', 'feature3_desc': 'See your ranking on live leaderboards and improve your skills.',
+            'active_contests_title': 'Active Contests', 'active_contests_subtitle': 'Join now and start coding!', 'enter_contest': 'Enter Contest',
+            'cta_title': 'Ready to Join?', 'cta_subtitle': 'Create an account in seconds and start your competitive journey.', 'create_account_now': 'Create Account Now'
+        },
+        'hy': {
+            'page_index': 'Գլխավոր', 'hero_title': 'Բարի Գալուստ LogiComp', 'hero_subtitle': 'Ծրագրավորման մրցույթների լավագույն հարթակը։ Ստուգեք ձեր հմտությունները, մրցեք ուրիշների հետ և բարձրացեք առաջատարների աղյուսակում։',
+            'login': 'Մուտք', 'register': 'Գրանցվել', 'view_contests': 'Դիտել Մրցույթները',
+            'feature1_title': 'Մրցեք', 'feature1_desc': 'Ստուգեք ձեր հմտությունները այլ ծրագրավորողների դեմ ժամանակով մրցույթներում։',
+            'feature2_title': 'Լուծեք Խնդիրներ', 'feature2_desc': 'Մարտահրավեր նետեք ինքներդ ձեզ տարբեր բարդության ալգորիթմական խնդիրներով։',
+            'feature3_title': 'Հետևեք Առաջընթացին', 'feature3_desc': 'Տեսեք ձեր դիրքը կենդանի աղյուսակներում և կատարելագործեք ձեր հմտությունները։',
+            'active_contests_title': 'Ակտիվ Մրցույթներ', 'active_contests_subtitle': 'Միացեք հիմա և սկսեք կոդավորել։', 'enter_contest': 'Մուտք գործել',
+            'cta_title': 'Պատրա՞ստ եք միանալ։', 'cta_subtitle': 'Ստեղծեք հաշիվ վայրկյանների ընթացքում և սկսեք ձեր մրցակցային ուղին։', 'create_account_now': 'Ստեղծել հաշիվ'
+        },
+        'ru': {
+            'page_index': 'Главная', 'hero_title': 'Добро пожаловать в LogiComp', 'hero_subtitle': 'Лучшая платформа для соревновательного программирования. Проверьте свои навыки, бросьте вызов другим и поднимитесь в таблице лидеров!',
+            'login': 'Войти', 'register': 'Регистрация', 'view_contests': 'Смотреть Конкурсы',
+            'feature1_title': 'Соревнуйтесь', 'feature1_desc': 'Проверьте свои навыки в соревнованиях на время с другими программистами.',
+            'feature2_title': 'Решайте Задачи', 'feature2_desc': 'Испытайте себя, решая алгоритмические задачи различной сложности.',
+            'feature3_title': 'Отслеживайте Прогресс', 'feature3_desc': 'Следите за своим рейтингом в реальном времени и совершенствуйте свои навыки.',
+            'active_contests_title': 'Активные Конкурсы', 'active_contests_subtitle': 'Присоединяйтесь и начните программировать!', 'enter_contest': 'Войти в конкурс',
+            'cta_title': 'Готовы присоединиться?', 'cta_subtitle': 'Создайте аккаунт за секунды и начните свой соревновательный путь.', 'create_account_now': 'Создать аккаунт'
+        }
+    };
+    
+    // Ընդլայնում ենք գլոբալ թարգմանությունների օբյեկտը
+    Object.keys(indexTranslations).forEach(lang => {
+        if (!window.translations[lang]) { window.translations[lang] = {}; }
+        Object.assign(window.translations[lang], indexTranslations[lang]);
+    });
+    
+    // Ֆունկցիա՝ էջի տեքստը թարմացնելու համար
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            if (langDict[key]) {
+                el.textContent = langDict[key];
+            }
+        });
+    };
+    
+    // Սկզբնական թարմացում և լեզվի փոփոխությանը լսել
+    updatePageText();
+    window.addEventListener('languageChanged', updatePageText);
+});
+</script>
 {% endblock %}

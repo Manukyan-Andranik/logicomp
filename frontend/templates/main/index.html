@@ -23,7 +23,7 @@
         from { opacity: 0.8; transform: scale(1); } to { opacity: 1; transform: scale(1.05); text-shadow: 0 0 25px var(--primary), 0 0 40px var(--primary-dark); }
     }
     .hero-section .display-3 { text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    .hero-section .btn-primary { 
+    .hero-section .btn-primary, .cta-section .btn-primary { 
         background-color: var(--primary); border: none; color: #000; font-weight: bold;
         padding: 12px 30px; border-radius: 50px;
     }
@@ -31,13 +31,13 @@
     .section-title h2 { font-weight: 700; color: white; }
     .section-title p { color: var(--text-muted); }
 
-    .step-card {
+    .feature-card, .step-card {
         background: #1a1a1a;
         border: 1px solid var(--border-color);
         padding: 2rem; border-radius: 1rem; transition: all 0.3s ease;
     }
-    .step-card:hover { transform: translateY(-10px); background: #212121; }
-    .step-icon { font-size: 3rem; color: var(--primary); }
+    .feature-card:hover, .step-card:hover { transform: translateY(-10px); background: #212121; }
+    .feature-icon, .step-icon { font-size: 3rem; color: var(--primary); }
 
     /* Մրցույթների քարտերի դիզայն */
     .contest-card {
@@ -48,8 +48,12 @@
     .contest-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-color: var(--primary); }
     .contest-card .card-header { background: #1a1a1a; border-bottom: 1px solid var(--border-color) !important; color: var(--primary) !important; font-weight: bold; }
     .contest-card .card-body { color: var(--text-light); }
-    .contest-card .btn-outline-secondary { color: var(--text-muted); border-color: var(--text-muted); }
-    .contest-card .btn-outline-secondary:hover { color: #000; background: var(--primary); border-color: var(--primary); }
+    .contest-card .btn-outline-primary { color: var(--primary); border-color: var(--primary); }
+    .contest-card .btn-outline-primary:hover { color: #000; background: var(--primary); border-color: var(--primary); }
+    .contest-card .btn-primary { background:var(--primary); color:#000; border:none; font-weight:500; }
+    
+    /* CTA բաժին */
+    .cta-section { background: linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1350&q=80') center center; background-size: cover; }
 </style>
 {% endblock %}
 
@@ -77,16 +81,32 @@
                 <p data-translate-key="how_it_works_subtitle">Start your journey in 3 simple steps</p>
             </div>
             <div class="row text-center gy-4">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100"><div class="step-card h-100"><i class="bi bi-person-plus-fill step-icon mb-3"></i><h4 data-translate-key="step1_title">Register</h4><p class="mb-0 text-white-50" data-translate-key="step1_desc">Create your account and join a community of coders.</p></div></div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200"><div class="step-card h-100"><i class="bi bi-keyboard-fill step-icon mb-3"></i><h4 data-translate-key="step2_title">Compete</h4><p class="mb-0 text-white-50" data-translate-key="step2_desc">Choose a contest and solve challenges to earn points.</p></div></div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300"><div class="step-card h-100"><i class="bi bi-award-fill step-icon mb-3"></i><h4 data-translate-key="step3_title">Win</h4><p class="mb-0 text-white-50" data-translate-key="step3_desc">Climb the leaderboard and win amazing prizes and recognition.</p></div></div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100"><div class="step-card h-100"><i class="bi bi-person-plus-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step1_title">Register</h4><p class="mb-0 text-white-50" data-translate-key="step1_desc">Create your account and join a community of coders.</p></div></div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200"><div class="step-card h-100"><i class="bi bi-keyboard-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step2_title">Compete</h4><p class="mb-0 text-white-50" data-translate-key="step2_desc">Choose a contest and solve challenges to earn points.</p></div></div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300"><div class="step-card h-100"><i class="bi bi-award-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step3_title">Win</h4><p class="mb-0 text-white-50" data-translate-key="step3_desc">Climb the leaderboard and win amazing prizes and recognition.</p></div></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ==================== ԱՎԵԼԱՑՎԱԾ Է՝ Why LogiComp Section ==================== -->
+    <section class="py-5" style="background-color: #1a1a1a;">
+        <div class="container">
+            <div class="section-title text-center mb-5" data-aos="fade-up">
+                <h2 data-translate-key="why_choose_us_title">Why Choose LogiComp?</h2>
+                <p data-translate-key="why_choose_us_subtitle">The features that make us stand out</p>
+            </div>
+            <div class="row gy-4">
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100"><div class="feature-card text-center h-100"><i class="bi bi-robot feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature1_title">Instant Judging</h5><p class="text-white-50" data-translate-key="feature1_desc">Get immediate, accurate feedback on your code with our robust automated judging system.</p></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200"><div class="feature-card text-center h-100"><i class="bi bi-bar-chart-line-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature2_title">Live Leaderboards</h5><p class="text-white-50" data-translate-key="feature2_desc">Track your progress in real-time and see how you stack up against the competition.</p></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300"><div class="feature-card text-center h-100"><i class="bi bi-puzzle-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature3_title">Diverse Problems</h5><p class="text-white-50" data-translate-key="feature3_desc">Challenge yourself with a wide variety of problems, from beginner-friendly to expert-level.</p></div></div>
+                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400"><div class="feature-card text-center h-100"><i class="bi bi-people-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature4_title">Growing Community</h5><p class="text-white-50" data-translate-key="feature4_desc">Join a vibrant community of developers, learn from others, and share your knowledge.</p></div></div>
             </div>
         </div>
     </section>
 
-    <!-- Active Contests Section -->
+    <!-- Active Contests Section (ԲԱՐԵԼԱՎՎԱԾ ՏՐԱՄԱԲԱՆՈՒԹՅԱՄԲ) -->
     {% if active_contests %}
-    <section class="py-5" style="background-color: #1a1a1a;">
+    <section class="py-5">
         <div class="container">
             <div class="section-title text-center mb-5" data-aos="fade-up">
                 <h2 data-translate-key="active_contests">Active Contests</h2>
@@ -104,8 +124,12 @@
                             </div>
                         </div>
                         <div class="card-footer bg-transparent d-flex justify-content-between align-items-center pt-0 border-0">
-                            <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-person-plus-fill me-1"></i><span data-translate-key="register">Register</span></a>
-                            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-primary" style="background:var(--primary); color:#000; border:none; font-weight:500;"><span data-translate-key="enter_contest">Enter Contest</span><i class="bi bi-arrow-right-short ms-1"></i></a>
+                            {% if current_user and current_user.is_authenticated %}
+                                <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-primary w-100"><span data-translate-key="enter_contest">Enter Contest</span><i class="bi bi-arrow-right-short ms-1"></i></a>
+                            {% else %}
+                                <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-primary"><i class="bi bi-info-circle me-1"></i><span data-translate-key="view_details">View Details</span></a>
+                                <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" class="btn btn-sm btn-primary"><i class="bi bi-person-plus-fill me-1"></i><span data-translate-key="register_to_join">Register to Join</span></a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -114,6 +138,17 @@
         </div>
     </section>
     {% endif %}
+
+    <!-- ==================== ԱՎԵԼԱՑՎԱԾ Է՝ Final CTA Section ==================== -->
+    <section class="cta-section py-5 text-center text-white">
+        <div class="container" data-aos="zoom-in">
+            <h2 class="fw-bold" data-translate-key="cta_title">Ready to Join the Challenge?</h2>
+            <p class="lead" data-translate-key="cta_subtitle">Create an account today and start your competitive programming journey.</p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg mt-3 shadow-lg">
+                <i class="bi bi-check-circle-fill me-2"></i><span data-translate-key="create_account_now">Create Account Now</span>
+            </a>
+        </div>
+    </section>
 </div>
 {% endblock %}
 
@@ -126,11 +161,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Ընդլայնում ենք base.html-ի թարգմանությունների գլոբալ օբյեկտը
     const welcomeTranslations = {
-        'en': { 'page_welcome': 'Welcome', 'welcome_title': 'Welcome to LogiComp', 'welcome_subtitle': 'The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!', 'view_contests': 'View Contests', 'how_it_works_title': 'How It Works', 'how_it_works_subtitle': 'Start your journey in 3 simple steps', 'step1_title': 'Register', 'step1_desc': 'Create your account and join a community of coders.', 'step2_title': 'Compete', 'step2_desc': 'Choose a contest and solve challenges to earn points.', 'step3_title': 'Win', 'step3_desc': 'Climb the leaderboard and win amazing prizes and recognition.', 'active_contests': 'Active Contests', 'problems_count': '%s problems', 'register': 'Register', 'enter_contest': 'Enter Contest', 'timer_ended': 'Ended', 'timer_ends_in': 'Ends in', 'timer_d': 'd', 'timer_h': 'h', 'timer_m': 'm', 'timer_s': 's' },
-        'hy': { 'page_welcome': 'Բարի Գալուստ', 'welcome_title': 'Բարի Գալուստ LogiComp', 'welcome_subtitle': 'Ծրագրավորման մրցույթների լավագույն հարթակը։ Ստուգեք ձեր հմտությունները, մրցեք ուրիշների հետ և բարձրացեք առաջատարների աղյուսակում։', 'view_contests': 'Դիտել Մրցույթները', 'how_it_works_title': 'Ինչպես է աշխատում', 'how_it_works_subtitle': 'Սկսեք ձեր ճանապարհը 3 պարզ քայլով', 'step1_title': 'Գրանցվեք', 'step1_desc': 'Ստեղծեք ձեր հաշիվը և միացեք կոդերների համայնքին։', 'step2_title': 'Մրցեք', 'step2_desc': 'Ընտրեք մրցույթ և լուծեք խնդիրներ՝ միավորներ վաստակելու համար։', 'step3_title': 'Հաղթեք', 'step3_desc': 'Բարձրացեք առաջատարների աղյուսակում և շահեք մրցանակներ։', 'active_contests': 'Ակտիվ Մրցույթներ', 'problems_count': '%s խնդիր', 'register': 'Գրանցվել', 'enter_contest': 'Մուտք', 'timer_ended': 'Ավարտված է', 'timer_ends_in': 'Ավարտին՝', 'timer_d': 'օ', 'timer_h': 'ժ', 'timer_m': 'ր', 'timer_s': 'վ' },
-        'ru': { 'page_welcome': 'Добро пожаловать', 'welcome_title': 'Добро пожаловать в LogiComp', 'welcome_subtitle': 'Лучшая платформа для соревновательного программирования. Проверьте свои навыки, бросьте вызов другим и поднимитесь в таблице лидеров!', 'view_contests': 'Смотреть Конкурсы', 'how_it_works_title': 'Как это работает', 'how_it_works_subtitle': 'Начните свой путь за 3 простых шага', 'step1_title': 'Регистрация', 'step1_desc': 'Создайте аккаунт и присоединяйтесь к сообществу программистов.', 'step2_title': 'Соревнуйтесь', 'step2_desc': 'Выберите конкурс и решайте задачи, чтобы заработать очки.', 'step3_title': 'Побеждайте', 'step3_desc': 'Поднимайтесь в таблице лидеров и выигрывайте призы.', 'active_contests': 'Активные Конкурсы', 'problems_count': '%s задач', 'register': 'Регистрация', 'enter_contest': 'Войти', 'timer_ended': 'Завершено', 'timer_ends_in': 'Осталось', 'timer_d': 'д', 'timer_h': 'ч', 'timer_m': 'м', 'timer_s': 'с' },
+        'en': { 'page_welcome': 'Welcome', 'welcome_title': 'Welcome to LogiComp', 'welcome_subtitle': 'The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!', 'view_contests': 'View Contests', 'how_it_works_title': 'How It Works', 'how_it_works_subtitle': 'Start your journey in 3 simple steps', 'step1_title': 'Register', 'step1_desc': 'Create your account and join a community of coders.', 'step2_title': 'Compete', 'step2_desc': 'Choose a contest and solve challenges to earn points.', 'step3_title': 'Win', 'step3_desc': 'Climb the leaderboard and win amazing prizes and recognition.', 'why_choose_us_title': 'Why Choose LogiComp?', 'why_choose_us_subtitle': 'The features that make us stand out', 'feature1_title': 'Instant Judging', 'feature1_desc': 'Get immediate, accurate feedback on your code with our robust automated judging system.', 'feature2_title': 'Live Leaderboards', 'feature2_desc': 'Track your progress in real-time and see how you stack up against the competition.', 'feature3_title': 'Diverse Problems', 'feature3_desc': 'Challenge yourself with a wide variety of problems, from beginner-friendly to expert-level.', 'feature4_title': 'Growing Community', 'feature4_desc': 'Join a vibrant community of developers, learn from others, and share your knowledge.', 'active_contests': 'Active Contests', 'problems_count': '%s problems', 'view_details': 'View Details', 'register_to_join': 'Register to Join', 'enter_contest': 'Enter Contest', 'timer_ended': 'Ended', 'timer_ends_in': 'Ends in', 'timer_d': 'd', 'timer_h': 'h', 'timer_m': 'm', 'timer_s': 's', 'cta_title': 'Ready to Join the Challenge?', 'cta_subtitle': 'Create an account today and start your competitive programming journey.', 'create_account_now': 'Create Account Now' },
+        'hy': { 'page_welcome': 'Բարի Գալուստ', 'welcome_title': 'Բարի Գալուստ LogiComp', 'welcome_subtitle': 'Ծրագրավորման մրցույթների լավագույն հարթակը։ Ստուգեք ձեր հմտությունները, մրցեք ուրիշների հետ և բարձրացեք առաջատարների աղյուսակում։', 'view_contests': 'Դիտել Մրցույթները', 'how_it_works_title': 'Ինչպես է աշխատում', 'how_it_works_subtitle': 'Սկսեք ձեր ճանապարհը 3 պարզ քայլով', 'step1_title': 'Գրանցվեք', 'step1_desc': 'Ստեղծեք ձեր հաշիվը և միացեք կոդերների համայնքին։', 'step2_title': 'Մրցեք', 'step2_desc': 'Ընտրեք մրցույթ և լուծեք խնդիրներ՝ միավորներ վաստակելու համար։', 'step3_title': 'Հաղթեք', 'step3_desc': 'Բարձրացեք առաջատարների աղյուսակում և շահեք մրցանակներ։', 'why_choose_us_title': 'Ինչու՞ ընտրել LogiComp-ը', 'why_choose_us_subtitle': 'Առանձնահատկություններ, որոնք մեզ առանձնացնում են', 'feature1_title': 'Ակնթարթային Ստուգում', 'feature1_desc': 'Ստացեք անմիջական, ճշգրիտ արձագանք մեր հզոր ավտոմատացված ստուգման համակարգով։', 'feature2_title': 'Կենդանի Աղյուսակներ', 'feature2_desc': 'Հետևեք ձեր առաջընթացին իրական ժամանակում և տեսեք, թե ինչպես եք դասվում մրցակիցների շարքում։', 'feature3_title': 'Բազմազան Խնդիրներ', 'feature3_desc': 'Մարտահրավեր նետեք ինքներդ ձեզ տարբեր խնդիրներով՝ սկսնակից մինչև փորձագետի մակարդակ։', 'feature4_title': 'Աճող Համայնք', 'feature4_desc': 'Միացեք ծրագրավորողների ակտիվ համայնքին, սովորեք ուրիշներից և կիսվեք ձեր գիտելիքներով։', 'active_contests': 'Ակտիվ Մրցույթներ', 'problems_count': '%s խնդիր', 'view_details': 'Տեսնել մանրամասները', 'register_to_join': 'Գրանցվել', 'enter_contest': 'Մուտք', 'timer_ended': 'Ավարտված է', 'timer_ends_in': 'Ավարտին՝', 'timer_d': 'օ', 'timer_h': 'ժ', 'timer_m': 'ր', 'timer_s': 'վ', 'cta_title': 'Պատրա՞ստ եք մարտահրավերին', 'cta_subtitle': 'Ստեղծեք հաշիվ այսօր և սկսեք ձեր ճանապարհորդությունը։', 'create_account_now': 'Ստեղծել հաշիվ' },
+        'ru': { 'page_welcome': 'Добро пожаловать', 'welcome_title': 'Добро пожаловать в LogiComp', 'welcome_subtitle': 'Лучшая платформа для соревновательного программирования. Проверьте свои навыки, бросьте вызов другим и поднимитесь в таблице лидеров!', 'view_contests': 'Смотреть Конкурсы', 'how_it_works_title': 'Как это работает', 'how_it_works_subtitle': 'Начните свой путь за 3 простых шага', 'step1_title': 'Регистрация', 'step1_desc': 'Создайте аккаунт и присоединяйтесь к сообществу программистов.', 'step2_title': 'Соревнуйтесь', 'step2_desc': 'Выберите конкурс и решайте задачи, чтобы заработать очки.', 'step3_title': 'Побеждайте', 'step3_desc': 'Поднимайтесь в таблице лидеров и выигрывайте призы.', 'why_choose_us_title': 'Почему LogiComp?', 'why_choose_us_subtitle': 'Особенности, которые нас выделяют', 'feature1_title': 'Мгновенная Проверка', 'feature1_desc': 'Получайте немедленную и точную обратную связь с нашей надежной системой автоматической проверки.', 'feature2_title': 'Живые Таблицы Лидеров', 'feature2_desc': 'Отслеживайте свой прогресс в реальном времени и сравнивайте себя с конкурентами.', 'feature3_title': 'Разнообразные Задачи', 'feature3_desc': 'Испытайте себя с широким спектром задач, от начального до экспертного уровня.', 'feature4_title': 'Растущее Сообщество', 'feature4_desc': 'Присоединяйтесь к активному сообществу разработчиков, учитесь у других и делитесь знаниями.', 'active_contests': 'Активные Конкурсы', 'problems_count': '%s задач', 'view_details': 'Подробнее', 'register_to_join': 'Регистрация', 'enter_contest': 'Войти', 'timer_ended': 'Завершено', 'timer_ends_in': 'Осталось', 'timer_d': 'д', 'timer_h': 'ч', 'timer_m': 'м', 'timer_s': 'с', 'cta_title': 'Готовы принять вызов?', 'cta_subtitle': 'Создайте учетную запись сегодня и начните свой путь в соревновательном программировании.', 'create_account_now': 'Создать аккаунт' },
     };
-    Object.keys(welcomeTranslations).forEach(lang => { Object.assign(window.translations[lang], welcomeTranslations[lang]); });
+    Object.keys(welcomeTranslations).forEach(lang => {
+        if (!window.translations[lang]) { window.translations[lang] = {}; }
+        Object.assign(window.translations[lang], welcomeTranslations[lang]);
+    });
     
     // Function to re-apply translations on this page after language change
     const updatePageText = () => {
@@ -154,11 +192,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (remaining <= 0){timerElement.textContent=langDict.timer_ended; timerContainer.classList.remove('bg-success'); timerContainer.classList.add('bg-danger'); clearInterval(timerInterval); return;}
             timerContainer.classList.remove('bg-danger'); timerContainer.classList.add('bg-success');
             const d=Math.floor(remaining/864e5), h=Math.floor(remaining%864e5/36e5), m=Math.floor(remaining%36e5/6e4), s=Math.floor(remaining%6e4/1e3);
-            let timerText=`${langDict.timer_ends_in} `;
-            if(d>0)timerText+=`${d}${langDict.timer_d} ${h}${langDict.timer_h}`; else if(h>0)timerText+=`${h}${langDict.timer_h} ${m}${langDict.timer_m}`; else timerText+=`${m}${langDict.timer_m} ${s}${langDict.timer_s}`;
+            let timerText=``;
+            if(d > 0) { timerText+=`${d}${langDict.timer_d} ${h}${langDict.timer_h}`; }
+            else if(h > 0) { timerText+=`${h}${langDict.timer_h} ${m}${langDict.timer_m}`; }
+            else { timerText+=`${m}${langDict.timer_m} ${s}${langDict.timer_s}`; }
             timerElement.textContent=timerText;
         };
-        updateTimer(); const timerInterval = setInterval(updateTimer, 1000);
+        const timerInterval = setInterval(updateTimer, 1000);
+        window.addEventListener('languageChanged', updateTimer); // Update timer text on language change
+        updateTimer(); 
     })();
     {% endfor %}
 });

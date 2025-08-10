@@ -1,117 +1,183 @@
 {% extends "base.html" %}
 
-{% block title %}{{ contest.title }} - {{ problem.title }}{% endblock %}
+{% block title %}<span data-translate-key="page_title" data-contest-title="{{ contest.title }}" data-problem-title="{{ problem.title }}">{{ contest.title }} - {{ problem.title }}</span>{% endblock %}
 
 {% block extra_css %}
-<!-- CodeMirror CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/material-darker.min.css">
+<style>
+    main { background-color: #121212; }
+    .page-header h2 { color: white; font-weight: 700; }
+    
+    .problem-card, .info-card {
+        background: #1a1a1a;
+        border: 1px solid var(--border-color);
+        border-radius: 0.75rem;
+        color: var(--text-light); /* ՀԻՄՆԱԿԱՆ ՈՒՂՂՈՒՄ: Ապահովում է, որ քարտի ներսի ողջ տեքստը լինի բաց գույնի */
+    }
+    .problem-card .card-header, .info-card .card-header {
+        background-color: #212121;
+        border-bottom: 1px solid var(--border-color);
+        color: white;
+    }
+    .problem-description-wrapper {
+        background-color: #0d0d0d;
+        color: #e0e0e0; 
+        white-space: pre-wrap;
+        font-family: 'SF Mono', 'Courier New', monospace;
+        font-size: 0.9rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+    }
+    .io-section h5 { color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+    .io-block {
+        background-color: #0d0d0d;
+        color: #e0e0e0;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        font-family: 'SF Mono', 'Courier New', monospace;
+        font-size: 0.9rem;
+        min-height: 100px;
+    }
+
+    /* Submission History */
+    .submissions-list .list-group-item {
+        background-color: transparent;
+        border-top: 1px solid var(--border-color) !important;
+        padding: 0.75rem 1.25rem;
+    }
+    .submissions-list .list-group-item:first-child { border-top: none !important; }
+
+    .badge-status { font-weight: 500; font-size: 0.8rem; padding: 0.4em 0.7em; }
+    .badge-status.accepted { background-color: rgba(25, 135, 84, 0.2) !important; color: #198754 !important; }
+    .badge-status.rejected { background-color: rgba(220, 53, 69, 0.2) !important; color: #dc3545 !important; }
+    .badge-status.compilation_error { background-color: rgba(255, 193, 7, 0.2) !important; color: #ffc107 !important; }
+    .badge-status.pending { background-color: rgba(108, 117, 125, 0.2) !important; color: #6c757d !important; }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h2>Test Contest: Problem 1</h2>
-  {% if current_user.role == 'admin' %}
-  <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
-    Back to Contest
-  </a>
-  {% else %}
-  <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-primary">
-    Back to Contest
-  </a>
-  {% endif %}
-</div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header">
+        <h2 class="d-flex align-items-center"><i class="bi bi-file-earmark-code me-3"></i>{{ contest.title }}: <span class="text-warning ms-2">{{ problem.title }}</span></h2>
+        {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+            </a>
+        {% endif %}
+    </div>
 
-<div class="row">
-  <div class="col-md-8">
-    <div class="card mb-4">
-      <div class="card-header">
-        <h3>{{ problem.title }}</h3>
-      </div>
-      <div class="card-body">
-        <div class="mb-4">
-          <div class="problem-description p-4 rounded"
-            style="background-color: #f8f9fa; white-space: pre-wrap; font-family: 'Courier New', monospace; border: 1px solid #ddd;">
-            {{ problem.description }}
-          </div>
+    <div class="row g-4">
+        <!-- Left Column: Problem Details -->
+        <div class="col-lg-8">
+            <div class="card problem-card h-100">
+                <div class="card-header">
+                    <h4 class="mb-0" data-translate-key="header_statement">Problem Statement</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="problem-description-wrapper p-3 mb-4">{{ problem.description }}</div>
+                    
+                    <h5 class="mb-3" data-translate-key="header_io_examples">Sample Input/Output</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="io-section">
+                                <h6 class="mb-2 p-2" data-translate-key="header_input" style="color:black;">Input</h6>
+                                <pre class="io-block p-3 mb-0">{{ problem.expected_input }}</pre>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="io-section">
+                                <h6 class="mb-2 p-2" data-translate-key="header_output" style="color:black;">Output</h6>
+                                <pre class="io-block p-3 mb-0">{{ problem.expected_output }}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-
-        <div class="mt-4">
-          <h4>Expected Input/Output</h4>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header bg-primary">
-                  <h5>Input</h5>
+        <div class="col-lg-4">
+            <div class="card info-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0" data-translate-key="header_submit_solution">Submit Solution</h5>
                 </div>
-                <div class="card-body">
-                  <pre>{{ problem.expected_input }}</pre>
+                <div class="card-body" style="color: black; background-color: white;">
+                  <p class="small" data-translate-key="text_submit_info1">You can submit your solution in any programming language supported by the system.</p>
+                  <p class="small" data-translate-key="text_submit_info2">Make sure to follow the input/output format specified in the problem description.</p>
+                  <a href="{{ url_for('submission.submit', problem_id=problem.id) }}" class="btn btn-warning w-100 fw-bold mt-2">
+                      <i class="bi bi-cloud-upload-fill me-2"></i><span data-translate-key="btn_submit_page">Go to Submission Page</span>
+                  </a>
                 </div>
-              </div>
             </div>
 
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header bg-primary">
-                  <h5>Output</h5>
+            <div class="card info-card">
+                <div class="card-header">
+                    <h5 class="mb-0" data-translate-key="header_submissions_history">Submissions History</h5>
                 </div>
-                <div class="card-body">
-                  <pre>{{ problem.expected_output }}</pre>
+                <div class="card-body p-0 submissions-list">
+                    <ul class="list-group list-group-flush">
+                        {% for submission in submissions %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small">{{ submission.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                                <span class="badge rounded-pill badge-status 
+                                    {% if submission.status == 'Accepted' %}accepted
+                                    {% elif submission.status in ['Wrong Answer', 'Runtime Error'] %}rejected
+                                    {% elif submission.status == 'Compilation Error' %}compilation_error
+                                    {% else %}pending{% endif %}">
+                                    {% if submission.status == 'Accepted' %}<i class="bi bi-check-circle-fill me-1"></i>
+                                    {% elif submission.status in ['Wrong Answer', 'Runtime Error', 'Compilation Error'] %}<i class="bi bi-x-circle-fill me-1"></i>
+                                    {% else %}<i class="bi bi-hourglass-split me-1"></i>{% endif %}
+                                    <span data-translate-key="status_{{ submission.status|lower|replace(' ', '_') }}">{{ submission.status }}</span>
+                                </span>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-center text-muted py-4">
+                            <span data-translate-key="text_no_submissions">No submissions yet.</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-
-  <div class="col-md-4">
-
-    <div class="card">
-      <div class="card-header">
-        <h5>Submit Your Solution</h5>
-      </div>
-
-      <div class="card-body">
-        <p class="text-muted">You can submit your solution in any programming language supported by the system.</p>
-        <p class="text-muted">Make sure to follow the input/output format specified in the problem description.</p>
-        <a href="{{ url_for('submission.submit', problem_id=problem.id) }}" class="btn btn-primary w-100">
-          Submit Solution
-        </a>
-      </div>
-    </div>
-
-
-    <div class="card">
-
-      <div class="card-header">
-        <h5>Your Submissions</h5>
-      </div>
-      <div class="card-body p-0">
-        <ul class="list-group list-group-flush">
-          {% for submission in submissions %}
-          <li class="list-group-item">
-            <div class="d-flex justify-content-between">
-              <span>{{ submission.timestamp.strftime('%H:%M') }}</span>
-              <span class="badge 
-                {% if submission.status == 'Accepted' %}badge-success
-                {% elif submission.status in ['Wrong Answer', 'Runtime Error'] %}badge-danger
-                {% elif submission.status == 'Compilation Error' %}badge-warning
-                {% else %}badge-primary{% endif %}">
-                {{ submission.status }}
-              </span>
-            </div>
-          </li>
-          {% else %}
-          <li class="list-group-item text-center text-muted">
-            No submissions yet
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const problemTranslations = {
+        'en': { 'page_title': '%c - %p', 'btn_back_to_contest': 'Back to Contest', 'header_statement': 'Problem Statement', 'header_io_examples': 'Sample Input/Output', 'header_input': 'Input', 'header_output': 'Output', 'header_submit_solution': 'Submit Solution', 'text_submit_info1': 'You can submit your solution in any programming language supported by the system.', 'text_submit_info2': 'Make sure to follow the input/output format specified.', 'btn_submit_page': 'Go to Submission Page', 'header_submissions_history': 'Submissions History', 'text_no_submissions': 'No submissions yet.', 'status_accepted': 'Accepted', 'status_wrong_answer': 'Wrong Answer', 'status_runtime_error': 'Runtime Error', 'status_compilation_error': 'Compilation Error', 'status_pending': 'Pending' },
+        'hy': { 'page_title': '%c - %p', 'btn_back_to_contest': 'Վերադառնալ', 'header_statement': 'Խնդրի Նկարագրություն', 'header_io_examples': 'Օրինակներ', 'header_input': 'Մուտք', 'header_output': 'Ելք', 'header_submit_solution': 'Ուղարկել Լուծումը', 'text_submit_info1': 'Դուք կարող եք ուղարկել լուծումը համակարգի կողմից աջակցվող ցանկացած լեզվով։', 'text_submit_info2': 'Համոզվեք, որ պահպանում եք մուտքի/ելքի նշված ձևաչափը։', 'btn_submit_page': 'Անցնել Ուղարկման Էջ', 'header_submissions_history': 'Ուղարկումների Պատմություն', 'text_no_submissions': 'Դեռևս ուղարկումներ չկան։', 'status_accepted': 'Ընդունված', 'status_wrong_answer': 'Սխալ Պատասխան', 'status_runtime_error': 'Կատարման Սխալ', 'status_compilation_error': 'Կոմպիլյացիայի Սխալ', 'status_pending': 'Սպասման մեջ' },
+        'ru': { 'page_title': '%c - %p', 'btn_back_to_contest': 'Назад к контесту', 'header_statement': 'Условие Задачи', 'header_io_examples': 'Примеры Ввода/Вывода', 'header_input': 'Ввод', 'header_output': 'Вывод', 'header_submit_solution': 'Отправить Решение', 'text_submit_info1': 'Вы можете отправить решение на любом языке, поддерживаемом системой.', 'text_submit_info2': 'Убедитесь, что вы следуете указанному формату ввода/вывода.', 'btn_submit_page': 'Перейти на страницу отправки', 'header_submissions_history': 'История Посылок', 'text_no_submissions': 'Посылок пока нет.', 'status_accepted': 'Принято', 'status_wrong_answer': 'Неверный Ответ', 'status_runtime_error': 'Ошибка Исполнения', 'status_compilation_error': 'Ошибка Компиляции', 'status_pending': 'В Ожидании' }
+    };
+    Object.keys(problemTranslations).forEach(lang => {
+        if (!window.translations[lang]) { window.translations[lang] = {}; }
+        Object.assign(window.translations[lang], problemTranslations[lang]);
+    });
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            let translation = langDict[key];
+            if (translation) {
+                if (key === 'page_title') {
+                    translation = translation.replace('%c', el.dataset.contestTitle).replace('%p', el.dataset.problemTitle);
+                }
+                el.textContent = translation;
+            }
+        });
+    };
+    
+    updatePageText();
+    window.addEventListener('languageChanged', updatePageText);
+});
+</script>
 {% endblock %}
