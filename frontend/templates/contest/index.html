@@ -91,12 +91,12 @@
                         <div class="card contest-card h-100 d-flex flex-column">
                             <div class="card-header"><h4 class="card-title mb-0">{{ contest.title }}</h4></div>
                             <div class="card-body flex-grow-1">
-                                <p class="text-white-50">{{ contest.description|truncate(120) }}</p>
+                                <p class="text-white-50" style="color: white !important;">{{ contest.description|truncate(120) }}</p>
                                 <div class="d-flex justify-content-start align-items-center text-white-50 small mt-3">
                                     <span class="me-3">
-                                        <i class="bi bi-code-slash me-1"></i>
+                                        <i class="bi bi-code-slash me-1" style="color:white;" ></i>
                                         <strong class="text-white">{{ contest.problems.count() }}</strong>
-                                        <span data-translate-key="text_problems">Problems</span>
+                                        <span data-translate-key="text_problems" style="color:white;">Problems</span>
                                     </span>
                                 </div>
                             </div>
