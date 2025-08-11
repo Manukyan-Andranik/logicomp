@@ -10,11 +10,11 @@ class Config:
     template_folder='../frontend/templates'  
     static_folder='../frontend/static'       
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'postgresql://olympiad:olympiad@localhost/olympiad'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') 
+    print(SQLALCHEMY_DATABASE_URI)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # BASE_URL = "http://127.0.0.1:5002/" #"https://logiclab.am/logicomp/"
+    BASE_URL = "https://logiclab.am/olimp" 
     
     ADMINS = ['admin@olympiad.example.com']
     SUBMISSIONS_PER_PAGE = 10
@@ -27,3 +27,6 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') 
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
+
+
+a = Config()
