@@ -117,6 +117,116 @@
       .site-footer a:hover {
         color: var(--primary-dark);
       }
+      .navbar.glassmorphism {
+        height: var(--navbar-height, 70px);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1030;
+        backdrop-filter: blur(10px) saturate(180%);
+        -webkit-backdrop-filter: blur(10px) saturate(180%);
+        background-color: var(--navbar-bg, rgba(18, 18, 18, 0.75)) !important;
+        border-bottom: 1px solid transparent;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+
+      .navbar.glassmorphism.scrolled {
+        background-color: rgba(18, 18, 18, 0.9) !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        border-bottom-color: var(--border-color, rgba(255, 255, 255, 0.1));
+      }
+
+      .navbar-dark .nav-link {
+        color: var(--text-light, #e0e0e0) !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        transition: color 0.3s ease, background-color 0.3s ease;
+      }
+
+      .navbar-dark .nav-link:hover,
+      .navbar-dark .nav-link:focus {
+        color: var(--primary, #FFC107) !important;
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .dropdown-menu {
+        background-color: rgba(30, 30, 30, 0.9) !important;
+        border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1)) !important;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+        padding: 0.5rem 0;
+      }
+
+      .dropdown-item {
+        color: var(--text-light, #e0e0e0) !important;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1.25rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+
+      .dropdown-item:hover,
+      .dropdown-item:focus,
+      .dropdown-item.active {
+        background-color: var(--primary, #FFC107) !important;
+        color: var(--dark, #121212) !important;
+      }
+
+      .dropdown-divider {
+        border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+      }
+
+      .language-dropdown .dropdown-toggle .flag-icon {
+        margin-right: 0.5rem;
+      }
+
+      .flag-icon {
+        width: 22px;
+        height: 16px;
+        object-fit: cover;
+        border-radius: 3px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.5);
+      }
+
+      .btn-login {
+        background: var(--primary, #FFC107);
+        border: none;
+        color: #000 !important; 
+        font-weight: 600;
+        padding: 0.5rem 1.25rem;
+        border-radius: 2rem; 
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      .btn-login:hover {
+        background: var(--primary-dark, #FFA000);
+        transform: translateY(-2px); 
+      }
+
+      @media (max-width: 991.98px) {
+        .navbar-collapse {
+          background-color: rgba(18, 18, 18, 0.98);
+          border-radius: 0.5rem;
+          margin-top: 0.5rem;
+          padding: 1rem;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        .navbar-nav .nav-link {
+          padding: 0.75rem 0.5rem;
+        }
+
+        .user-dropdown, .language-dropdown {
+          margin-top: 0.5rem;
+        }
+        .btn-login {
+          width: 100%;
+          margin-top: 1rem;
+        }
+}
     </style>
     {% block extra_css %}{% endblock %}
   </head>
@@ -162,163 +272,72 @@
           <span class="navbar-toggler-icon" style="color: var(--primary)"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                href="{{ url_for('contest.index') }}"
-                data-translate-key="nav_contests"
-                >Contests</a
-              >
-            </li>
-            <li class="nav-item">
-              <a
-                class="nav-link"
-                href="{{ url_for('main.about') }}"
-                data-translate-key="nav_about"
-                >About</a
-              >
-            </li>
-          </ul>
-          <ul class="navbar-nav align-items-center" style="color: white;">
-            <!-- Language Dropdown -->
-            <li class="nav-item dropdown language-dropdown" style="color: white;">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="language-selector-btn"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              ></a>
-              <ul
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="language-selector-btn"
-              >
-                <li>
-                  <a
-                    id="lang-en"
-                    class="dropdown-item"
-                    href="#"
-                    onclick="changeLanguage('en')"
-                    ><img
-                      src="https://flagcdn.com/w40/us.png"
-                      class="flag-icon"
-                      alt="USA Flag"
-                    /><span data-translate-key="lang_english">English</span></a
-                  >
-                </li>
-                <li>
-                  <a
-                    id="lang-hy"
-                    class="dropdown-item"
-                    href="#"
-                    onclick="changeLanguage('hy')"
-                    ><img
-                      src="https://flagcdn.com/w40/am.png"
-                      class="flag-icon"
-                      alt="Armenian Flag"
-                    /><span data-translate-key="lang_armenian">Հայերեն</span></a
-                  >
-                </li>
-                <li>
-                  <a
-                    id="lang-ru"
-                    class="dropdown-item"
-                    href="#"
-                    onclick="changeLanguage('ru')"
-                    ><img
-                      src="https://flagcdn.com/w40/ru.png"
-                      class="flag-icon"
-                      alt="Russian Flag"
-                    /><span data-translate-key="lang_russian">Русский</span></a
-                  >
-                </li>
-              </ul>
-            </li>
+    <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('contest.index') }}" data-translate-key="nav_contests">Contests</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.about') }}" data-translate-key="nav_about">About</a>
+        </li>
+    </ul>
 
-            {% if current_user.is_authenticated %} {% if current_user.role ==
-            'admin' %}
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="adminDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i class="bi bi-shield-lock-fill me-1"></i>{{
-                current_user.username }}
-              </a>
-              <ul
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="adminDropdown"
-              >
+    <ul class="navbar-nav align-items-center">
+        <!-- Language Dropdown -->
+        <li class="nav-item dropdown language-dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="language-selector-btn" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="language-selector-btn">
                 <li>
-                  <a
-                    class="dropdown-item"
-                    href="{{ url_for('admin.index') }}"
-                    data-translate-key="nav_admin_panel"
-                    >Admin Panel</a
-                  >
+                    <a id="lang-en" class="dropdown-item" href="#" onclick="changeLanguage('en')">
+                        <img src="https://flagcdn.com/w40/us.png" class="flag-icon" alt="USA Flag"/>
+                        <span data-translate-key="lang_english">English</span>
+                    </a>
                 </li>
-                <li><hr class="dropdown-divider" /></li>
                 <li>
-                  <a
-                    class="dropdown-item"
-                    href="{{ url_for('auth.logout') }}"
-                    data-translate-key="nav_logout"
-                    >Logout</a
-                  >
+                    <a id="lang-hy" class="dropdown-item" href="#" onclick="changeLanguage('hy')">
+                        <img src="https://flagcdn.com/w40/am.png" class="flag-icon" alt="Armenian Flag"/>
+                        <span data-translate-key="lang_armenian">Հայերեն</span>
+                    </a>
                 </li>
-              </ul>
+                <li>
+                    <a id="lang-ru" class="dropdown-item" href="#" onclick="changeLanguage('ru')">
+                        <img src="https://flagcdn.com/w40/ru.png" class="flag-icon" alt="Russian Flag"/>
+                        <span data-translate-key="lang_russian">Русский</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        {% if current_user.is_authenticated %}
+            {% if current_user.role == 'admin' %}
+            <li class="nav-item dropdown user-dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-shield-lock-fill me-1"></i>{{ current_user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('admin.index') }}" data-translate-key="nav_admin_panel">Admin Panel</a></li>
+                    <li><hr class="dropdown-divider"/></li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
+                </ul>
             </li>
             {% else %}
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="userDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i class="bi bi-person-fill me-1"></i>{{ current_user.username
-                }}
-              </a>
-              <ul
-                class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="userDropdown"
-              >
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="{{ url_for('auth.logout') }}"
-                    data-translate-key="nav_logout"
-                    >Logout</a
-                  >
-                </li>
-              </ul>
-            </li>
-            {% endif %} {% else %}
-            <li class="nav-item">
-              <a
-                class="btn btn-primary btn-sm ms-2"
-                style="
-                  background: var(--primary);
-                  border: none;
-                  color: #000;
-                  font-weight: 500;
-                "
-                href="{{ url_for('auth.login') }}"
-                data-translate-key="nav_login"
-                >Login</a
-              >
+            <li class="nav-item dropdown user-dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-fill me-1"></i>{{ current_user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
+                </ul>
             </li>
             {% endif %}
-          </ul>
-        </div>
+        {% else %}
+            <li class="nav-item">
+                <a class="btn btn-primary btn-login ms-2" href="{{ url_for('auth.login') }}" data-translate-key="nav_login">Login</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
       </div>
     </nav>
     <main class="flex-grow-1">{% block content %}{% endblock %}</main>
