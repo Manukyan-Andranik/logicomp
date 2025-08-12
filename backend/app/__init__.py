@@ -31,6 +31,8 @@ def create_app(config_class=Config):
     mail.init_app(app)
     bootstrap.init_app(app)
 
+
+
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
@@ -49,7 +51,9 @@ def create_app(config_class=Config):
     @app.context_processor
     def inject_now():
         return {'now': datetime.utcnow()}
-    
+
     return app
 
 from app import models
+
+

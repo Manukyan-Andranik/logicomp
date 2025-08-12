@@ -2,24 +2,7 @@
 {% block title %}<span data-translate-key="page_login">Login</span>{% endblock %}
 {% block extra_css %}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<style>
-    body { overflow-x: hidden; overflow-y: auto; }
-    main.auth-main { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - var(--navbar-height)); padding: 2rem 0 !important; background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; }
-    .auth-card { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(15px) saturate(180%); border: 1px solid var(--border-color); border-radius: 1rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-    .auth-card .card-title { color: white; font-weight: 700; }
-    .form-control-modern { background: transparent !important; border: none !important; border-bottom: 2px solid var(--border-color) !important; border-radius: 0 !important; color: black !important; padding: .5rem 2.5rem .5rem 0 !important; box-shadow: none !important; transition: border-color 0.3s ease; }
-    .form-control-modern::placeholder { color: var(--text-muted); opacity: 1; }
-    .form-control-modern:focus { border-bottom-color: var(--primary) !important; }
-    .form-label { color: var(--text-muted); }
-    .password-wrapper { position: relative; }
-    .password-toggle { position: absolute; top: 50%; right: 5px; transform: translateY(-50%); color: var(--text-muted); cursor: pointer; transition: color 0.2s ease; }
-    .password-toggle:hover { color: var(--primary); }
-    .btn-auth { background: var(--primary); border: none; color: #000; font-weight: bold; padding: 12px 0; border-radius: 50px; transition: all 0.3s ease; }
-    .btn-auth:hover { background: var(--primary-dark); color: #000; box-shadow: 0 0 15px var(--primary); }
-    .extra-links span { color: var(--text-muted) !important; }
-    .extra-links a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
-    .extra-links a:hover { text-decoration: underline; }
-</style>
+<link href="{{ url_for('static', filename='css/auth-forms.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -29,33 +12,63 @@
             <div class="col-md-7 col-lg-5 col-xl-4" data-aos="fade-up">
                 <div class="card auth-card">
                     <div class="card-body p-4 p-md-5">
-                        <div class="text-center mb-4">
-                            <i class="bi bi-box-arrow-in-right fs-1" style="color: var(--primary);"></i>
-                            <h2 class="card-title mt-2" data-translate-key="login_title">Sign In</h2>
+                        <div class="text-center mb-5">
+                            <i class="bi bi-box-arrow-in-right auth-icon"></i>
+                            <h2 class="card-title" data-translate-key="login_title">Sign In</h2>
+                            <p class="text-muted" data-translate-key="login_subtitle">Welcome back! Please sign in to your account.</p>
                         </div>
-                        <form method="POST" action="{{ url_for('auth.login') }}">
+                        
+                        <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm">
                             {{ form.hidden_tag() }}
-                            <div class="mb-4">
+                            
+                            <div class="form-group">
                                 {{ form.username.label(class="form-label", **{'data-translate-key': 'username_label'}) }}
-                                {{ form.username(class="form-control form-control-modern") }}
+                                <div class="position-relative">
+                                    {{ form.username(class="form-control form-control-modern", placeholder="Enter your username", **{'data-translate-key': 'username_placeholder'}) }}
+                                    <i class="bi bi-person-fill input-icon"></i>
+                                </div>
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                        {{ form.username.errors[0] }}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="mb-3">
+                            
+                            <div class="form-group">
                                 {{ form.password.label(class="form-label", **{'data-translate-key': 'password_label'}) }}
-                                <div class="password-wrapper">
-                                    {{ form.password(class="form-control form-control-modern") }}
-                                    <i class="bi bi-eye-slash-fill password-toggle"></i>
+                                <div class="password-wrapper position-relative">
+                                    {{ form.password(class="form-control form-control-modern", placeholder="Enter your password", **{'data-translate-key': 'password_placeholder'}) }}
+                                    <i class="bi bi-lock-fill input-icon"></i>
+                                    <i class="bi bi-eye-slash-fill password-toggle" title="Toggle password visibility"></i>
                                 </div>
+                                {% if form.password.errors %}
+                                    <div class="invalid-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                        {{ form.password.errors[0] }}
+                                    </div>
+                                {% endif %}
                             </div>
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <div class="form-check">
-                                    {{ form.remember_me(class="form-check-input") }}
-                                    {{ form.remember_me.label(class="form-check-label", **{'data-translate-key': 'remember_me_label'}) }}
-                                </div>
+                            
+                            <div class="form-check">
+                                {{ form.remember_me(class="form-check-input") }}
+                                <label class="form-check-label" for="{{ form.remember_me.id }}">
+                                    <span data-translate-key="remember_me">Remember me</span>
+                                </label>
                             </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-auth"><span data-translate-key="login_button">Sign In</span></button>
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-auth" id="loginBtn">
+                                    <span data-translate-key="login_button">Sign In</span>
+                                </button>
                             </div>
-                            <hr style="background-color: var(--border-color);" class="my-4">
+                            
+                            <hr class="divider">
+                            
+                            <div class="extra-links">
+                                <span data-translate-key="need_help">Need help?</span>
+                                <a href="#" data-translate-key="contact_support">Contact Support</a>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -72,6 +85,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     AOS.init({ duration: 800, offset: 50, once: true });
     
+    // Password toggle functionality
     document.querySelectorAll('.password-toggle').forEach(toggle => {
         toggle.addEventListener('click', function() {
             const passwordField = this.previousElementSibling; 
@@ -80,24 +94,164 @@ document.addEventListener('DOMContentLoaded', function() {
                 passwordField.setAttribute('type', type);
                 this.classList.toggle('bi-eye-slash-fill');
                 this.classList.toggle('bi-eye-fill');
+                
+                // Update title for accessibility
+                this.title = type === 'password' ? 'Show password' : 'Hide password';
             }
         });
     });
 
+    // Form validation and enhancement
+    const form = document.getElementById('loginForm');
+    const inputs = form.querySelectorAll('.form-control-modern');
+    const submitBtn = document.getElementById('loginBtn');
+    
+    // Real-time validation
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+    });
+    
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Show loading state
+        submitBtn.classList.add('loading');
+        submitBtn.querySelector('span').textContent = 'Signing in...';
+    });
+    
+    function validateField(field) {
+        const value = field.value.trim();
+        const fieldName = field.name;
+        
+        // Remove existing validation classes
+        field.classList.remove('is-valid', 'is-invalid');
+        
+        if (value === '') {
+            field.classList.add('is-invalid');
+            return false;
+        }
+        
+        // Specific validation rules
+        if (fieldName === 'username' && value.length < 3) {
+            field.classList.add('is-invalid');
+            return false;
+        }
+        
+        if (fieldName === 'password' && value.length < 6) {
+            field.classList.add('is-invalid');
+            return false;
+        }
+        
+        field.classList.add('is-valid');
+        return true;
+    }
+    
+    function validateForm() {
+        let isValid = true;
+        inputs.forEach(input => {
+            if (!validateField(input)) {
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+    
+    // Enhanced accessibility
+    inputs.forEach(input => {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.type !== 'textarea') {
+                e.preventDefault();
+                const nextInput = inputs[Array.from(inputs).indexOf(this) + 1];
+                if (nextInput) {
+                    nextInput.focus();
+                } else {
+                    submitBtn.click();
+                }
+            }
+        });
+    });
+    
+    // Auto-focus first input
+    inputs[0].focus();
+    
+    // Language translations
     const loginTranslations = {
-        'en': { 'page_login': 'Login', 'login_title': 'Sign In', 'username_label': 'Username', 'password_label': 'Password', 'remember_me_label': 'Remember Me', 'login_button': 'Sign In',  'username_placeholder': 'Enter your username', 'password_placeholder': 'Enter your password' },
-        'hy': { 'page_login': 'Մուտք', 'login_title': 'Մուտք Գործել', 'username_label': 'Օգտանուն', 'password_label': 'Գաղտնաբառ', 'remember_me_label': 'Հիշել ինձ', 'login_button': 'Մուտք Գործել', 'username_placeholder': 'Մուտքագրեք ձեր օգտանունը', 'password_placeholder': 'Մուտքագրեք ձեր գաղտնաբառը' },
-        'ru': { 'page_login': 'Вход', 'login_title': 'Войти', 'username_label': 'Имя пользователя', 'password_label': 'Пароль', 'remember_me_label': 'Запомнить меня','login_button': 'Войти','username_placeholder': 'Введите имя пользователя', 'password_placeholder': 'Введите ваш пароль' }
+        'en': { 
+            'page_login': 'Login', 
+            'login_title': 'Sign In', 
+            'login_subtitle': 'Welcome back! Please sign in to your account.',
+            'username_label': 'Username', 
+            'password_label': 'Password', 
+            'login_button': 'Sign In',
+            'username_placeholder': 'Enter your username', 
+            'password_placeholder': 'Enter your password',
+            'remember_me': 'Remember me',
+            'need_help': 'Need help?',
+            'contact_support': 'Contact Support'
+        },
+        'hy': { 
+            'page_login': 'Մուտք', 
+            'login_title': 'Մուտք Գործել', 
+            'login_subtitle': 'Բարի վերադարձ! Խնդրում ենք մուտք գործել ձեր հաշիվ:',
+            'username_label': 'Օգտանուն', 
+            'password_label': 'Գաղտնաբառ', 
+            'login_button': 'Մուտք Գործել', 
+            'username_placeholder': 'Մուտքագրեք ձեր օգտանունը', 
+            'password_placeholder': 'Մուտքագրեք ձեր գաղտնաբառը',
+            'remember_me': 'Հիշել ինձ',
+            'need_help': 'Օգնություն է պետք?',
+            'contact_support': 'Կապ հաստատել աջակցության հետ'
+        },
+        'ru': { 
+            'page_login': 'Вход', 
+            'login_title': 'Войти', 
+            'login_subtitle': 'Добро пожаловать! Пожалуйста, войдите в свой аккаунт.',
+            'username_label': 'Имя пользователя', 
+            'password_label': 'Пароль', 
+            'login_button': 'Войти',
+            'username_placeholder': 'Введите имя пользователя', 
+            'password_placeholder': 'Введите ваш пароль',
+            'remember_me': 'Запомнить меня',
+            'need_help': 'Нужна помощь?',
+            'contact_support': 'Связаться с поддержкой'
+        }
     };
-    Object.keys(loginTranslations).forEach(lang => { Object.assign(window.translations[lang], loginTranslations[lang]); });
+    
+    Object.keys(loginTranslations).forEach(lang => { 
+        Object.assign(window.translations[lang], loginTranslations[lang]); 
+    });
+    
     const updatePageText = () => {
-        const lang = localStorage.getItem('language') || 'en'; const langDict = window.translations[lang] || window.translations['en'];
-        document.querySelectorAll('[data-translate-key]').forEach(el => { const key = el.dataset.translateKey; if(langDict[key]) el.textContent = langDict[key]; });
-        const userInput = document.querySelector('input[name="username"]'); const passInput = document.querySelector('input[name="password"]');
+        const lang = localStorage.getItem('language') || 'en'; 
+        const langDict = window.translations[lang] || window.translations['en'];
+        
+        document.querySelectorAll('[data-translate-key]').forEach(el => { 
+            const key = el.dataset.translateKey; 
+            if(langDict[key]) el.textContent = langDict[key]; 
+        });
+        
+        const userInput = document.querySelector('input[name="username"]'); 
+        const passInput = document.querySelector('input[name="password"]');
         if(userInput) userInput.placeholder = langDict.username_placeholder || '';
         if(passInput) passInput.placeholder = langDict.password_placeholder || '';
     };
-    updatePageText(); window.addEventListener('languageChanged', updatePageText);
+    
+    updatePageText(); 
+    window.addEventListener('languageChanged', updatePageText);
 });
 </script>
 {% endblock %}

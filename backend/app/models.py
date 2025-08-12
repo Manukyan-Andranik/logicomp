@@ -2,6 +2,7 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db, login
+from sqlalchemy.orm import validates
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -29,6 +30,21 @@ class User(UserMixin, db.Model):
     def update_password(self, new_password):
         self.set_password(new_password)
         db.session.commit()
+    
+    @property
+    def contests(self):
+        """Get all contests this user participates in"""
+        from sqlalchemy import select
+        from sqlalchemy.orm import aliased
+        
+        # Use a subquery to get contest IDs from the association table
+        contest_ids = db.session.execute(
+            select(contest_participants.c.contest_id)
+            .where(contest_participants.c.user_id == self.id)
+        ).scalars().all()
+        
+        # Return Contest objects
+        return Contest.query.filter(Contest.id.in_(contest_ids)).all()
 
 class Contest(db.Model):
     __tablename__ = 'contests'
@@ -39,9 +55,10 @@ class Contest(db.Model):
     start_time = db.Column(db.DateTime)
     end_time = db.Column(db.DateTime)
     is_public = db.Column(db.Boolean, default=False)
-    problems = db.relationship('Problem', backref='contest', lazy='dynamic')
+    problems = db.relationship('Problem', backref='contest', lazy='dynamic', cascade='all, delete-orphan')
     participants = db.relationship('User', secondary='contest_participants', lazy='dynamic')
     participants_folder = db.Column(db.String(256), nullable=True)  # Path to the folder containing participant files
+    
     def is_active(self):
         now = datetime.utcnow()
         return self.start_time <= now <= self.end_time
@@ -56,7 +73,8 @@ class Problem(db.Model):
     time_limit = db.Column(db.Integer)
     expected_input = db.Column(db.Text)
     expected_output = db.Column(db.Text)
-    submissions = db.relationship('Submission', backref='problem', lazy='dynamic')
+    submissions = db.relationship('Submission', backref='problem', lazy='dynamic', cascade='all, delete-orphan')
+    test_cases = db.relationship('TestCase', backref='problem', lazy='dynamic', cascade='all, delete-orphan')
 
 
 class Submission(db.Model):
@@ -71,10 +89,17 @@ class Submission(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     status = db.Column(db.String(50))  # 'Pending', 'Accepted', etc.
     execution_time = db.Column(db.Float)  # in seconds
+    
+    @validates('execution_time')
+    def validate_execution_time(self, key, value):
+        if value is not None and value < 0:
+            raise ValueError('Execution time cannot be negative')
+        return value
+    error_message = db.Column(db.Text)  # Store error messages from judge
 
 contest_participants = db.Table('contest_participants',
-    db.Column('contest_id', db.Integer, db.ForeignKey('contests.id')),
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+    db.Column('contest_id', db.Integer, db.ForeignKey('contests.id', ondelete='CASCADE')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
 )
 
 class TestCase(db.Model):
@@ -86,15 +111,13 @@ class TestCase(db.Model):
     expected_output = db.Column(db.Text, nullable=False)
     is_sample = db.Column(db.Boolean, default=False)
 
-    problem = db.relationship('Problem', backref=db.backref('test_cases', lazy='dynamic'))
-
 class ParticipantsHistory(db.Model):
     __tablename__ = 'participants_history'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64))
     email = db.Column(db.String(120))
-    contest_id = db.Column(db.Integer)
+    contest_id = db.Column(db.Integer, db.ForeignKey('contests.id', ondelete='CASCADE'))
 
 
 @login.user_loader

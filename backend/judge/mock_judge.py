@@ -169,15 +169,6 @@ def run_code(code: str, language: str, input_data: str, time_limit: int) -> Tupl
 
 
 def judge_submission(submission_id: int):
-    # Add this function at the top or near run_code
-    def normalize_output(text: str) -> str:
-        """Normalize output by stripping extra whitespace and newlines."""
-        return '\n'.join(
-            line.strip()
-            for line in text.strip().splitlines()
-            if line.strip() != ''
-        )
-
     """Judge a submission against all test cases"""
     from app import create_app, db
     from app.models import Submission, TestCase
@@ -186,19 +177,49 @@ def judge_submission(submission_id: int):
     with app.app_context():
         submission = Submission.query.get(submission_id)
         if not submission:
-            return
+            print(f"[Judge] Submission {submission_id} not found")
+            return None
 
         problem = submission.problem
         test_cases = TestCase.query.filter_by(problem_id=problem.id).all()
+        
+        print(f"[Judge] Judging submission {submission_id} for problem {problem.id}")
+        print(f"[Judge] Found {len(test_cases)} test cases")
+        
+        if not test_cases:
+            # If no test cases, mark as accepted (legacy support)
+            submission.status = Verdict.ACCEPTED.value
+            submission.execution_time = 0
+            db.session.commit()
+            print(f"[Judge] No test cases found, marked as Accepted")
+            return True
+            
+        # Initialize submission status
         submission.status = Verdict.ACCEPTED.value
         submission.execution_time = 0
+        submission.error_message = None
 
-        for test_case in test_cases:
+        def normalize_output(text: str) -> str:
+            """Normalize output by stripping extra whitespace and newlines."""
+            return '\n'.join(
+                line.strip()
+                for line in text.strip().splitlines()
+                if line.strip() != ''
+            )
+
+        print(f"[Judge] Starting test case evaluation...")
+        
+        for i, test_case in enumerate(test_cases, 1):
+            print(f"[Judge] Testing case {i}/{len(test_cases)}: input='{test_case.expected_input}', expected='{test_case.expected_output}'")
+            
+            # Convert time limit from milliseconds to seconds
+            time_limit_seconds = max(1, problem.time_limit / 1000)  # Minimum 1 second
+            
             verdict, output, exec_time = run_code(
                 submission.code,
                 submission.language,
                 test_case.expected_input,
-                problem.time_limit
+                time_limit_seconds
             )
 
             submission.execution_time = max(submission.execution_time, exec_time)
@@ -206,15 +227,30 @@ def judge_submission(submission_id: int):
             if verdict != Verdict.ACCEPTED:
                 submission.status = verdict.value
                 submission.error_message = output
+                print(f"[Judge] Test case {i} failed with {verdict.value}: {output}")
                 break
 
-            if normalize_output(output) != normalize_output(test_case.expected_output):
+            # Normalize outputs for comparison
+            expected_normalized = normalize_output(test_case.expected_output)
+            actual_normalized = normalize_output(output)
+            
+            if actual_normalized != expected_normalized:
                 submission.status = Verdict.WRONG_ANSWER.value
                 submission.error_message = (
-                    "Output doesn't match expected result\n"
-                    f"Expected: {normalize_output(test_case.expected_output)}\n"
-                    f"Got: {normalize_output(output)}"
+                    f"Test case {i} failed: Output doesn't match expected result\n"
+                    f"Expected: '{expected_normalized}'\n"
+                    f"Got: '{actual_normalized}'"
                 )
+                print(f"[Judge] Test case {i} failed: expected '{expected_normalized}', got '{actual_normalized}'")
                 break
+            else:
+                print(f"[Judge] Test case {i} passed")
 
+        # Commit the final result
         db.session.commit()
+        
+        print(f"[Judge] Final result: {submission.status}")
+        if submission.error_message:
+            print(f"[Judge] Error message: {submission.error_message}")
+        
+        return True

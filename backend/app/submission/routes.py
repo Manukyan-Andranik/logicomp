@@ -9,18 +9,54 @@ from datetime import datetime
 from threading import Thread
 
 def process_submission(app, submission):
-    with app.app_context():
-        problem = Problem.query.get(submission.problem_id)
-        result = judge_submission(
-            code=submission.code,
-            language=submission.language,
-            problem_id=submission.problem_id,
-            time_limit=problem.time_limit
-        )
-        
-        submission.status = result['verdict']
-        submission.execution_time = result['execution_time']
-        db.session.commit()
+    """Process a submission in the background"""
+    try:
+        with app.app_context():
+            print(f"[Judge] Starting to judge submission {submission.id}")
+            
+            # Get the problem and test cases
+            problem = Problem.query.get(submission.problem_id)
+            if not problem:
+                print(f"[Judge] Error: Problem {submission.problem_id} not found")
+                submission.status = "Runtime Error"
+                submission.error_message = "Problem not found"
+                db.session.commit()
+                return
+            
+            # Check if there are test cases
+            test_cases = problem.test_cases.all()
+            if not test_cases:
+                print(f"[Judge] No test cases found, marking as accepted")
+                submission.status = "Accepted"
+                submission.execution_time = 0
+                db.session.commit()
+                return
+            
+            print(f"[Judge] Found {len(test_cases)} test cases")
+            
+            # Import judge function
+            from judge.mock_judge import judge_submission
+            
+            # Call the judge with the correct parameters
+            result = judge_submission(submission.id)
+            
+            if result:
+                print(f"[Judge] Judging completed for submission {submission.id}")
+            else:
+                print(f"[Judge] Judging failed for submission {submission.id}")
+                submission.status = "Runtime Error"
+                submission.error_message = "Judging process failed"
+                db.session.commit()
+                
+    except Exception as e:
+        print(f"[Judge] Error processing submission {submission.id}: {str(e)}")
+        try:
+            with app.app_context():
+                submission.status = "Runtime Error"
+                submission.error_message = f"Judge error: {str(e)}"
+                db.session.commit()
+        except Exception as commit_error:
+            print(f"[Judge] Failed to update submission status: {str(commit_error)}")
 
 @bp.route('/submit/<int:problem_id>', methods=['GET', 'POST'])
 @login_required
@@ -77,7 +113,11 @@ def submit(problem_id):
             db.session.commit()
             
             # Start background judging
-            Thread(target=judge_submission, args=(submission.id,)).start()
+            try:
+                Thread(target=process_submission, args=(current_app._get_current_object(), submission)).start()
+            except Exception as e:
+                flash('Error starting judge process. Please try again.', 'error')
+                return redirect(url_for('submission.submit', problem_id=problem_id))
             
             flash('Solution submitted and is being judged!', 'info')
             return redirect(url_for('submission.view', submission_id=submission.id))

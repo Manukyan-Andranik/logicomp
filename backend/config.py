@@ -10,8 +10,7 @@ class Config:
     template_folder='../frontend/templates'  
     static_folder='../frontend/static'       
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'your-secret-key-here'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') 
-    print(SQLALCHEMY_DATABASE_URI)
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI') or 'postgresql://olympiad:olympiad@localhost/olympiad'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     BASE_URL = "https://logiclab.am/olimp" 
@@ -27,6 +26,3 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') 
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER')
-
-
-a = Config()

@@ -28,5 +28,5 @@ def send_credentials_email(email, username, password, contest, contest_url):
                                 username=username,
                                 password=password,
                                 contest=contest,
-                                contest_url=contest_url
-    ))
+                                contest_url=contest_url)
+    )

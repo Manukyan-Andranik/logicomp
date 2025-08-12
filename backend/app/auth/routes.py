@@ -18,7 +18,7 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password', 'error')
             return redirect(url_for('auth.login'))
-        login_user(user, remember=form.remember_me.data)
+        login_user(user)
         next_page = request.args.get('next')
         if not next_page or urlparse(next_page).netloc != '':
             next_page = url_for('main.index')
@@ -44,12 +44,20 @@ def register():
         participants_file_path = os.path.join(contest.participants_folder, 'participants.json')
 
         # Ensure directory exists
-        os.makedirs(contest.participants_folder, exist_ok=True)
+        try:
+            os.makedirs(contest.participants_folder, exist_ok=True)
+        except OSError as e:
+            flash(f"Error creating directory: {str(e)}", "danger")
+            return redirect(url_for('auth.register', contest_id=contest_id))
 
         # Load existing participants
         if os.path.exists(participants_file_path):
-            with open(participants_file_path, 'r') as f:
-                participants = json.load(f)
+            try:
+                with open(participants_file_path, 'r') as f:
+                    participants = json.load(f)
+            except (IOError, json.JSONDecodeError) as e:
+                flash(f"Error reading participants file: {str(e)}", "danger")
+                return redirect(url_for('auth.register', contest_id=contest_id))
         else:
             participants = []
 
@@ -65,8 +73,12 @@ def register():
         })
 
         # Write back
-        with open(participants_file_path, 'w') as f:
-            json.dump(participants, f, indent=4)
+        try:
+            with open(participants_file_path, 'w') as f:
+                json.dump(participants, f, indent=4)
+        except IOError as e:
+            flash(f"Error saving participant data: {str(e)}", "danger")
+            return redirect(url_for('auth.register', contest_id=contest_id))
 
         flash('Congratulations, you are now a registered user! Please wait for an admin to approve your account and send you a verification email with your special credentials.', 'success')
         return redirect(url_for('auth.login'))
