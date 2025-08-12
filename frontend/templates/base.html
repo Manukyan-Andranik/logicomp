@@ -1,207 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}<span data-translate-key="site_title">Olympiad Platform</span>{% endblock %}</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% block title %}<span data-translate-key="site_title">Olympiad
+      Platform</span>{% endblock %}
+    </title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+    />
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='images/favicon.ico') }}"
+      type="image/x-icon"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/mobile.css') }}"
+    />
 
     <style>
-        :root {
-            --primary: #FFC107; /* Հիմնական շեշտադրման գույն՝ վառ դեղին */
-            --primary-dark: #FFA000; /* Մուգ դեղին՝ hover-ի համար */
-            --dark: #121212; /* Շատ մուգ ֆոն */
-            --text-light: #e0e0e0;
-            --text-muted: #888;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --navbar-height: 70px;
-            --footer-bg:rgba(18, 18, 18, 0.75) !important;
+      :root {
+        --primary: #ffc107; /* Հիմնական շեշտադրման գույն՝ վառ դեղին */
+        --primary-dark: #ffa000; /* Մուգ դեղին՝ hover-ի համար */
+        --dark: #121212; /* Շատ մուգ ֆոն */
+        --text-light: #e0e0e0;
+        --text-muted: #888;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --navbar-height: 70px;
+        --footer-bg: rgba(18, 18, 18, 0.75) !important;
+      }
 
+      body {
+        padding-top: var(--navbar-height);
+        background-color: var(--dark);
+        color: var(--text-light);
+      }
+      .navbar-toggler {
+        border-color: var(--primary) !important;
+        color: var(--primary);
+      }
+
+
+      .navbar.glassmorphism {
+        height: var(--navbar-height);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1030;
+        backdrop-filter: blur(10px) saturate(180%);
+        background-color: var(--navbar-bg) !important;
+        border-bottom: 1px solid transparent;
+        transition: all 0.3s ease;
+      }
+      .navbar.glassmorphism.scrolled {
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .navbar-brand {
+        font-weight: 700 !important;
+        color: #fff !important;
+      }
+      .navbar-dark .nav-link {
+        color: rgba(255, 255, 255, 0.8) !important;
+      }
+      .navbar-dark .nav-link:hover,
+      .navbar-dark .nav-link:focus {
+        color: var(--primary) !important;
+      }
+
+      .dropdown-menu {
+        background-color: rgba(30, 30, 30, 0.9) !important;
+        border: 1px solid var(--border-color) !important;
+        backdrop-filter: blur(10px);
+      }
+      .dropdown-item {
+        color: var(--text-light) !important;
+      }
+      .dropdown-item:hover,
+      .dropdown-item:focus,
+      .dropdown-item.active {
+        background-color: var(--primary) !important;
+        color: #000 !important;
+      }
+
+      .flag-icon {
+        width: 22px;
+        height: 16px;
+        object-fit: cover;
+        border-radius: 3px;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+      }
+
+      .site-footer {
+        background-color: var(--footer-bg);
+      }
+      .site-footer p {
+        color: var(--text-muted);
+      }
+      .site-footer a {
+        color: var(--primary);
+      }
+      .site-footer a:hover {
+        color: var(--primary-dark);
+      }
+      .navbar.glassmorphism {
+        height: var(--navbar-height, 70px);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1030;
+        backdrop-filter: blur(10px) saturate(180%);
+        -webkit-backdrop-filter: blur(10px) saturate(180%);
+        background-color: var(--navbar-bg, rgba(18, 18, 18, 0.75)) !important;
+        border-bottom: 1px solid transparent;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      }
+
+      .navbar.glassmorphism.scrolled {
+        background-color: rgba(18, 18, 18, 0.9) !important;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        border-bottom-color: var(--border-color, rgba(255, 255, 255, 0.1));
+      }
+
+      .navbar-dark .nav-link {
+        color: var(--text-light, #e0e0e0) !important;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        transition: color 0.3s ease, background-color 0.3s ease;
+      }
+
+      .navbar-dark .nav-link:hover,
+      .navbar-dark .nav-link:focus {
+        color: var(--primary, #FFC107) !important;
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .dropdown-menu {
+        background-color: rgba(30, 30, 30, 0.9) !important;
+        border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1)) !important;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+        padding: 0.5rem 0;
+      }
+
+      .dropdown-item {
+        color: var(--text-light, #e0e0e0) !important;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1.25rem;
+        transition: background-color 0.2s ease, color 0.2s ease;
+      }
+
+      .dropdown-item:hover,
+      .dropdown-item:focus,
+      .dropdown-item.active {
+        background-color: var(--primary, #FFC107) !important;
+        color: var(--dark, #121212) !important;
+      }
+
+      .dropdown-divider {
+        border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+      }
+
+      .language-dropdown .dropdown-toggle .flag-icon {
+        margin-right: 0.5rem;
+      }
+
+      .flag-icon {
+        width: 22px;
+        height: 16px;
+        object-fit: cover;
+        border-radius: 3px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.5);
+      }
+
+      .btn-login {
+        background: var(--primary, #FFC107);
+        border: none;
+        color: #000 !important; 
+        font-weight: 600;
+        padding: 0.5rem 1.25rem;
+        border-radius: 2rem; 
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      .btn-login:hover {
+        background: var(--primary-dark, #FFA000);
+        transform: translateY(-2px); 
+      }
+
+      @media (max-width: 991.98px) {
+        .navbar-collapse {
+          background-color: rgba(18, 18, 18, 0.98);
+          border-radius: 0.5rem;
+          margin-top: 0.5rem;
+          padding: 1rem;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
-        
-        body {
-            padding-top: var(--navbar-height);
-            background-color: var(--dark);
-            color: var(--text-light);
+        .navbar-nav .nav-link {
+          padding: 0.75rem 0.5rem;
         }
 
-        .navbar.glassmorphism {
-            height: var(--navbar-height); position: fixed;
-            top: 0; width: 100%; z-index: 1030;
-            backdrop-filter: blur(10px) saturate(180%);
-            background-color: var(--navbar-bg) !important;
-            border-bottom: 1px solid transparent; transition: all 0.3s ease;
+        .user-dropdown, .language-dropdown {
+          margin-top: 0.5rem;
         }
-        .navbar.glassmorphism.scrolled {
-             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-             border-bottom: 1px solid var(--border-color);
+        .btn-login {
+          width: 100%;
+          margin-top: 1rem;
         }
-
-        .navbar-brand { font-weight: 700 !important; color: #fff !important; }
-        .navbar-dark .nav-link { color: rgba(255, 255, 255, 0.8) !important; }
-        .navbar-dark .nav-link:hover, .navbar-dark .nav-link:focus { color: var(--primary) !important; }
-
-        .dropdown-menu {
-            background-color: rgba(30, 30, 30, 0.9) !important;
-            border: 1px solid var(--border-color) !important; backdrop-filter: blur(10px);
-        }
-        .dropdown-item { color: var(--text-light) !important; }
-        .dropdown-item:hover, .dropdown-item:focus, .dropdown-item.active {
-            background-color: var(--primary) !important; color: #000 !important;
-        }
-        
-        .flag-icon { 
-            width: 22px; height: 16px; object-fit: cover; 
-            border-radius: 3px; box-shadow: 0 0 3px rgba(0,0,0,0.5);
-        }
-
-        .site-footer {
-            background-color: var(--footer-bg);
-        }
-        .site-footer p {
-             color: var(--text-muted);
-        }
-        .site-footer a { color: var(--primary); }
-        .site-footer a:hover { color: var(--primary-dark); }
+}
     </style>
     {% block extra_css %}{% endblock %}
-</head>
-<main class="flex-grow-1">
+  </head>
+  <main class="flex-grow-1">
     <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="container mt-3">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-    
-</main>
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="container mt-3" >
+      {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} alert-dismissible fade show"
+        role="alert"
+      >
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+          aria-label="Close"
+        ></button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+  </main>
 
-<body class="d-flex flex-column min-vh-100">
-    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark glassmorphism">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.index') }}"><i class="bi bi-code-square"></i> LogiComp</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('contest.index') }}" data-translate-key="nav_contests">Contests</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('main.about') }}" data-translate-key="nav_about">About</a></li>
+  <body class="d-flex flex-column min-vh-100">
+    <nav
+      id="main-navbar"
+      class="navbar navbar-expand-lg navbar-dark glassmorphism"
+    >
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('main.index') }}"
+          ><i class="bi bi-code-square"></i> LogiComp</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          style="border-color: var(--primary); color:var(--primary);"
+        >
+          <span class="navbar-toggler-icon" style="color: var(--primary)"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('contest.index') }}" data-translate-key="nav_contests">Contests</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('main.about') }}" data-translate-key="nav_about">About</a>
+        </li>
+    </ul>
+
+    <ul class="navbar-nav align-items-center">
+        <!-- Language Dropdown -->
+        <li class="nav-item dropdown language-dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="language-selector-btn" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="language-selector-btn">
+                <li>
+                    <a id="lang-en" class="dropdown-item" href="#" onclick="changeLanguage('en')">
+                        <img src="https://flagcdn.com/w40/us.png" class="flag-icon" alt="USA Flag"/>
+                        <span data-translate-key="lang_english">English</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="lang-hy" class="dropdown-item" href="#" onclick="changeLanguage('hy')">
+                        <img src="https://flagcdn.com/w40/am.png" class="flag-icon" alt="Armenian Flag"/>
+                        <span data-translate-key="lang_armenian">Հայերեն</span>
+                    </a>
+                </li>
+                <li>
+                    <a id="lang-ru" class="dropdown-item" href="#" onclick="changeLanguage('ru')">
+                        <img src="https://flagcdn.com/w40/ru.png" class="flag-icon" alt="Russian Flag"/>
+                        <span data-translate-key="lang_russian">Русский</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        {% if current_user.is_authenticated %}
+            {% if current_user.role == 'admin' %}
+            <li class="nav-item dropdown user-dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-shield-lock-fill me-1"></i>{{ current_user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('admin.index') }}" data-translate-key="nav_admin_panel">Admin Panel</a></li>
+                    <li><hr class="dropdown-divider"/></li>
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
                 </ul>
-                <ul class="navbar-nav align-items-center">
-                    <!-- Language Dropdown -->
-                    <li class="nav-item dropdown language-dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="language-selector-btn" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="language-selector-btn">
-                            <li><a id="lang-en" class="dropdown-item" href="#" onclick="changeLanguage('en')"><img src="https://flagcdn.com/w40/us.png" class="flag-icon" alt="USA Flag"><span data-translate-key="lang_english">English</span></a></li>
-                            <li><a id="lang-hy" class="dropdown-item" href="#" onclick="changeLanguage('hy')"><img src="https://flagcdn.com/w40/am.png" class="flag-icon" alt="Armenian Flag"><span data-translate-key="lang_armenian">Հայերեն</span></a></li>
-                            <li><a id="lang-ru" class="dropdown-item" href="#" onclick="changeLanguage('ru')"><img src="https://flagcdn.com/w40/ru.png" class="flag-icon" alt="Russian Flag"><span data-translate-key="lang_russian">Русский</span></a></li>
-                        </ul>
-                    </li>
-                    
-                    {% if current_user.is_authenticated %}
-                        {% if current_user.role == 'admin' %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-shield-lock-fill me-1"></i>{{ current_user.username }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" href="{{ url_for('admin.index') }}" data-translate-key="nav_admin_panel">Admin Panel</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
-                            </ul>
-                        </li>
-                        {% else %}
-                        <li class="nav-item dropdown">
-                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                               <i class="bi bi-person-fill me-1"></i>{{ current_user.username }}
-                             </a>
-                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                               <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
-                             </ul>
-                        </li>
-                        {% endif %}
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="btn btn-primary btn-sm ms-2" style="background: var(--primary); border: none; color: #000; font-weight: 500;" href="{{ url_for('auth.login') }}" data-translate-key="nav_login">Login</a>
-                        </li>
-                    {% endif %}
+            </li>
+            {% else %}
+            <li class="nav-item dropdown user-dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-fill me-1"></i>{{ current_user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
                 </ul>
-            </div>
-        </div>
+            </li>
+            {% endif %}
+        {% else %}
+            <li class="nav-item">
+                <a class="btn btn-primary btn-login ms-2" href="{{ url_for('auth.login') }}" data-translate-key="nav_login">Login</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+      </div>
     </nav>
-    <main class="flex-grow-1">
-        {% block content %}{% endblock %}
-    </main>
+    <main class="flex-grow-1">{% block content %}{% endblock %}</main>
     <footer class="site-footer">
-        <div class="container text-center">
-            <p class="mb-0">&copy; <span id="current-year"></span> Logic Lab. <span data-translate-key="footer_rights">All rights reserved.</span></p>
-        </div>
+      <div class="container text-center">
+        <p class="mb-0">
+          &copy; <span id="current-year"></span> Logic Lab.
+          <span data-translate-key="footer_rights">All rights reserved.</span>
+        </p>
+      </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
     {% block scripts %}
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-        const navbar = document.getElementById('main-navbar');
-        if (navbar) { window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); }); }
-        
-        window.translations = { 'en': {}, 'hy': {}, 'ru': {} };
-        const baseTranslations = {
-            'en': { 'site_title': 'Olympiad Platform', 'nav_contests': 'Contests', 'nav_about': 'About', 'nav_login': 'Login', 'lang_english': 'English', 'lang_armenian': 'Armenian', 'lang_russian': 'Russian', 'footer_rights': 'All rights reserved.', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Logout' },
-            'hy': { 'site_title': 'Օլիմպիական Հարթակ', 'nav_contests': 'Մրցույթներ', 'nav_about': 'Մեր մասին', 'nav_login': 'Մուտք', 'lang_english': 'Անգլերեն', 'lang_armenian': 'Հայերեն', 'lang_russian': 'Ռուսերեն', 'footer_rights': 'Բոլոր իրավունքները պաշտպանված են։', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Ելք' },
-            'ru': { 'site_title': 'Платформа Олимпиад', 'nav_contests': 'Конкурсы', 'nav_about': 'О нас', 'nav_login': 'Войти', 'lang_english': 'Английский', 'lang_armenian': 'Армянский', 'lang_russian': 'Русский', 'footer_rights': 'Все права защищены.', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Выйти' }
-        };
-        Object.keys(baseTranslations).forEach(lang => { Object.assign(window.translations[lang], baseTranslations[lang]); });
-        
-        const langSelectorBtn = document.getElementById('language-selector-btn');
-        const langLinks = { en: document.getElementById('lang-en'), hy: document.getElementById('lang-hy'), ru: document.getElementById('lang-ru') };
-        
-        const applyTranslations = (lang) => {
-            const langDict = window.translations[lang] || window.translations['en'];
-            document.querySelectorAll('[data-translate-key]').forEach(el => {
-                const key = el.dataset.translateKey; if(langDict[key]) el.textContent = langDict[key];
-            });
-            document.documentElement.lang = lang;
-            if (langSelectorBtn && langLinks[lang]) {
-                const activeLinkContent = langLinks[lang].innerHTML;
-                langSelectorBtn.innerHTML = activeLinkContent.replace('<span', '<span class="d-none d-lg-inline ms-2"');
-            }
-            for (const key in langLinks) { langLinks[key].classList.toggle('active', key === lang); }
-            updatePageTitle(lang);  
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("current-year").textContent =
+          new Date().getFullYear();
+        const navbar = document.getElementById("main-navbar");
+        if (navbar) {
+          window.addEventListener("scroll", () => {
+            navbar.classList.toggle("scrolled", window.scrollY > 50);
+          });
+        }
 
+        window.translations = { en: {}, hy: {}, ru: {} };
+        const baseTranslations = {
+          en: {
+            site_title: "Olympiad Platform",
+            nav_contests: "Contests",
+            nav_about: "About",
+            nav_login: "Login",
+            lang_english: "English",
+            lang_armenian: "Armenian",
+            lang_russian: "Russian",
+            footer_rights: "All rights reserved.",
+            nav_admin_panel: "Admin Panel",
+            nav_logout: "Logout",
+          },
+          hy: {
+            site_title: "Օլիմպիական Հարթակ",
+            nav_contests: "Մրցույթներ",
+            nav_about: "Մեր մասին",
+            nav_login: "Մուտք",
+            lang_english: "Անգլերեն",
+            lang_armenian: "Հայերեն",
+            lang_russian: "Ռուսերեն",
+            footer_rights: "Բոլոր իրավունքները պաշտպանված են։",
+            nav_admin_panel: "Admin Panel",
+            nav_logout: "Ելք",
+          },
+          ru: {
+            site_title: "Платформа Олимпиад",
+            nav_contests: "Конкурсы",
+            nav_about: "О нас",
+            nav_login: "Войти",
+            lang_english: "Английский",
+            lang_armenian: "Армянский",
+            lang_russian: "Русский",
+            footer_rights: "Все права защищены.",
+            nav_admin_panel: "Admin Panel",
+            nav_logout: "Выйти",
+          },
+        };
+        Object.keys(baseTranslations).forEach((lang) => {
+          Object.assign(window.translations[lang], baseTranslations[lang]);
+        });
+
+        const langSelectorBtn = document.getElementById(
+          "language-selector-btn"
+        );
+        const langLinks = {
+          en: document.getElementById("lang-en"),
+          hy: document.getElementById("lang-hy"),
+          ru: document.getElementById("lang-ru"),
+        };
+
+        const applyTranslations = (lang) => {
+          const langDict =
+            window.translations[lang] || window.translations["en"];
+          document.querySelectorAll("[data-translate-key]").forEach((el) => {
+            const key = el.dataset.translateKey;
+            if (langDict[key]) el.textContent = langDict[key];
+          });
+          document.documentElement.lang = lang;
+          if (langSelectorBtn && langLinks[lang]) {
+            const activeLinkContent = langLinks[lang].innerHTML;
+            langSelectorBtn.innerHTML = activeLinkContent.replace(
+              "<span",
+              '<span class="d-none d-lg-inline ms-2"'
+            );
+          }
+          for (const key in langLinks) {
+            langLinks[key].classList.toggle("active", key === lang);
+          }
+          updatePageTitle(lang);
         };
 
         window.changeLanguage = (lang) => {
-            localStorage.setItem('language', lang);
-            applyTranslations(lang);
-            window.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: lang } }));
+          localStorage.setItem("language", lang);
+          applyTranslations(lang);
+          window.dispatchEvent(
+            new CustomEvent("languageChanged", { detail: { lang: lang } })
+          );
         };
 
         const setInitialLanguage = () => {
-            let currentLang = localStorage.getItem('language') || (['en', 'hy', 'ru'].includes(navigator.language.slice(0,2)) ? navigator.language.slice(0,2) : 'en');
-            changeLanguage(currentLang);
+          let currentLang =
+            localStorage.getItem("language") ||
+            (["en", "hy", "ru"].includes(navigator.language.slice(0, 2))
+              ? navigator.language.slice(0, 2)
+              : "en");
+          changeLanguage(currentLang);
         };
         setInitialLanguage();
-    });
-    function updatePageTitle(lang) {
-    const langDict = window.translations[lang] || window.translations['en'];
-    const newTitle = langDict['site_title'] || 'Olympiad Platform';
-    document.title = newTitle;
-}
-
+      });
+      function updatePageTitle(lang) {
+        const langDict = window.translations[lang] || window.translations["en"];
+        const newTitle = langDict["site_title"] || "Olympiad Platform";
+        document.title = newTitle;
+      }
     </script>
     {% endblock %}
-</body>
+  </body>
 </html>

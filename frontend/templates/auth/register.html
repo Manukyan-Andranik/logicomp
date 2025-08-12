@@ -3,7 +3,30 @@
 
 {% block extra_css %}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<<<<<<< HEAD
 <link href="{{ url_for('static', filename='css/auth-forms.css') }}" rel="stylesheet">
+=======
+<style>
+    body { overflow-x: hidden; overflow-y: auto; }
+    main.auth-main { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - var(--navbar-height)); padding: 2rem 0 !important; background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; }
+    .auth-card { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(15px) saturate(180%); border: 1px solid var(--border-color); border-radius: 1rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
+    .auth-card .card-title { color: white; font-weight: 700; }
+    .contest-title { color: var(--primary); font-weight: 500; font-size: 1.1rem; margin-top: -10px; margin-bottom: 2rem; display: block; }
+    .form-control-modern { background: transparent !important; border: none !important; border-bottom: 2px solid var(--border-color) !important; border-radius: 0 !important; color: white !important; padding: .5rem 2.5rem .5rem 0 !important; box-shadow: none !important; transition: border-color 0.3s ease; }
+    .form-control-modern::placeholder { color: var(--text-muted); opacity: 1; }
+    .form-control-modern:focus { border-bottom-color: var(--primary) !important; }
+    .form-control-modern.is-invalid { border-bottom-color: #dc3545 !important; }
+    .invalid-feedback-custom { color: #dc3545; font-size: 0.875em; margin-top: 0.25rem; display: block; }
+    .password-wrapper { position: relative; }
+    .password-toggle { position: absolute; top: 50%; right: 5px; transform: translateY(-50%); color: var(--text-muted); cursor: pointer; transition: color 0.2s ease; }
+    .password-toggle:hover { color: var(--primary); }
+    .btn-auth { background: var(--primary); border: none; color: #000; font-weight: bold; padding: 12px 0; border-radius: 50px; transition: all 0.3s ease; }
+    .btn-auth:hover { background: var(--primary-dark); color: #000; box-shadow: 0 0 15px var(--primary); }
+    .extra-links span { color: var(--text-muted) !important; }
+    .extra-links a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
+    .extra-links a:hover { text-decoration: underline; }
+</style>
+>>>>>>> b9866e3fe083854ba53d6624fd8b9f1bc2ef1a05
 {% endblock %}
 
 {% block content %}
