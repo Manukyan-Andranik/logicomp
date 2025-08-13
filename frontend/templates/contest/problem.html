@@ -4,81 +4,271 @@
 
 {% block extra_css %}
 <style>
-    /* --- Light Theme Inversion --- */
+    /* Mobile-First Default Styles */
     :root {
-        --light-bg: #f8f9fa; /* Light gray background */
+        /* Ensure these are aligned with your base.html and style.css for dark theme defaults */
+        --light-bg: #f8f9fa; /* Not used directly in dark theme, but kept for context */
         --light-card-bg: #ffffff;
-        --light-code-bg: #f1f3f5; /* Slightly different gray for code blocks */
+        --light-code-bg: #f1f3f5;
         --light-border: #dee2e6;
         --text-dark: #212529;
         --text-muted-light: #6c757d;
+
+        /* Re-defining primary/dark colors just to be explicit if this file is loaded later */
+        --primary: #FFC107;
+        --primary-dark: #FFA000;
+        --dark: #121212; 
+        --code-bg: #1a1a1a; /* From your style.css */
+        --text-light: #e0e0e0;
+        --text-muted: #888;
+        --border-color: rgba(255, 255, 255, 0.1);
     }
 
-    main { background-color: var(--dark); }
-    .page-header h2 { color: var(--text-dark); font-weight: 700; }
+    main { background-color: var(--dark); padding: 0 !important; }
     
+    /* Global container padding for mobile */
+    .container.py-4 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+        padding-left: 0.8rem !important; /* Added side padding for mobile */
+        padding-right: 0.8rem !important; /* Added side padding for mobile */
+    }
+
+    /* Page Header */
+    .page-header {
+        flex-direction: column; /* Stack title and button vertically on mobile */
+        align-items: flex-start !important; /* Align items to the left */
+        margin-bottom: 1.5rem !important;
+    }
+    .page-header h2 { 
+        font-size: 1.6rem; /* Smaller main title for mobile */
+        color: white !important; /* Ensure main title is white */
+        margin-bottom: 0.5rem; /* Space before problem title if it's on a new line */
+    }
+    .page-header h2 .text-primary {
+        display: block; /* Force problem title to a new line on mobile */
+        font-size: 1.4rem; /* Slightly smaller font for problem title */
+        margin-left: 0 !important; /* Remove left margin for block element */
+        margin-top: 0.2rem; /* Add a small top margin for spacing */
+    }
+    .page-header .btn {
+        padding: 0.5rem 1rem; /* Adjust button padding for touch */
+        font-size: 0.9rem; /* Smaller font for button */
+        width: 100%; /* Make button full width on mobile */
+        margin-top: 1rem; /* Space between title block and button */
+        text-align: center; /* Center button text */
+    }
+
+    /* Cards - Problem and Info Cards */
     .problem-card, .info-card {
-        background: var(--light-card-bg);
-        border: 1px solid var(--light-border);
-        border-radius: 0.05rem;
-        color: var(--text-dark);
+        background: #1a1a1a; /* Dark background for cards */
+        border: 1px solid var(--border-color); /* Dark border */
+        border-radius: 0.75rem; /* Softer border-radius for modern look */
+        color: var(--text-light); /* Light text for card content */
     }
     .problem-card .card-header, .info-card .card-header {
-        background-color: var(--dark);
-        border-bottom: 1px solid var(--light-border);
-        color: var(--text-dark);
+        background-color: #212121; /* Slightly lighter dark for headers */
+        border-bottom: 1px solid var(--border-color); /* Dark border for header separator */
+        color: white; /* White text for header title */
+        padding: 0.8rem 1rem; /* Adjusted padding */
+        font-size: 1.05rem; /* Smaller header font size */
     }
+    .problem-card .card-body, .info-card .card-body {
+        padding: 1.2rem; /* Adjusted padding for card body */
+    }
+
+    /* Problem Description */
     .problem-description-wrapper {
-        background-color: var(--light-code-bg);
-        color: var(--text-dark); 
+        background-color: var(--code-bg); /* Use code-bg from base for consistency */
+        color: var(--text-light); /* Light text on dark code background */
         white-space: pre-wrap;
         font-family: 'SF Mono', 'Courier New', monospace;
-        font-size: 0.9rem;
-        border: 1px solid var(--light-border);
-        border-radius: 0.05rem;
+        font-size: 0.85rem; /* Smaller font for description on mobile */
+        border: 1px solid var(--border-color); /* Dark border */
+        border-radius: 0.5rem; /* Softer border-radius */
+        padding: 0.8rem; /* Adjusted padding */
     }
-    .io-section h6 { /* Replaced inline style */
-        color: var(--text-muted-light);
+
+    /* Sample Input/Output */
+    h5.mb-3 {
+        font-size: 1.1rem; /* Smaller heading for sample IO */
+    }
+    .io-section h6 {
+        color: var(--text-muted); /* Use general text-muted */
         text-transform: uppercase;
-        font-size: 0.8rem;
+        font-size: 0.75rem; /* Smaller h6 for IO sections */
         letter-spacing: 1px;
+        padding: 0.5rem; /* Added padding for h6 headers */
+        background-color: #121212; /* Dark background for IO headers */
+        border-radius: 0.3rem; /* Rounded corners */
     }
     .io-block {
-        background-color: var(--light-code-bg);
-        color: var(--text-dark);
-        border: 1px solid var(--light-border);
-        border-radius: 0.05rem;
+        background-color: var(--code-bg); /* Consistent code background */
+        color: var(--text-light);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem; /* Consistent border-radius */
         font-family: 'SF Mono', 'Courier New', monospace;
-        font-size: 0.9rem;
-        min-height: 100px;
+        font-size: 0.85rem; /* Smaller font for code blocks */
+        min-height: 80px; /* Smaller min-height */
+        padding: 0.8rem; /* Adjusted padding */
+    }
+    .row.g-3 { /* Adjust gutter for sample IO section */
+        --bs-gutter-x: 1rem;
+        --bs-gutter-y: 1rem;
+    }
+
+
+    /* Submit Solution Card */
+    .info-card p.small.text-muted {
+        font-size: 0.85rem; /* Smaller info text */
+        color: var(--text-muted) !important; /* Ensure it matches text-muted */
+    }
+    .btn-primary.w-100 {
+        padding: 0.75rem; /* Larger padding for mobile button */
+        font-size: 1rem; /* Larger font size for mobile button */
+        border-radius: 0.5rem; /* Consistent border-radius */
     }
 
     /* Submission History */
     .submissions-list .list-group-item {
-        background-color: transparent;
-        border-top: 1px solid var(--light-border) !important;
-        padding: 0.75rem 1.25rem;
+        background-color: transparent !important; /* Inherit background from card */
+        border-top: 1px solid var(--border-color) !important; /* Dark border */
+        padding: 0.8rem 1rem; /* Adjusted padding */
     }
     .submissions-list .list-group-item:first-child { border-top: none !important; }
+    .submissions-list .list-group-item .text-muted.small {
+        font-size: 0.75rem; /* Smaller timestamp font */
+    }
+    .badge-status { 
+        font-weight: 500; 
+        font-size: 0.7rem; /* Smaller badge font size */
+        padding: 0.3em 0.6em; /* Smaller badge padding */
+    }
+    /* Colors for dark theme badges (from style.css) */
+    .badge-status.accepted { background-color: rgba(40, 167, 69, 0.1) !important; color: #51cf66 !important; } /* Green */
+    .badge-status.rejected { background-color: rgba(220, 53, 69, 0.1) !important; color: #ff6b6b !important; } /* Red */
+    .badge-status.compilation_error { background-color: rgba(255, 193, 7, 0.1) !important; color: var(--primary) !important; } /* Yellow */
+    .badge-status.pending { background-color: rgba(108, 117, 125, 0.1) !important; color: var(--text-muted) !important; } /* Grey */
 
-    /* Badges for Light Theme */
-    .badge-status { font-weight: 500; font-size: 0.8rem; padding: 0.4em 0.7em; }
-    .badge-status.accepted { background-color: rgba(25, 135, 84, 0.1) !important; color: #146c43 !important; }
-    .badge-status.rejected { background-color: rgba(220, 53, 69, 0.1) !important; color: #b02a37 !important; }
-    .badge-status.compilation_error { background-color: rgba(255, 193, 7, 0.15) !important; color: #997404 !important; }
-    .badge-status.pending { background-color: rgba(108, 117, 125, 0.1) !important; color: #6c757d !important; }
 
-    /* Ensure buttons are styled correctly for the light theme */
+    /* Ensure buttons are styled correctly for the dark theme */
     .btn-outline-secondary {
-        --bs-btn-color: #6c757d;
-        --bs-btn-border-color: #6c757d;
+        --bs-btn-color: var(--text-muted);
+        --bs-btn-border-color: var(--border-color);
         --bs-btn-hover-color: #fff;
-        --bs-btn-hover-bg: #6c757d;
-        --bs-btn-hover-border-color: #6c757d;
+        --bs-btn-hover-bg: var(--primary); /* Hover with primary color */
+        --bs-btn-hover-border-color: var(--primary);
     }   
-    .text-primary {
-    --bs-text-opacity: 1;
-    color: var(--white) !important;
+    /* Fixing the inline style issue for contest title text-primary */
+    /* This overrides the problematic inline style in your HTML */
+    .page-header h2 .text-primary {
+        color: var(--primary) !important; /* Force primary color */
+    }
+
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        .container.py-4 {
+            padding-top: 2rem !important; /* Restore default py-4 for desktop */
+            padding-bottom: 2rem !important;
+            padding-left: 0.75rem !important; /* Standard Bootstrap container padding */
+            padding-right: 0.75rem !important; /* Standard Bootstrap container padding */
+        }
+
+        /* Page Header */
+        .page-header {
+            flex-direction: row; /* Revert to row layout */
+            align-items: center !important; /* Revert alignment */
+            margin-bottom: 2rem !important; /* Restore spacing */
+        }
+        .page-header h2 {
+            font-size: 2.2rem; /* Restore desktop font size */
+            margin-bottom: 0;
+        }
+        .page-header h2 .text-primary {
+            display: inline; /* Problem title on same line */
+            font-size: inherit; /* Inherit font size */
+            margin-left: 0.5rem !important; /* Restore default Bootstrap ms-2 equivalent */
+            margin-top: 0; /* Remove top margin */
+        }
+        .page-header .btn {
+            width: auto; /* Revert button width */
+            margin-top: 0; /* Remove top margin */
+            text-align: unset; /* Revert text alignment */
+        }
+
+        /* Cards - Problem and Info Cards */
+        .problem-card, .info-card {
+            background: #1a1a1a; /* Restore desktop background */
+            border: 1px solid var(--border-color); /* Restore desktop border */
+            border-radius: 0.05rem; /* Restore original sharp border-radius */
+            color: var(--text-light); /* Restore desktop text color */
+        }
+        .problem-card .card-header, .info-card .card-header {
+            background-color: #212121; /* Restore original header background */
+            border-bottom: 1px solid var(--border-color); /* Restore original border */
+            color: white; /* Restore original header text color */
+            padding: 1rem 1.25rem; /* Restore original padding */
+            font-size: 1.25rem; /* Restore original font size */
+        }
+        .problem-card .card-body, .info-card .card-body {
+            padding: 1.5rem; /* Restore original padding for card body */
+        }
+
+        /* Problem Description */
+        .problem-description-wrapper {
+            font-size: 0.9rem; /* Restore original font size */
+            border-radius: 0.05rem; /* Restore original sharp border-radius */
+            padding: 1rem; /* Restore original padding */
+        }
+
+        /* Sample Input/Output */
+        h5.mb-3 {
+            font-size: 1.25rem; /* Restore original heading size */
+        }
+        .io-section h6 {
+            font-size: 0.8rem; /* Restore original h6 font size */
+            padding: 0.5rem 0; /* Revert padding, as it was only for inline style before */
+            background-color: transparent; /* Remove background */
+            border-radius: 0; /* Remove border-radius */
+        }
+        .io-block {
+            font-size: 0.9rem; /* Restore original font size */
+            min-height: 100px; /* Restore original min-height */
+            padding: 1rem; /* Restore original padding */
+            border-radius: 0.05rem; /* Restore original sharp border-radius */
+        }
+        .row.g-3 {
+            --bs-gutter-x: 1.5rem; /* Restore default gutter */
+            --bs-gutter-y: 1.5rem; /* Restore default gutter */
+        }
+
+        /* Submit Solution Card */
+        .info-card p.small.text-muted {
+            font-size: 0.875rem; /* Restore original info text size */
+        }
+        .btn-primary.w-100 {
+            padding: 0.75rem 1.25rem; /* Standard Bootstrap button padding */
+            font-size: 1rem; /* Standard Bootstrap button font size */
+            border-radius: 0.3rem; /* Standard Bootstrap button border-radius */
+        }
+
+        /* Submission History */
+        .submissions-list .list-group-item {
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+        }
+        .submissions-list .list-group-item .text-muted.small {
+            font-size: 0.875rem; /* Restore original timestamp font */
+        }
+        .badge-status { 
+            font-size: 0.8rem; /* Restore original badge font size */
+            padding: 0.4em 0.7em; /* Restore original badge padding */
+        }
+        /* Restore badge colors for desktop as per original style.css */
+        .badge-status.accepted { background-color: rgba(40, 167, 69, 0.15) !important; color: #51cf66 !important; }
+        .badge-status.rejected { background-color: rgba(220, 53, 69, 0.15) !important; color: #ff6b6b !important; }
+        .badge-status.compilation_error { background-color: rgba(255, 193, 7, 0.15) !important; color: var(--primary) !important; }
+        .badge-status.pending { background-color: rgba(108, 117, 125, 0.15) !important; color: var(--text-muted) !important; }
     }
 </style>
 {% endblock %}
@@ -86,7 +276,7 @@
 {% block content %}
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4 page-header">
-        <h2 class="d-flex align-items-center" style="color:white;"><i class="bi bi-file-earmark-code me-3"></i>{{ contest.title }}: <span style="color:white;" !important class="text-primary ms-2">{{ problem.title }} </span></h2>
+        <h2 class="d-flex align-items-center"><i class="bi bi-file-earmark-code me-3"></i>{{ contest.title }}: <span class="text-primary ms-2">{{ problem.title }} </span></h2>
         {% if current_user.role == 'admin' %}
             <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>

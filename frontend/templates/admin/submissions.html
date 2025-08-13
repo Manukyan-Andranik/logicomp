@@ -2,24 +2,143 @@
 
 {% block title %}Submissions{% endblock %}
 
-{% block content %}
-<div class="container">
+{% block extra_css %}
+<style>
+    /* Desktop view: The table container has a border to look like a card */
+    .submissions-table {
+        border: 1px solid var(--bs-border-color);
+        border-radius: 0.375rem;
+        overflow: hidden; /* This makes the table corners rounded */
+    }
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    /* ===== Responsive Styles for Mobile ===== */
+    @media (max-width: 767.98px) {
+        
+        /* 1. Adjust Page Header Layout */
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .page-header .header-actions {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .page-header .header-actions .btn,
+        .page-header .header-actions .dropdown {
+            width: 100%;
+        }
+
+        .page-header .header-actions .dropdown .btn {
+            width: 100%;
+        }
+
+        /* 2. On mobile, remove the container border and style rows as cards */
+        .submissions-table {
+            border: none;
+            background-color: transparent;
+        }
+
+        .submissions-table .table,
+        .submissions-table thead,
+        .submissions-table tbody,
+        .submissions-table th,
+        .submissions-table td,
+        .submissions-table tr {
+            display: block;
+        }
+
+        .submissions-table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        /* --- Black and Yellow Mobile Theme --- */
+
+        /* Each <tr> is now a separate dark card */
+        .submissions-table tr {
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 193, 7, 0.4); /* Yellowish border */
+            border-radius: 0.375rem;
+            background-color: #1a1a1a; /* Dark background */
+            overflow: hidden;
+            color: #e0e0e0; /* Default text color is light gray */
+        }
+        
+        /* The first cell (ID) becomes the card header */
+        .submissions-table td:first-child {
+            background-color: #212121; /* Slightly different dark shade */
+            font-weight: 700;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(255, 193, 7, 0.4); /* Yellowish border */
+            color: #FFD700; /* Yellow header text */
+        }
+
+        .submissions-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            text-align: right;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Subtle dark separator */
+        }
+
+        .submissions-table tr:not(.no-submissions) td:last-child {
+            border-bottom: none;
+        }
+        
+        /* Style for the "No submissions" message card */
+        .no-submissions td {
+            display: block;
+            text-align: center;
+            padding: 1.5rem;
+            color: #888;
+        }
+
+        /* Labels (e.g., "User:", "Problem:") are now yellow */
+        .submissions-table td::before {
+            content: attr(data-label);
+            font-weight: 600; /* Bolder labels */
+            color: #FFC107; /* Bright yellow color for labels */
+            text-align: left;
+            padding-right: 1rem;
+        }
+
+        .submissions-table td .badge {
+            font-size: 0.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header">
         {% if contest %}
             <h1>Submissions: {{ contest.title }}</h1>
         {% else %}
             <h1>All Submissions</h1>
         {% endif %}
         
-        <div>
+        <div class="header-actions">
             {% if contest %}
-                <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-secondary me-2">
+                <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back to Contest
                 </a>
             {% endif %}
 
-            <div class="dropdown d-inline-block">
+            <div class="dropdown">
                 <button class="btn btn-primary dropdown-toggle" type="button" id="contestFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     Filter by Contest
                 </button>
@@ -28,7 +147,7 @@
                     <li><hr class="dropdown-divider"></li>
                     {% for c in all_contests %}
                     <li>
-                        <a class="dropdown-item" href="{{ url_for('admin.view_submissions', contest_id=c.id) }}">
+                        <a class="dropdown-item {% if contest and c.id == contest.id %}active{% endif %}" href="{{ url_for('admin.view_submissions', contest_id=c.id) }}">
                             {{ c.title }}
                         </a>
                     </li>
@@ -38,59 +157,57 @@
         </div>
     </div>
     
-    <div class="card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>User</th>
-                            <th>Problem</th>
-                            <th>Contest</th>
-                            <th>Language</th>
-                            <th>Status</th>
-                            <th>Time</th>
-                            <th>Submitted</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for submission in submissions.items %}
-                        <tr>
-                            <td>{{ submission.id }}</td>
-                            <td>{{ submission.author.username }}</td>
-                            <td>{{ submission.problem.title }}</td>
-                            <td>{{ submission.problem.contest.title }}</td>
-                            <td>{{ submission.language }}</td>
-                            <td>
-                                <span class="badge 
-                                    {% if submission.status == 'Accepted' %}bg-success
-                                    {% elif submission.status in ['Wrong Answer', 'Runtime Error'] %}bg-danger
-                                    {% elif submission.status == 'Compilation Error' %}bg-warning text-dark
-                                    {% else %}bg-secondary{% endif %}">
-                                    {{ submission.status }}
-                                </span>
-                            </td>
-                            <td>
-                                {% if submission.execution_time is not none %}
-                                    {{ "%.2f"|format(submission.execution_time) }}s
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>{{ submission.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
-                        </tr>
+    <div class="table-responsive submissions-table">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>User</th>
+                    <th>Problem</th>
+                    <th>Contest</th>
+                    <th>Language</th>
+                    <th>Status</th>
+                    <th>Time</th>
+                    <th>Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions.items %}
+                <tr>
+                    <td data-label="ID">#{{ submission.id }}</td>
+                    <td data-label="User">{{ submission.author.username }}</td>
+                    <td data-label="Problem">{{ submission.problem.title }}</td>
+                    <td data-label="Contest">{{ submission.problem.contest.title }}</td>
+                    <td data-label="Language">{{ submission.language }}</td>
+                    <td data-label="Status">
+                        <span class="badge 
+                            {% if submission.status == 'Accepted' %}bg-success
+                            {% elif submission.status in ['Wrong Answer', 'Runtime Error'] %}bg-danger
+                            {% elif submission.status == 'Time Limit Exceeded' %}bg-warning text-dark
+                            {% elif submission.status == 'Compilation Error' %}bg-info text-dark
+                            {% else %}bg-secondary{% endif %}">
+                            {{ submission.status }}
+                        </span>
+                    </td>
+                    <td data-label="Exec. Time">
+                        {% if submission.execution_time is not none %}
+                            {{ "%.2f"|format(submission.execution_time) }}s
                         {% else %}
-                        <tr>
-                            <td colspan="8" class="text-center py-4">No submissions found.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                            -
+                        {% endif %}
+                    </td>
+                    <td data-label="Submitted">{{ submission.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% else %}
+                <tr class="no-submissions">
+                    <td colspan="8" class="text-center py-4">No submissions found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     
+    {% if submissions.pages > 1 %}
     <nav aria-label="Submissions pagination" class="mt-4">
         <ul class="pagination justify-content-center">
             {% if submissions.has_prev %}
@@ -126,5 +243,6 @@
             {% endif %}
         </ul>
     </nav>
+    {% endif %}
 </div>
 {% endblock %}

@@ -6,41 +6,198 @@
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 <style>
-    main { padding: 0 !important; }
+    /* Mobile-First Default Styles */
+    main { padding: 0 !important; } /* Already there, good */
+    section { padding: 3rem 0; /* Smaller default padding for all sections on mobile */ }
 
+    /* About Hero Section */
     .about-hero {
-        padding: 5rem 0;
+        padding: 4rem 0; /* Adjusted padding for mobile */
         background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center center;
         background-size: cover;
     }
-    .about-hero h1 { font-weight: 700; }
+    .about-hero h1.display-4 { 
+        font-size: 2.5rem; /* Smaller title for mobile */
+        font-weight: 700; 
+    }
+    .about-hero p.lead { 
+        font-size: 1rem; /* Smaller lead text for mobile */
+        padding: 0 1rem; /* Add horizontal padding for text on small screens */
+    }
 
+    /* Mission/Vision Sections */
+    .row.align-items-center.g-5 {
+        --bs-gutter-x: 1.5rem; /* Reduce horizontal gutter for smaller screens */
+        --bs-gutter-y: 2rem;   /* Adjust vertical gutter for clarity */
+    }
+    .col-lg-6 img {
+        width: 100%; /* Ensure image fills its column */
+        height: auto;
+        object-fit: cover;
+        max-height: 250px; /* Limit height of images on mobile */
+    }
+    h2.display-5 { 
+        font-size: 2rem; /* Smaller mission/vision titles for mobile */
+        font-weight: 700; 
+    }
+    p.fs-5 { 
+        font-size: 0.95rem; /* Smaller mission/vision description text for mobile */
+    }
+
+    /* Feature Cards */
     .feature-card {
-        background: #1a1a1a; padding: 2rem; border-radius: 1rem;
-        border: 1px solid var(--border-color); text-align: center;
-        transition: all 0.3s ease; height: 100%;
+        background: #1a1a1a; 
+        padding: 1.5rem; /* Adjusted padding for mobile */
+        border-radius: 1rem;
+        border: 1px solid var(--border-color); 
+        text-align: center;
+        transition: all 0.3s ease; 
+        height: 100%;
     }
     .feature-card:hover {
-        transform: translateY(-10px); background: #212121; border-color: var(--primary);
+        /* Disable hover effects on mobile/touch devices */
+        transform: none; 
+        background: #1a1a1a; /* Keep background stable */
+        border-color: var(--border-color); /* Keep border stable */
     }
     .feature-icon {
-        font-size: 3rem; color: var(--primary); margin-bottom: 1.5rem; display: block;
+        font-size: 2.5rem; /* Smaller icon for mobile feature cards */
+        color: var(--primary); 
+        margin-bottom: 1rem; /* Adjusted margin */
+        display: block;
+    }
+    .feature-card h5 {
+        font-size: 1.15rem; /* Smaller title within feature cards */
+    }
+    .feature-card p {
+        font-size: 0.85rem; /* Smaller description within feature cards */
     }
 
+    /* Supported Languages Section */
     .languages-section { background-color: #000; }
+    .row.row-cols-2.row-cols-sm-4.g-5.justify-content-center {
+        --bs-gutter-x: 1.5rem; /* Smaller horizontal gutter for tech icons on mobile */
+        --bs-gutter-y: 2rem;   /* Adjusted vertical gutter for tech icons */
+    }
     .tech-icon-wrapper {
         display: flex; justify-content: center; align-items: center;
         transition: all 0.3s ease;
+        padding: 0.5rem; /* Added padding to wrapper for touch target */
     }
     .tech-icon-wrapper:hover {
-        transform: scale(1.1);
+        /* Disable hover effects on mobile/touch devices */
+        transform: none;
     }
     .tech-icon {
-        font-size: 4rem; height: 64px; width: auto; color: #888;
-        transition: color 0.3s ease; vertical-align: middle;
+        font-size: 3rem; /* Smaller tech icons for mobile */
+        height: 48px; /* Adjusted height */
+        width: auto; 
+        color: #888;
+        transition: color 0.3s ease; 
+        vertical-align: middle;
     }
-    .tech-icon-wrapper:hover .tech-icon { color: var(--primary); }
-    .tech-icon-wrapper:hover .tech-icon path { fill: var(--primary) !important; }
+    .tech-icon-wrapper:hover .tech-icon { color: #888; /* Keep color stable */ }
+    .tech-icon-wrapper:hover .tech-icon path { fill: #888 !important; /* Keep fill stable */ }
+
+    /* AOS Library Mobile Disable */
+    /* This overrides AOS default styles on smaller screens to ensure visibility and prevent animations */
+    @media (max-width: 767px) {
+        [data-aos] {
+            opacity: 1 !important; /* Elements are visible by default */
+            transform: none !important; /* No initial transform */
+            transition: none !important; /* No animation transitions */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    }
+
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        section { padding: 5rem 0; /* Restore padding for larger screens */ }
+        
+        .about-hero {
+            padding: 5rem 0; /* Restore original padding */
+        }
+        .about-hero h1.display-4 { 
+            font-size: 3.5rem; /* Restore original title size */
+        }
+        .about-hero p.lead { 
+            font-size: 1.25rem; /* Restore original lead text size */
+            padding: 0; /* Remove horizontal padding */
+        }
+
+        .row.align-items-center.g-5 {
+            --bs-gutter-x: 3rem; /* Restore horizontal gutter for larger screens */
+            --bs-gutter-y: 3rem;   /* Restore vertical gutter */
+        }
+        .col-lg-6 img {
+            max-height: none; /* Remove max-height constraint */
+        }
+        h2.display-5 { 
+            font-size: 2.5rem; /* Restore original mission/vision titles */
+        }
+        p.fs-5 { 
+            font-size: 1.25rem; /* Restore original description text */
+        }
+
+        .feature-card {
+            padding: 2rem; /* Restore original padding */
+        }
+        .feature-card:hover {
+            transform: translateY(-10px); /* Re-enable hover transform */
+            background: #212121; 
+            border-color: var(--primary); 
+        }
+        .feature-icon {
+            font-size: 3rem; /* Restore original icon size */
+            margin-bottom: 1.5rem;
+        }
+        .feature-card h5 {
+            font-size: 1.25rem; /* Restore original title size */
+        }
+        .feature-card p {
+            font-size: 1rem; /* Restore original description size */
+        }
+
+        .row.row-cols-2.row-cols-sm-4.g-5.justify-content-center {
+            --bs-gutter-x: 3rem; /* Restore original horizontal gutter for tech icons */
+            --bs-gutter-y: 3rem;   /* Restore original vertical gutter */
+        }
+        .tech-icon-wrapper:hover {
+            transform: scale(1.1); /* Re-enable hover transform */
+        }
+        .tech-icon {
+            font-size: 4rem; /* Restore original tech icon size */
+            height: 64px; /* Restore original height */
+        }
+        .tech-icon-wrapper:hover .tech-icon { 
+            color: var(--primary); /* Re-enable hover color */
+        }
+        .tech-icon-wrapper:hover .tech-icon path { 
+            fill: var(--primary) !important; /* Re-enable hover fill */
+        }
+
+        /* Re-enable AOS animations for larger screens */
+        [data-aos] {
+            opacity: 0; /* Allow AOS to control opacity */
+            transform: translateY(20px); /* Allow AOS to control transform */
+            transition: all 0.3s cubic-bezier(0.3, 0.5, 0.4, 1.2); /* AOS default transition */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+             opacity: 0; /* Ensure hidden initially for AOS animation */
+             transform: translateY(20px);
+        }
+    }
+
+    /* Media Queries for larger desktops (optional, min-width: 992px - Bootstrap's 'lg' breakpoint) */
+    @media (min-width: 992px) {
+        .about-hero h1.display-4 {
+            font-size: 4rem; /* Even larger for very big screens */
+        }
+    }
 </style>
 {% endblock %}
 
@@ -74,14 +231,15 @@
     <section class="py-5" style="background-color: #0f0f0f;">
         <div class="container">
             <div class="row align-items-center g-5">
-                <div class="col-lg-6 text-center" data-aos="fade-right" data-aos-delay="100">
-                    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="img-fluid rounded-3 shadow-lg" alt="Team Vision">
-                </div>
-                <div class="col-lg-6" data-aos="fade-left">
+                <!-- Swapped order: Text content first, then image content -->
+                <div class="col-lg-6" data-aos="fade-right"> {# Text content - fades in from right (left column) #}
                     <h2 class="display-5 fw-bold text-white" data-translate-key="vision_title">Our Vision</h2>
                     <p class="text-white-50 fs-5 mt-3" data-translate-key="vision_desc">
                         To become the leading global hub for competitive programming, fostering innovation and nurturing the next generation of tech talent. We envision a future where anyone, anywhere, can access world-class tools to challenge themselves and connect with a global network of peers.
                     </p>
+                </div>
+                <div class="col-lg-6 text-center" data-aos="fade-left" data-aos-delay="100"> {# Image content - fades in from left (right column) #}
+                    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="img-fluid rounded-3 shadow-lg" alt="Team Vision">
                 </div>
             </div>
         </div>
@@ -138,6 +296,7 @@
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // AOS.init is called here. The CSS handles disabling animations for smaller screens.
     AOS.init({ duration: 800, offset: 50, once: true });
     
     const aboutTranslations = {
@@ -165,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
             'vision_title': 'Наше Видение', 'vision_desc': 'Стать ведущим мировым центром соревновательного программирования, способствуя инновациям и воспитывая следующее поколение технических талантов. Мы предвидим будущее, в котором любой человек в любом месте сможет получить доступ к инструментам мирового класса, чтобы бросить себе вызов.',
             'features_title': 'Возможности Платформы', 'feature1_title': 'Управление Конкурсами', 'feature1_desc': 'Легко создавайте и управляйте конкурсами с множеством сложных задач.',
             'feature2_title': 'Автоматическая Проверка', 'feature2_desc': 'Мгновенная, надежная обратная связь по решениям на различных тестах.',
-            'feature3_title': 'Таблица Лидеров в Реальном Времени', 'feature3_desc': 'Отслеживайте прогресс и турнирную таблицу в прямом эфире.',
+            'feature3_title': 'Таблица Лидеров в Реальном Времени', 'feature3_desc': 'Отслеживайте свой прогресс и турнирную таблицу в прямом эфире.',
             'supported_languages_title': 'Поддерживаемые Языки',
         }
     };

@@ -13,61 +13,238 @@
 
     <style>
         :root {
-            --primary: #FFC107; /* Հիմնական շեշտադրման գույն՝ վառ դեղին */
-            --primary-dark: #FFA000; /* Մուգ դեղին՝ hover-ի համար */
-            --dark: #121212; /* Շատ մուգ ֆոն */
+            --primary: #FFC107; 
+            --primary-dark: #FFA000; 
+            --dark: #121212; 
             --text-light: #e0e0e0;
             --text-muted: #888;
             --border-color: rgba(255, 255, 255, 0.1);
-            --navbar-height: 70px;
+            --navbar-height: 56px; 
             --footer-bg:rgba(18, 18, 18, 0.75) !important;
-
+            --navbar-bg:rgba(18, 18, 18, 0.75); 
         }
         
         body {
             padding-top: var(--navbar-height);
             background-color: var(--dark);
             color: var(--text-light);
+            overflow-x: hidden; 
         }
 
         .navbar.glassmorphism {
-            height: var(--navbar-height); position: fixed;
-            top: 0; width: 100%; z-index: 1030;
+            height: var(--navbar-height); 
+            position: fixed;
+            top: 0; 
+            width: 100%; 
+            z-index: 1030;
             backdrop-filter: blur(10px) saturate(180%);
             background-color: var(--navbar-bg) !important;
-            border-bottom: 1px solid transparent; transition: all 0.3s ease;
+            border-bottom: 1px solid transparent; 
+            transition: all 0.3s ease;
         }
         .navbar.glassmorphism.scrolled {
              box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
              border-bottom: 1px solid var(--border-color);
         }
 
-        .navbar-brand { font-weight: 700 !important; color: #fff !important; }
-        .navbar-dark .nav-link { color: rgba(255, 255, 255, 0.8) !important; }
-        .navbar-dark .nav-link:hover, .navbar-dark .nav-link:focus { color: var(--primary) !important; }
+        .navbar-brand { 
+            font-weight: 700 !important; 
+            color: #fff !important; 
+            font-size: 1.25rem; ժ
+        }ժ
+        .navbar-brand i {
+            font-size: 1.5rem; ժ
+        }
 
+        .navbar-dark .nav-link { 
+            color: rgba(255, 255, 255, 0.8) !important; 
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+        .navbar-dark .nav-link:hover, 
+        .navbar-dark .nav-link:focus { 
+            color: var(--primary) !important; 
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
+
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+        }
+        
+        .navbar-toggler {
+            border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            padding: 0.25rem 0.5rem; 
+        }
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25) !important; 
+        }
+        
+        .navbar-collapse {
+            background-color: var(--dark); 
+            border-top: 1px solid var(--border-color); 
+            padding-bottom: 1rem; 
+            margin-top: 0.5rem; 
+            border-radius: 0.5rem; 
+        }
+        
+        
         .dropdown-menu {
             background-color: rgba(30, 30, 30, 0.9) !important;
-            border: 1px solid var(--border-color) !important; backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color) !important; 
+            backdrop-filter: blur(10px);
+            
+            width: 100%; 
+            left: 0 !important; 
+            right: 0 !important; 
+            margin-top: 0.5rem; 
+            border-radius: 0.5rem; 
         }
-        .dropdown-item { color: var(--text-light) !important; }
-        .dropdown-item:hover, .dropdown-item:focus, .dropdown-item.active {
-            background-color: var(--primary) !important; color: #000 !important;
+        .dropdown-item { 
+            color: var(--text-light) !important; 
+            text-align: center; 
+            padding: 0.75rem 1rem; 
+        }
+        .dropdown-item:hover, 
+        .dropdown-item:focus, 
+        .dropdown-item.active {
+            background-color: var(--primary) !important; 
+            color: #000 !important;
         }
         
         .flag-icon { 
-            width: 22px; height: 16px; object-fit: cover; 
-            border-radius: 3px; box-shadow: 0 0 3px rgba(0,0,0,0.5);
+            width: 20px; 
+            height: 14px; 
+            object-fit: cover; 
+            border-radius: 3px; 
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+            margin-right: 0.5rem; 
+            vertical-align: middle; 
         }
+        
+        .language-dropdown .dropdown-toggle .flag-icon {
+             margin-right: 0; 
+        }
+        .language-dropdown .dropdown-toggle span {
+            display: none; 
+        }
+        
+        @media (min-width: 992px) { 
+            .language-dropdown .dropdown-toggle span {
+                display: inline !important; 
+            }
+            .language-dropdown .dropdown-toggle .flag-icon {
+                 margin-right: 0.5rem; 
+            }
+        }
+
 
         .site-footer {
             background-color: var(--footer-bg);
+            padding: 1rem 0; 
+            font-size: 0.85rem; 
         }
         .site-footer p {
              color: var(--text-muted);
         }
         .site-footer a { color: var(--primary); }
         .site-footer a:hover { color: var(--primary-dark); }
+
+        
+        @media (max-width: 767px) { 
+            .navbar-nav .btn-primary {
+                width: calc(100% - 2rem); 
+                margin: 0.75rem auto 0.5rem auto !important; 
+                
+                
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                
+                
+                padding: 0.75rem 1.5rem; 
+                font-size: 1rem; 
+                border-radius: 0.5rem; 
+                box-shadow: 0 4px 10px rgba(255, 193, 7, 0.2); 
+                transition: all 0.2s ease-in-out; 
+                background: var(--primary) !important; 
+                color: #000 !important; 
+                font-weight: 500 !important; 
+                border: none !important; 
+                
+                
+                text-align: center; 
+            }
+
+            
+            .navbar-nav .btn-primary:hover,
+            .navbar-nav .btn-primary:focus {
+                background: var(--primary-dark) !important; 
+                color: #000 !important; 
+                box-shadow: 0 6px 15px rgba(255, 193, 7, 0.3); 
+                transform: translateY(-2px); 
+            }
+        }
+
+        
+        @media (min-width: 768px) {
+            :root {
+                --navbar-height: 70px; 
+            }
+
+            .navbar-brand { 
+                font-size: 1.5rem; 
+            }
+            .navbar-brand i {
+                font-size: inherit; 
+            }
+
+            .navbar-dark .nav-link { 
+                padding: 0.5rem 1rem; 
+                text-align: left; 
+            }
+            .navbar-collapse {
+                background-color: transparent; 
+                border-top: none; 
+                padding-bottom: 0; 
+                margin-top: 0; 
+                border-radius: 0; 
+            }
+            .dropdown-menu {
+                width: auto; 
+                left: auto !important; 
+                right: 0 !important; 
+                margin-top: 0;
+            }
+            .dropdown-item { 
+                text-align: left; 
+            }
+            .site-footer {
+                padding: 30px 0; 
+                font-size: inherit; 
+            }
+            .navbar-nav .btn-primary {
+                width: auto; 
+                margin: 0 0 0 0.5rem !important; 
+                
+                display: inline-block; 
+                justify-content: unset; 
+                align-items: unset; 
+                text-align: unset; 
+
+                padding: 0.375rem 0.75rem; 
+                font-size: 0.875rem; 
+                border-radius: 0.3rem; 
+                box-shadow: none; 
+                transform: none; 
+            }
+             .navbar-nav .btn-primary:hover,
+             .navbar-nav .btn-primary:focus {
+                background: var(--primary) !important; 
+                box-shadow: none; 
+                transform: none; 
+             }
+        }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
@@ -133,7 +310,7 @@
                         {% endif %}
                     {% else %}
                         <li class="nav-item">
-                            <a class="btn btn-primary btn-sm ms-2" style="background: var(--primary); border: none; color: #000; font-weight: 500;" href="{{ url_for('auth.login') }}" data-translate-key="nav_login">Login</a>
+                            <a class="btn btn-primary btn-sm" style="background: var(--primary); border: none; color: #000; font-weight: 500;" href="{{ url_for('auth.login') }}" data-translate-key="nav_login">Login</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -161,7 +338,7 @@
         const baseTranslations = {
             'en': { 'site_title': 'Olympiad Platform', 'nav_contests': 'Contests', 'nav_about': 'About', 'nav_login': 'Login', 'lang_english': 'English', 'lang_armenian': 'Armenian', 'lang_russian': 'Russian', 'footer_rights': 'All rights reserved.', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Logout' },
             'hy': { 'site_title': 'Օլիմպիական Հարթակ', 'nav_contests': 'Մրցույթներ', 'nav_about': 'Մեր մասին', 'nav_login': 'Մուտք', 'lang_english': 'Անգլերեն', 'lang_armenian': 'Հայերեն', 'lang_russian': 'Ռուսերեն', 'footer_rights': 'Բոլոր իրավունքները պաշտպանված են։', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Ելք' },
-            'ru': { 'site_title': 'Платформа Олимпиад', 'nav_contests': 'Конкурсы', 'nav_about': 'О нас', 'nav_login': 'Войти', 'lang_english': 'Английский', 'lang_armenian': 'Армянский', 'lang_russian': 'Русский', 'footer_rights': 'Все права защищены.', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Выйти' }
+            'ru': { 'site_title': 'Платформа Олимпиад', 'nav_contests': 'Конкурсы', 'nav_about': 'О нас', 'nav_login': 'Войти', 'lang_english': 'Английский', 'lang_armenian': 'Արմյանսկի', 'lang_russian': 'Русский', 'footer_rights': 'Все права защищены.', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Выйти' }
         };
         Object.keys(baseTranslations).forEach(lang => { Object.assign(window.translations[lang], baseTranslations[lang]); });
         
@@ -176,7 +353,14 @@
             document.documentElement.lang = lang;
             if (langSelectorBtn && langLinks[lang]) {
                 const activeLinkContent = langLinks[lang].innerHTML;
-                langSelectorBtn.innerHTML = activeLinkContent.replace('<span', '<span class="d-none d-lg-inline ms-2"');
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = activeLinkContent;
+                const spanElement = tempDiv.querySelector('span');
+                if (spanElement) {
+                    spanElement.classList.add('d-none', 'd-lg-inline');
+                    spanElement.classList.add('ms-2'); 
+                }
+                langSelectorBtn.innerHTML = tempDiv.innerHTML;
             }
             for (const key in langLinks) { langLinks[key].classList.toggle('active', key === lang); }
             updatePageTitle(lang);  

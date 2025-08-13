@@ -49,6 +49,19 @@ def generate_leaderboard_pdf(file_path, contest, problems, leaderboard_data):
         doc.build(elements)
     except Exception as e:
         raise Exception(f"Error generating PDF: {str(e)}")
+from app import db
+from app.models import User
+
+def create_admin_if_not_exists():
+    admin = User.query.filter_by(role='admin').first()
+    if not admin:
+        admin = User(username='Admin_1', email='admin@example.com', role='admin')
+        admin.set_password('Admin_1')  # փոխիր անվտանգ գաղտնաբառով
+        db.session.add(admin)
+        db.session.commit()
+        print("Admin user created")
+    else:
+        print("Admin user already exists")
 
 def generate_leaderboard_excel(file_path, contest, problems, leaderboard_data):
     try:

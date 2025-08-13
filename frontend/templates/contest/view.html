@@ -4,39 +4,187 @@
 
 {% block extra_css %}
 <style>
+    /* Mobile-First Default Styles */
     main { background-color: #121212; }
-    .contest-header { color: white; }
-    .contest-header h1 { font-weight: 700; }
+    
+    /* Global Section Padding for mobile */
+    .container.py-5 {
+        padding-top: 1.5rem !important; /* Reduced top/bottom padding for mobile */
+        padding-bottom: 1.5rem !important;
+        padding-left: 0.8rem !important; /* Added side padding for mobile */
+        padding-right: 0.8rem !important; /* Added side padding for mobile */
+    }
+
+    /* Contest Header */
+    .contest-header { 
+        flex-direction: column; /* Stack items vertically on mobile */
+        align-items: flex-start !important; /* Align to the start (left) */
+        margin-bottom: 1.5rem !important; /* Adjust margin below header */
+        gap: 1rem; /* Space between stacked elements */
+    }
+    .contest-header .d-flex.align-items-center:first-child {
+        /* This is the div containing the flag icon, title, and countdown */
+        flex-direction: column; /* Stack icon and title/countdown */
+        align-items: flex-start; /* Align to left */
+        width: 100%; /* Take full width */
+    }
+    .contest-header .bi-flag-fill {
+        font-size: 2.5rem; /* Smaller flag icon for mobile */
+        margin-right: 0 !important; /* Remove right margin */
+        margin-bottom: 0.5rem; /* Add bottom margin for spacing */
+    }
+    .contest-header h1 { 
+        font-weight: 700; 
+        font-size: 2rem; /* Smaller contest title for mobile */
+        margin-bottom: 0.5rem !important; /* Adjusted margin */
+        width: 100%; /* Ensure title takes full width */
+    }
     
     .countdown-badge {
         background-color: rgba(255, 204, 0, 0.1);
         border: 1px solid var(--primary);
         color: var(--primary);
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.8rem; /* Adjusted padding for mobile */
         border-radius: 50px;
         font-weight: 500;
+        font-size: 0.85rem; /* Smaller font for countdown */
+        width: 100%; /* Make badge full width on mobile */
+        justify-content: center; /* Center content within badge */
+        margin-top: 0.5rem !important; /* Adjust margin top */
+    }
+    .countdown-badge i.bi-alarm {
+        font-size: 1rem; /* Smaller alarm icon */
+        margin-right: 0.5rem; /* Adjusted margin */
     }
 
+    /* Buttons Group in Header */
+    .contest-header .d-flex.gap-2 {
+        flex-direction: column; /* Stack buttons vertically on mobile */
+        width: 100%; /* Make buttons container full width */
+        gap: 0.75rem !important; /* Space between stacked buttons */
+        margin-top: 1rem; /* Space from countdown badge */
+    }
+    .contest-header .d-flex.gap-2 .btn {
+        width: 100%; /* Make buttons full width */
+        padding: 0.6rem 1rem; /* Adjust button padding for mobile */
+        font-size: 0.95rem; /* Adjust button font size for mobile */
+    }
+
+    /* Problem List Card */
     .problem-list-card {
         background-color: #1a1a1a;
         border: 1px solid var(--border-color);
-        border-radius: 0.75rem;
+        border-radius: 0.75rem; /* Consistent border-radius */
     }
     .problem-list-card .card-header {
         background-color: #212121;
         border-bottom: 1px solid var(--border-color);
+        padding: 0.8rem 1rem; /* Adjusted padding */
+        font-size: 1.05rem; /* Smaller header font size */
     }
     
+    /* Problem Item in List */
     .problem-item {
         background-color: #1a1a1a !important;
         color: var(--text-light) !important;
         border-top: 1px solid var(--border-color) !important;
         transition: background-color 0.2s ease;
-        padding: 1rem 1.25rem;
+        padding: 0.8rem 1rem; /* Adjusted padding for list items */
     }
     .problem-item:first-child { border-top: none !important; }
-    .problem-item:hover { background-color: #252525 !important; }
-    .problem-item .problem-title { color: white; font-weight: 500; }
+    .problem-item:hover { 
+        background-color: #1a1a1a !important; /* Disable hover background for mobile */
+    }
+    .problem-item .problem-title { 
+        color: white; 
+        font-weight: 500; 
+        font-size: 1.05rem; /* Smaller problem title font size */
+    }
+    .problem-item .text-muted.small {
+        font-size: 0.85rem; /* Smaller description font size */
+    }
+
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        .container.py-5 {
+            padding-top: 3rem !important; /* Restore default py-5 */
+            padding-bottom: 3rem !important;
+            padding-left: 0.75rem !important; /* Standard Bootstrap container padding */
+            padding-right: 0.75rem !important; /* Standard Bootstrap container padding */
+        }
+
+        /* Contest Header */
+        .contest-header { 
+            flex-direction: row; /* Revert to row layout */
+            align-items: center !important; /* Revert alignment */
+            margin-bottom: 2rem !important; /* Restore margin */
+            gap: 0; /* Remove gap */
+        }
+        .contest-header .d-flex.align-items-center:first-child {
+            flex-direction: row; /* Revert to row layout */
+            align-items: center; /* Revert alignment */
+            width: auto; /* Revert width */
+        }
+        .contest-header .bi-flag-fill {
+            font-size: 3.5rem; /* Restore original flag icon size */
+            margin-right: 1.5rem !important; /* Restore original margin */
+            margin-bottom: 0; /* Remove bottom margin */
+        }
+        .contest-header h1 { 
+            font-size: 2.5rem; /* Restore original contest title size */
+            margin-bottom: 0 !important; /* Remove bottom margin */
+            width: auto; /* Revert width */
+        }
+
+        .countdown-badge {
+            padding: 0.5rem 1rem; /* Restore original padding */
+            font-size: inherit; /* Restore original font size */
+            width: auto; /* Revert width */
+            justify-content: flex-start; /* Revert justification */
+            margin-top: 0 !important; /* Remove top margin */
+        }
+        .countdown-badge i.bi-alarm {
+            font-size: 1rem; /* Restore original icon size */
+            margin-right: 0.5rem; /* Restore original margin */
+        }
+
+        /* Buttons Group in Header */
+        .contest-header .d-flex.gap-2 {
+            flex-direction: row; /* Revert to row layout */
+            width: auto; /* Revert width */
+            gap: 0.5rem !important; /* Restore original gap */
+            margin-top: 0; /* Remove top margin */
+        }
+        .contest-header .d-flex.gap-2 .btn {
+            width: auto; /* Revert width */
+            padding: 0.375rem 0.75rem; /* Standard Bootstrap button padding */
+            font-size: 0.875rem; /* Standard Bootstrap button font size */
+        }
+
+        /* Problem List Card */
+        .problem-list-card {
+            border-radius: 0.75rem; /* Keep rounded corners as they are nice */
+        }
+        .problem-list-card .card-header {
+            padding: 1rem 1.25rem; /* Restore original padding */
+            font-size: 1.25rem; /* Restore original header font size */
+        }
+        
+        /* Problem Item in List */
+        .problem-item {
+            padding: 1rem 1.25rem; /* Restore original padding */
+        }
+        .problem-item:hover { 
+            background-color: #252525 !important; /* Re-enable hover background */
+        }
+        .problem-item .problem-title { 
+            font-size: 1.25rem; /* Restore original problem title font size */
+        }
+        .problem-item .text-muted.small {
+            font-size: 0.875rem; /* Restore original description font size */
+        }
+    }
 </style>
 {% endblock %}
 
@@ -127,11 +275,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = el.dataset.translateKey;
             if (langDict[key]) {
                 if (el.id !== 'countdown') {
-                    const childSpan = el.querySelector('span');
-                    if (childSpan) {
-                       el.firstChild.nodeValue = langDict[key] + ' ';
-                    } else {
-                       el.textContent = langDict[key];
+                    // Check if it's a specific element that needs child span update
+                    const childSpan = el.querySelector('span'); // This targets the span inside buttons in base.html logic
+                    if (childSpan && el.tagName === 'A' && el.classList.contains('btn')) { // More specific check
+                       // For buttons in base.html, the textContent is usually on the span child
+                       childSpan.textContent = langDict[key];
+                    } else if (el.tagName === 'SPAN' && el.parentElement.tagName === 'A' && el.parentElement.classList.contains('btn') && key.startsWith('btn_')) {
+                        // For the specific case of `<span>` inside the contest header buttons
+                        el.textContent = langDict[key];
+                    }
+                    else if (el.tagName === 'SPAN' && el.dataset.contestTitle) { // Page title case
+                        let translation = langDict[key];
+                        translation = translation.replace('%c', el.dataset.contestTitle);
+                        el.textContent = translation;
+                    }
+                    else if (el.tagName === 'H5' && el.dataset.translateKey === 'header_problems') {
+                        el.textContent = langDict[key];
+                    }
+                    else {
+                        el.textContent = langDict[key];
                     }
                 }
             }
