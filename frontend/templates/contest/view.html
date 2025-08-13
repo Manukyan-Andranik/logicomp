@@ -3,6 +3,7 @@
 {% block title %}{{ contest.title }}{% endblock %}
 
 {% block extra_css %}
+<link href="{{ url_for('static', filename='css/pages/contest_view.css') }}" rel="stylesheet">
 <style>
     /* Mobile-First Default Styles */
     main { background-color: #121212; }

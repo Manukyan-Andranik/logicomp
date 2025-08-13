@@ -2,8 +2,8 @@
 {% block title %}<span data-translate-key="page_login">Login</span>{% endblock %}
 {% block extra_css %}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<<<<<<< HEAD
 <link href="{{ url_for('static', filename='css/auth-forms.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/pages/auth_login.css') }}" rel="stylesheet">
 <style>
     /* Mobile-First Adjustments for Login Page */
 
@@ -295,12 +295,7 @@
                         
                         <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm">
                             {{ form.hidden_tag() }}
-<<<<<<< HEAD
-                            
-                            <div class="form-group">
-=======
                             <div class="mb-4" style="color: white;">
->>>>>>> b9866e3fe083854ba53d6624fd8b9f1bc2ef1a05
                                 {{ form.username.label(class="form-label", **{'data-translate-key': 'username_label'}) }}
                                 <div class="position-relative">
                                     {{ form.username(class="form-control form-control-modern", placeholder="Enter your username", **{'data-translate-key': 'username_placeholder'}) }}
@@ -313,12 +308,7 @@
                                     </div>
                                 {% endif %}
                             </div>
-<<<<<<< HEAD
-                            
-                            <div class="form-group">
-=======
                             <div class="mb-3" style="color: white;">
->>>>>>> b9866e3fe083854ba53d6624fd8b9f1bc2ef1a05
                                 {{ form.password.label(class="form-label", **{'data-translate-key': 'password_label'}) }}
                                 <div class="password-wrapper position-relative">
                                     {{ form.password(class="form-control form-control-modern", placeholder="Enter your password", **{'data-translate-key': 'password_placeholder'}) }}
@@ -347,11 +337,6 @@
                             </div>
                             
                             <hr class="divider">
-                            
-                            <div class="extra-links">
-                                <span data-translate-key="need_help">Need help?</span>
-                                <a href="#" data-translate-key="contact_support">Contact Support</a>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -496,7 +481,6 @@ document.addEventListener('DOMContentLoaded', function() {
             'username_placeholder': 'Enter your username', 
             'password_placeholder': 'Enter your password',
             'remember_me': 'Remember me',
-            'need_help': 'Need help?',
             'contact_support': 'Contact Support',
             'signing_in_text': 'Signing in...', // Added translation for loading state
             'show_password_title': 'Show password', // Added translation for password toggle title
@@ -512,7 +496,6 @@ document.addEventListener('DOMContentLoaded', function() {
             'username_placeholder': 'Մուտքագրեք ձեր օգտանունը', 
             'password_placeholder': 'Մուտքագրեք ձեր գաղտնաբառը',
             'remember_me': 'Հիշել ինձ',
-            'need_help': 'Օգնություն է պետք?',
             'contact_support': 'Կապ հաստատել աջակցության հետ',
             'signing_in_text': 'Մուտք եք գործում...', // Added translation for loading state
             'show_password_title': 'Ցուցադրել գաղտնաբառը', // Added translation for password toggle title
@@ -528,7 +511,6 @@ document.addEventListener('DOMContentLoaded', function() {
             'username_placeholder': 'Введите имя пользователя', 
             'password_placeholder': 'Введите ваш пароль',
             'remember_me': 'Запомнить меня',
-            'need_help': 'Нужна помощь?',
             'contact_support': 'Связаться с поддержкой',
             'signing_in_text': 'Вход...', // Added translation for loading state
             'show_password_title': 'Показать пароль', // Added translation for password toggle title

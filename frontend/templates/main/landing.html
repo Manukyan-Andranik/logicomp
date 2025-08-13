@@ -4,7 +4,7 @@
 
 {% block extra_css %}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
+<link href="{{ url_for('static', filename='css/pages/main_landing.css') }}" rel="stylesheet">
 <style>
     /* Mobile-First Default Styles */
     main { padding: 0 !important; }
@@ -92,8 +92,6 @@
         font-size: 0.9rem; /* Smaller subtitles */
     }
     .contest-card {
-        background: #212121; 
-        border: 1px solid var(--border-color);
         border-radius: 0.75rem !important; /* Consistent border-radius */
         overflow: hidden;
         transition: all 0.3s ease;
@@ -104,9 +102,9 @@
         border-color: var(--border-color); /* Keep stable border */
     }
     .contest-card .card-header { 
-        background: #1a1a1a; 
-        border-bottom: 1px solid var(--border-color) !important; 
-        color: var(--primary) !important; 
+        background: var(--card-title-bg) !important; 
+        border-bottom: 1px solid var(--card-border) !important; 
+        color: var(--card-title-color) !important; 
         font-weight: bold; 
         padding: 0.75rem 1rem; /* Smaller padding */
     }

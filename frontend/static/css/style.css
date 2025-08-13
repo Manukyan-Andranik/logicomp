@@ -1,5 +1,24 @@
 /* 1. Root Variables: Define custom color palette and override Bootstrap variables for consistency. */
 :root {
+    --card-bg: #1a1a1a;
+    --card-border: rgba(255, 255, 255, 0.1);
+
+    --card-title-color: #FFA000;
+    --card-title-bg:#212121;
+
+    --card-text-color: #ffffff;
+
+    --card-btn-bg: #ffc107;
+    --card-btn-border: #ffc107;
+    --card-btn-color: #000;
+
+    --card-btn-hover-bg: #ffc107;
+    --card-btn-hover-border: #ffc107;
+    --card-btn-hover-color: #000;
+
+
+    --hover-bg: #696868;
+    --hover-color: #ffc107;
 
     /* Custom color palette */
     
@@ -17,7 +36,7 @@
     
     --info: #82ced9; /* Light Blue */
     
-    --warning: #ffc107; /* Orange */
+    --warning: #ff7f07; /* Orange */
     
     --danger: #dc3545; /* Red */
     
@@ -41,6 +60,8 @@
     --bs-success: var(--success);
     
     --bs-info: var(--info);
+    
+
     
     --bs-warning: var(--warning);
     
@@ -159,6 +180,13 @@ a:hover {
     font-weight: 500;
     border-radius: 0.3rem;
     transition: var(--transition);
+    margin-bottom: 1rem;
+}
+
+.btn-check:focus+.btn-primary, .btn-primary:focus{
+    color: #fff;
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
 }
 
 .page-header .btn:hover {
@@ -301,10 +329,11 @@ a:hover {
 
 /* 5. Card Styles (General): Default styling for cards throughout the application. */
 .card {
-    border: 1px solid var(--white); /* Subtle border */
+    border: 1px solid var(--card-border);
     border-radius: 0.3rem;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    background-color: var(--white);
+    background-color: var(--card-bg);
+    color: var(--card-text-color);
     transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
@@ -314,33 +343,35 @@ a:hover {
 }
 
 .card-header {
-    background-color: var(--white);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    background-color: var(--card-title-bg);
+    border-bottom: 1px solid var(--card-border);
     font-weight: 600;
-    color: var(--primary);
+    color: var(--card-title-color);
     border-radius: 0.3rem;
     padding: 0.75rem 1rem;
 }
 
 .card-header.bg-primary {
-    background-color: var(--dark) !important;
-    color: var(--white);
+    background-color: var(--card-title-bg) !important;
+    color: var(--card-title-color);
 }
 
 .card-header.bg-success {
-    background-color: var(--success) !important;
-    color: var(--white);
+    background-color: var(--card-title-bg) !important;
+    color: var(--card-title-color);
 }
 
 .card-body {
     padding: 1rem 1.25rem;
-    color: var(--primary);
-    background-color: var(--code-bg);
+    color: var(--card-text-color);
+    background-color: var(--card-bg);
 }
 
 .card-footer {
-    border-top: 1px solid rgba(0, 0, 0, 0.125);
+    border-top: 1px solid var(--card-border);
     border-radius: 0.3rem;
+    background-color: var(--card-bg);
+    color: var(--card-text-color);
 }
 
 /* 6. Table Styles: General table styling and specific leaderboard table styles. */
@@ -565,12 +596,12 @@ a:hover {
 
 .badge-time-limit, .bg-warning {
     background-color: var(--warning) !important;
-    color: var(--primary) !important;
+    color: var(--white) !important;
 }
 
 .badge-compilation-error, .bg-info {
     background-color: var(--info) !important;
-    color: var(--primary) !important;
+    color: var(--white) !important;
 }
 
 .bg-light {
@@ -601,8 +632,8 @@ color: var(--primary);
     color: var(--primary);
     }
 .navbar-dark .navbar-nav .nav-link:focus {
-        color: var(--primary);
-        background-color: var(--secondary);
+        color: var(--hover-color);
+        background-color: var(--hover-bg);
         }
 /* Alert styles */
 .alert {
@@ -809,7 +840,7 @@ pre, .sample-io {
 }
 .card-title {
     margin-bottom: .5rem;
-    color: var(--primary)
+    color: var(--card-title-color)
 }
 /* Individual submission rows within the card (using list-group-item) */
 .submission-list-card .list-group-item {
@@ -975,9 +1006,9 @@ footer .text-muted {
     }
     
     .card, .table, .list-group-item, .submission-list-card { /* Added .submission-list-card */
-        background-color: var(--code-bg);
-        color: var(--primary);
-        border-color: var(--primary-dark);
+        background-color: var(--card-bg);
+        color: var(--card-text-color);
+        border-color: var(--card-border);
     }
     
     .form-control {
@@ -993,9 +1024,9 @@ footer .text-muted {
     }
 
     .card-header, .submission-list-card .card-header { /* Added .submission-list-card .card-header */
-        background-color: var(--dark);
-        color: var(--white);
-        border-bottom-color: var(--primary-dark);
+        background-color: var(--card-title-bg);
+        color: var(--card-title-color);
+        border-bottom-color: var(--card-border);
     }
 
     .sidebar {
@@ -1008,8 +1039,8 @@ footer .text-muted {
     }
 
     .nav-pills .nav-link:hover {
-        background-color: var(--primary);
-        color: var(--secondary);
+        background-color: var(--hover-bg);
+        color: var(--hover-color);
     }
 
     .nav-pills .nav-link.active {
@@ -1103,6 +1134,19 @@ footer .text-muted {
         box-shadow: none;
         border: 1px solid var(--white);
     }
+}
+
+/* Card-scoped button defaults using card variables */
+.card .btn {
+    background-color: var(--card-btn-bg);
+    border-color: var(--card-btn-border);
+    color: var(--card-btn-color);
+}
+
+.card .btn:hover {
+    background-color: var(--card-btn-hover-bg);
+    border-color: var(--card-btn-hover-border);
+    color: var(--card-btn-hover-color);
 }
 
 /* 17. Additional Mobile Media Queries for All Pages */

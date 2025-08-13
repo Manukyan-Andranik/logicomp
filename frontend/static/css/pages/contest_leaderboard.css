@@ -1,0 +1,44 @@
+/* Extracted from contest/leaderboard.html */
+main { background-color: #121212; }
+.leaderboard-header { color: white; }
+.leaderboard-header h1 { font-weight: 700; }
+
+.leaderboard-table { background-color: #1a1a1a; border: 1px solid var(--border-color); border-radius: 0.75rem; overflow: hidden; }
+.leaderboard-table th, .leaderboard-table td { vertical-align: middle; text-align: center; border-top: 1px solid var(--border-color) !important; }
+.leaderboard-table thead th { background-color: #212121 !important; color: var(--text-muted); text-transform: uppercase; font-weight: 600; font-size: 0.8rem; letter-spacing: 0.5px; border-bottom: 2px solid var(--border-color) !important; }
+.leaderboard-table tbody tr { background-color: #1a1a1a; transition: background-color 0.2s ease; }
+.leaderboard-table tbody tr:hover { background-color: #252525; }
+
+.rank-cell .rank-icon { font-size: 1.5rem; }
+.rank-gold { color: #ffd700; }
+.rank-silver { color: #c0c0c0; }
+.rank-bronze { color: #cd7f32; }
+.username-cell { font-weight: 500; color: white; text-align: left !important; }
+.problem-cell { padding: 0.5rem !important; }
+.problem-cell-content { border-radius: 0.5rem; padding: 0.5rem; }
+.cell-accepted { background-color: rgba(25, 135, 84, 0.2); }
+.cell-accepted .score { font-size: 1.1rem; font-weight: 700; color: #198754; }
+.cell-rejected { background-color: rgba(220, 53, 69, 0.15); }
+.cell-rejected .attempts { color: #dc3545; }
+.cell-pending { color: var(--text-muted); }
+.attempts-count { font-size: 0.75rem; color: var(--text-muted); }
+.total-score-cell { font-weight: 700; font-size: 1.2rem; color: var(--primary); }
+
+@media (max-width: 768px) {
+  .leaderboard-header { flex-direction: column; align-items: flex-start !important; gap: 1rem; }
+  .leaderboard-header h1 { font-size: 1.5rem; }
+  .table-responsive { border: none; background-color: transparent; }
+  .leaderboard-table table, .leaderboard-table thead, .leaderboard-table tbody, .leaderboard-table th, .leaderboard-table td, .leaderboard-table tr { display: block; }
+  .leaderboard-table thead tr { position: absolute; top: -9999px; left: -9999px; }
+  .leaderboard-table tr { margin-bottom: 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; background-color: #1a1a1a; overflow: hidden; }
+  .leaderboard-table td { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; border-bottom: 1px solid #2a2a2a; text-align: right !important; width: 100% !important; }
+  .leaderboard-table tr td:last-child { border-bottom: none; }
+  .leaderboard-table td::before { content: attr(data-label); font-weight: 600; color: var(--text-muted); text-align: left; margin-right: 1rem; flex-shrink: 0; }
+  .username-cell-container { display: flex; align-items: center; background-color: #212121; padding: 0.75rem 1rem; border-bottom: 1px solid #2a2a2a; }
+  .username-cell-container .rank-cell { font-size: 1.1rem; padding-right: 1rem; }
+  .username-cell-container .username-cell { font-size: 1.1rem; font-weight: 700; color: white; }
+  .leaderboard-table td.rank-cell, .leaderboard-table td.username-cell { display: none; }
+  .problem-cell { padding: 0.75rem 1rem !important; }
+  .problem-cell-content { margin-left: auto; }
+}
+

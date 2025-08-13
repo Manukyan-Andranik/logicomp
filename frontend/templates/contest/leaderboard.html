@@ -1,15 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}<span data-translate-key="page_title" data-contest-title="{{ contest.title }}">{{ contest.title }} - Leaderboard</span>{% endblock %}
+{% block title %}<span data-translate-key="page_title" data-contest-title="{{ contest.title }}">{{ contest.title }} -
+    Leaderboard</span>{% endblock %}
 
 {% block extra_css %}
-
+<link href="{{ url_for('static', filename='css/pages/contest_leaderboard.css') }}" rel="stylesheet">
 <style>
     /*հիշեմ*/
     /* Desktop Styles (Original) */
-    main { background-color: #121212; }
-    .leaderboard-header { color: white; }
-    .leaderboard-header h1 { font-weight: 700; }
+    main {
+        background-color: #121212;
+    }
+
+    .leaderboard-header {
+        color: white;
+    }
+
+    .leaderboard-header h1 {
+        font-weight: 700;
+    }
 
     .leaderboard-table {
         background-color: #1a1a1a;
@@ -17,11 +26,14 @@
         border-radius: 0.75rem;
         overflow: hidden;
     }
-    .leaderboard-table th, .leaderboard-table td {
+
+    .leaderboard-table th,
+    .leaderboard-table td {
         vertical-align: middle;
         text-align: center;
         border-top: 1px solid var(--border-color) !important;
     }
+
     .leaderboard-table thead th {
         background-color: #212121 !important;
         color: var(--text-muted);
@@ -31,144 +43,98 @@
         letter-spacing: 0.5px;
         border-bottom: 2px solid var(--border-color) !important;
     }
+
     .leaderboard-table tbody tr {
         background-color: #1a1a1a;
         transition: background-color 0.2s ease;
     }
+
     .leaderboard-table tbody tr:hover {
         background-color: #252525;
     }
-    
-    .rank-cell .rank-icon { font-size: 1.5rem; }
-    .rank-gold { color: #ffd700; }
-    .rank-silver { color: #c0c0c0; }
-    .rank-bronze { color: #cd7f32; }
 
-    .username-cell { font-weight: 500; color: white; text-align: left !important; }
+    .rank-cell .rank-icon {
+        font-size: 1.5rem;
+    }
 
-    .problem-cell { padding: 0.5rem !important; }
-    .problem-cell-content { border-radius: 0.5rem; padding: 0.5rem; }
-    .cell-accepted { background-color: rgba(25, 135, 84, 0.2); }
-    .cell-accepted .score { font-size: 1.1rem; font-weight: 700; color: #198754; }
-    .cell-rejected { background-color: rgba(220, 53, 69, 0.15); }
-    .cell-rejected .attempts { color: #dc3545; }
-    .cell-pending { color: var(--text-muted); }
-    .attempts-count { font-size: 0.75rem; color: var(--text-muted); }
-    
-    .total-score-cell { font-weight: 700; font-size: 1.2rem; color: var(--primary); }
+    .rank-gold {
+        color: #ffd700;
+    }
+
+    .rank-silver {
+        color: #c0c0c0;
+    }
+
+    .rank-bronze {
+        color: #cd7f32;
+    }
+
+    .username-cell {
+        font-weight: 500;
+        color: white;
+        text-align: left !important;
+    }
+
+    .problem-cell {
+        padding: 0.5rem !important;
+    }
+
+    .problem-cell-content {
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .cell-accepted {
+        background-color: rgba(25, 135, 84, 0.2);
+    }
+
+    .cell-accepted .score {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #198754;
+    }
+
+    .cell-rejected {
+        background-color: rgba(220, 53, 69, 0.15);
+    }
+
+    .cell-rejected .attempts {
+        color: #dc3545;
+    }
+
+    .cell-pending {
+        color: var(--text-muted);
+    }
+
+    .attempts-count {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .total-score-cell {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+    }
 
     /* ===== Responsive Styles for Mobile ===== */
-    @media (max-width: 768px) {
-        .leaderboard-header {
-            flex-direction: column;
-            align-items: flex-start !important;
-            gap: 1rem;
-        }
-
-        .leaderboard-header h1 {
-            font-size: 1.5rem;
-        }
-
-        .table-responsive {
-            border: none;
-            background-color: transparent;
-        }
-
-        .leaderboard-table table, 
-        .leaderboard-table thead, 
-        .leaderboard-table tbody, 
-        .leaderboard-table th, 
-        .leaderboard-table td, 
-        .leaderboard-table tr {
-            display: block;
-        }
-
-        .leaderboard-table thead tr {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-        }
-
-        .leaderboard-table tr {
-            margin-bottom: 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            background-color: #1a1a1a;
-            overflow: hidden;
-        }
-
-        .leaderboard-table td {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #2a2a2a;
-            text-align: right !important;
-            width: 100% !important;
-        }
-        
-        .leaderboard-table tr td:last-child {
-            border-bottom: none;
-        }
-
-        .leaderboard-table td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: var(--text-muted);
-            text-align: left;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-        
-        /* Special styling for user row to act as a card header */
-        .username-cell-container {
-            display: flex;
-            align-items: center;
-            background-color: #212121;
-            padding: 0.75rem 1rem;
-            border-bottom: 1px solid #2a2a2a;
-        }
-        
-        .username-cell-container .rank-cell {
-            font-size: 1.1rem;
-            padding-right: 1rem;
-        }
-        
-        .username-cell-container .username-cell {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: white;
-        }
-        
-        /* Hide original td for rank and username in the flow */
-        .leaderboard-table td.rank-cell,
-        .leaderboard-table td.username-cell {
-            display: none;
-        }
-
-        .problem-cell {
-            padding: 0.75rem 1rem !important;
-        }
-        
-        .problem-cell-content {
-            margin-left: auto;
-        }
-    }
+    @media (max-width: 768px) { }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4 leaderboard-header">
-        <h1 class="d-flex align-items-center"><i class="bi bi-bar-chart-line-fill me-3"></i><span data-translate-key="header_leaderboard">Leaderboard:</span>&nbsp;{{ contest.title }}</h1>
+        <h1 class="d-flex align-items-center"><i class="bi bi-bar-chart-line-fill me-3"></i><span
+                data-translate-key="header_leaderboard">Leaderboard:</span>&nbsp;{{ contest.title }}</h1>
         {% if current_user.role == 'admin' %}
-            <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-warning">
-                <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
-            </a>
+        <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-warning">
+            <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+        </a>
         {% else %}
-            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-warning">
-                <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
-            </a>
+        <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-warning">
+            <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+        </a>
         {% endif %}
     </div>
 
@@ -179,7 +145,8 @@
                     <th style="width: 5%;" data-translate-key="th_rank">#</th>
                     <th style="width: 20%; text-align: left;" data-translate-key="th_username">Username</th>
                     {% for problem in problems %}
-                        <th><span data-translate-key="th_problem" data-var="{{loop.index}}">Problem {{ loop.index }}</span></th>
+                    <th><span data-translate-key="th_problem" data-var="{{loop.index}}">Problem {{ loop.index }}</span>
+                    </th>
                     {% endfor %}
                     <th style="width: 10%;" data-translate-key="th_total_score">Score</th>
                     <th style="width: 10%;" data-translate-key="th_total_time">Time</th>
@@ -199,7 +166,7 @@
                         </span>
                         <span class="username-cell">{{ entry.user.username }}</span>
                     </td>
-                    
+
                     <!-- Original cells, hidden on mobile but used for desktop -->
                     <td class="rank-cell fw-bold" data-label-key="th_rank">
                         <!-- Content duplicated in header card for mobile -->
@@ -207,25 +174,27 @@
                     <td class="username-cell" data-label-key="th_username">
                         <!-- Content duplicated in header card for mobile -->
                     </td>
-                    
+
                     {% for problem in problems %}
-                        {% set result = entry.problems.get(problem.id) %}
-                        <!-- CORRECTED: Using data-label-key and data-label-var to make it translatable -->
-                        <td class="problem-cell" data-label-key="th_problem" data-label-var="{{ loop.index }}">
-                            {% if result is none %}
-                                <div class="problem-cell-content cell-pending"><i class="bi bi-dash-lg"></i></div>
-                            {% elif result.is_accepted %}
-                                <div class="problem-cell-content cell-accepted" data-bs-toggle="tooltip" title="{{ result.time|round(2) }}s">
-                                    <div class="score">+{{ result.score|default(100) }}</div>
-                                    <div class="attempts-count">{{ result.attempts }} <span data-translate-key="text_attempts">att.</span></div>
-                                </div>
-                            {% else %}
-                                <div class="problem-cell-content cell-rejected">
-                                    <div class="attempts">-{{ result.attempts }}</div>
-                                    <div class="attempts-count"><span data-translate-key="text_attempts">att.</span></div>
-                                </div>
-                            {% endif %}
-                        </td>
+                    {% set result = entry.problems.get(problem.id) %}
+                    <!-- CORRECTED: Using data-label-key and data-label-var to make it translatable -->
+                    <td class="problem-cell" data-label-key="th_problem" data-label-var="{{ loop.index }}">
+                        {% if result is none %}
+                        <div class="problem-cell-content cell-pending"><i class="bi bi-dash-lg"></i></div>
+                        {% elif result.is_accepted %}
+                        <div class="problem-cell-content cell-accepted" data-bs-toggle="tooltip"
+                            title="{{ result.time|round(2) }}s">
+                            <div class="score">+{{ result.score|default(100) }}</div>
+                            <div class="attempts-count">{{ result.attempts }} <span
+                                    data-translate-key="text_attempts">att.</span></div>
+                        </div>
+                        {% else %}
+                        <div class="problem-cell-content cell-rejected">
+                            <div class="attempts">-{{ result.attempts }}</div>
+                            <div class="attempts-count"><span data-translate-key="text_attempts">att.</span></div>
+                        </div>
+                        {% endif %}
+                    </td>
                     {% endfor %}
 
                     <td class="total-score-cell" data-label-key="th_total_score">{{ entry.total_score }}</td>
@@ -244,56 +213,56 @@
 {% block scripts %}
 {{ super() }}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-    
-    // CORRECTED: Added %s placeholder for problem translation
-    const leaderboardTranslations = {
-        'en': { 'page_title': '%s - Leaderboard', 'header_leaderboard': 'Leaderboard:', 'btn_back_to_contest': 'Back to Contest', 'th_rank': '#', 'th_username': 'Username', 'th_problem': 'Problem %s', 'th_total_score': 'Score', 'th_total_time': 'Time', 'th_last_submission': 'Last Submit', 'text_attempts': 'att.' },
-        'hy': { 'page_title': '%s - Առաջատարների Աղյուսակ', 'header_leaderboard': 'Աղյուսակ՝', 'btn_back_to_contest': 'Վերադառնալ', 'th_rank': '№', 'th_username': 'Օգտանուն', 'th_problem': 'Խնդիր %s', 'th_total_score': 'Միավոր', 'th_total_time': 'Ժամանակ', 'th_last_submission': 'Վերջին ուղարկում', 'text_attempts': 'փորձ' },
-        'ru': { 'page_title': '%s - Таблица лидеров', 'header_leaderboard': 'Таблица:', 'btn_back_to_contest': 'Назад к контесту', 'th_rank': '#', 'th_username': 'Пользователь', 'th_problem': 'Задача %s', 'th_total_score': 'Очки', 'th_total_time': 'Время', 'th_last_submission': 'Посл. отправка', 'text_attempts': 'поп.' }
-    };
-    Object.keys(leaderboardTranslations).forEach(lang => {
-        if (!window.translations[lang]) { window.translations[lang] = {}; }
-        Object.assign(window.translations[lang], leaderboardTranslations[lang]);
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
 
-    const updatePageText = () => {
-        const lang = localStorage.getItem('language') || 'en';
-        const langDict = window.translations[lang] || window.translations['en'];
-        
-        // Translate all elements with data-translate-key
-        document.querySelectorAll('[data-translate-key]').forEach(el => {
-            const key = el.dataset.translateKey;
-            let translation = langDict[key];
-            if (translation) {
-                // Handle placeholders like %s
-                if (key === 'page_title') {
-                    const contestTitle = el.dataset.contestTitle;
-                    translation = translation.replace('%s', contestTitle);
-                } else if (el.dataset.var) { // CORRECTED: General way to handle placeholders
-                    translation = translation.replace('%s', el.dataset.var);
+        // CORRECTED: Added %s placeholder for problem translation
+        const leaderboardTranslations = {
+            'en': { 'page_title': '%s - Leaderboard', 'header_leaderboard': 'Leaderboard:', 'btn_back_to_contest': 'Back to Contest', 'th_rank': '#', 'th_username': 'Username', 'th_problem': 'Problem %s', 'th_total_score': 'Score', 'th_total_time': 'Time', 'th_last_submission': 'Last Submit', 'text_attempts': 'att.' },
+            'hy': { 'page_title': '%s - Առաջատարների Աղյուսակ', 'header_leaderboard': 'Աղյուսակ՝', 'btn_back_to_contest': 'Վերադառնալ', 'th_rank': '№', 'th_username': 'Օգտանուն', 'th_problem': 'Խնդիր %s', 'th_total_score': 'Միավոր', 'th_total_time': 'Ժամանակ', 'th_last_submission': 'Վերջին ուղարկում', 'text_attempts': 'փորձ' },
+            'ru': { 'page_title': '%s - Таблица лидеров', 'header_leaderboard': 'Таблица:', 'btn_back_to_contest': 'Назад к контесту', 'th_rank': '#', 'th_username': 'Пользователь', 'th_problem': 'Задача %s', 'th_total_score': 'Очки', 'th_total_time': 'Время', 'th_last_submission': 'Посл. отправка', 'text_attempts': 'поп.' }
+        };
+        Object.keys(leaderboardTranslations).forEach(lang => {
+            if (!window.translations[lang]) { window.translations[lang] = {}; }
+            Object.assign(window.translations[lang], leaderboardTranslations[lang]);
+        });
+
+        const updatePageText = () => {
+            const lang = localStorage.getItem('language') || 'en';
+            const langDict = window.translations[lang] || window.translations['en'];
+
+            // Translate all elements with data-translate-key
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.dataset.translateKey;
+                let translation = langDict[key];
+                if (translation) {
+                    // Handle placeholders like %s
+                    if (key === 'page_title') {
+                        const contestTitle = el.dataset.contestTitle;
+                        translation = translation.replace('%s', contestTitle);
+                    } else if (el.dataset.var) { // CORRECTED: General way to handle placeholders
+                        translation = translation.replace('%s', el.dataset.var);
+                    }
+                    el.textContent = translation;
                 }
-                el.textContent = translation;
-            }
-        });
+            });
 
-        // Set data-label attributes for mobile view
-        document.querySelectorAll('td[data-label-key]').forEach(td => {
-            const key = td.dataset.labelKey;
-            let translation = langDict[key] || key;
-            if (td.dataset.labelVar) {
-                translation = translation.replace('%s', td.dataset.labelVar);
-            }
-            td.setAttribute('data-label', translation);
-        });
-    };
-    
-    updatePageText();
-    window.addEventListener('languageChanged', updatePageText);
-});
+            // Set data-label attributes for mobile view
+            document.querySelectorAll('td[data-label-key]').forEach(td => {
+                const key = td.dataset.labelKey;
+                let translation = langDict[key] || key;
+                if (td.dataset.labelVar) {
+                    translation = translation.replace('%s', td.dataset.labelVar);
+                }
+                td.setAttribute('data-label', translation);
+            });
+        };
+
+        updatePageText();
+        window.addEventListener('languageChanged', updatePageText);
+    });
 </script>
 {% endblock %}

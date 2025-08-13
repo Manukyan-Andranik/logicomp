@@ -3,6 +3,7 @@
 {% block title %}<span data-translate-key="page_title" data-contest-title="{{ contest.title }}" data-problem-title="{{ problem.title }}">{{ contest.title }} - {{ problem.title }}</span>{% endblock %}
 
 {% block extra_css %}
+<link href="{{ url_for('static', filename='css/pages/contest_problem.css') }}" rel="stylesheet">
 <style>
     /* Mobile-First Default Styles */
     :root {
@@ -259,6 +260,7 @@
         }
         .submissions-list .list-group-item .text-muted.small {
             font-size: 0.875rem; /* Restore original timestamp font */
+            color: var(--dark)
         }
         .badge-status { 
             font-size: 0.8rem; /* Restore original badge font size */

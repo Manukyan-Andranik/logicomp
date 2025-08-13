@@ -3,6 +3,7 @@
 {% block title %}<span data-translate-key="page_title">Submit Solution</span>{% endblock %}
 
 {% block extra_css %}
+<link href="{{ url_for('static', filename='css/pages/submission_submit.css') }}" rel="stylesheet">
 <style>
     main { background-color: #121212; }
     :root {
@@ -50,16 +51,12 @@
     }
 
     .submission-card {
-        background: #1a1a1a;
-        border: 1px solid var(--border-color);
         border-radius: 0.75rem; 
     }
     .submission-card .card-header {
-        background-color: #212121;
-        border-bottom: 1px solid var(--border-color);
-        color: white;
+        color: var(--card-title-color);
     }
-    .submission-card .card-body { color: var(--text-light); }
+    .submission-card .card-body { color: var(--card-text-color); }
 
     .form-control-dark, .form-select-dark {
         background-color: #0d0d0d !important;

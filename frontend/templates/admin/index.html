@@ -3,139 +3,7 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block extra_css %}
-<style>
-    /* --- Base Styles for Admin Dashboard --- */
-    .sidebar {
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        overflow-y: auto;
-    }
-
-    .sidebar .nav-link {
-        font-weight: 500;
-    }
-
-    .sidebar .nav-link.active {
-        background-color: var(--bs-success) !important;
-    }
-
-    .card-text.display-4 {
-        font-weight: 600;
-    }
-
-    .table th {
-        font-weight: 600;
-    }
-
-
-    /* ===== Responsive Styles for Mobile (max-width: 767.98px) ===== */
-    @media (max-width: 767.98px) {
-        
-        /* 1. Sidebar becomes a top bar */
-        .sidebar {
-            height: auto;
-            position: relative;
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-        .sidebar .d-flex { padding: 0 !important; }
-        .sidebar .nav-pills { flex-direction: row !important; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
-        .sidebar .nav-item { flex-grow: 1; }
-        .sidebar .nav-link { text-align: center; }
-
-        /* 2. Adjust stat cards */
-        .card-text.display-4 { font-size: 2.5rem; }
-
-        /* 3. Transform the contests table into cards */
-        .contests-table table, 
-        .contests-table thead, 
-        .contests-table tbody, 
-        .contests-table th, 
-        .contests-table td, 
-        .contests-table tr {
-            display: block;
-        }
-
-        .contests-table thead tr {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-        }
-
-        /* --- Black and Yellow Card Theme for Contests --- */
-        .contests-table tr {
-            margin-bottom: 1.5rem; /* More space between cards */
-            border: 1px solid rgba(255, 193, 7, 0.4); /* Yellowish border */
-            border-radius: 0.5rem;
-            background-color: #1a1a1a;
-            color: #e0e0e0;
-            padding: 0; /* Remove padding from tr to let tds control it */
-        }
-        
-        /* Card Header (Title) */
-        .contests-table td:first-child {
-            background-color: #212121;
-            font-weight: 700;
-            font-size: 1.2rem;
-            border-bottom: 1px solid rgba(255, 193, 7, 0.4);
-            padding: 1rem;
-            color: #FFD700; /* Yellow header text */
-            display: block; /* Override flex */
-            text-align: left;
-        }
-        .contests-table td:first-child::before { display: none; }
-
-        /* Data Rows */
-        .contests-table td {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            text-align: right;
-            border: none;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Yellow Labels */
-        .contests-table td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: #FFC107;
-            text-align: left;
-            padding-right: 1rem;
-        }
-        
-        /* --- NEW: Block-based Actions Cell --- */
-        .actions-cell {
-            display: grid;
-            grid-template-columns: 1fr 1fr; /* Two columns for buttons */
-            gap: 0.5rem;
-            padding: 1rem !important;
-            border-bottom: none !important; /* Last item, no border */
-            background-color: rgba(0,0,0,0.2);
-        }
-        
-        .actions-cell::before { display: none; } /* No label for the actions block */
-        
-        .actions-cell .btn {
-            width: 100%;
-            border-radius: 0.375rem;
-        }
-        
-        /* Destructive 'Delete' button spans full width and is styled differently */
-        .actions-cell .btn.btn-outline-danger {
-            grid-column: 1 / -1; /* Span across both columns */
-            background-color: rgba(220, 53, 69, 0.15);
-            border-color: rgba(220, 53, 69, 0.7);
-            font-weight: 600;
-        }
-        .actions-cell .btn.btn-outline-danger:hover {
-            background-color: rgba(220, 53, 69, 1);
-            color: white;
-        }
-    }
-</style>
+<link href="{{ url_for('static', filename='css/pages/admin_index.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -172,7 +40,7 @@
 
             <div class="row mb-4">
                 <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-success h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Active Contests</h5>
                             <p class="card-text display-4">{{ active_contests | length }}</p>
@@ -181,7 +49,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-success h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Participants</h5>
                             <p class="card-text display-4">{{ participants_count }}</p>
@@ -190,7 +58,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-info h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Submissions Today</h5>
                             <p class="card-text display-4">{{ submissions_today }}</p>
