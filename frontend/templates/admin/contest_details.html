@@ -2,33 +2,125 @@
 
 {% block title %}{{ contest.title }} - Admin{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Base styles for dark theme cards */
+    .card {
+        background-color: var(--component-bg, #1a1a1a);
+        border: 1px solid var(--border-color, #333);
+    }
+    .card-header {
+        background-color: #212121;
+        border-bottom-color: var(--border-color, #333);
+    }
+
+    /* Definition list styling for contest info */
+    .contest-info-list dt {
+        font-weight: 600;
+        color: var(--primary, #FFC107);
+    }
+    .contest-info-list dd {
+        margin-bottom: 0.5rem;
+    }
+    .contest-info-list dd:last-of-type {
+        margin-bottom: 0;
+    }
+
+    /* ===== Responsive Styles for Mobile ===== */
+    @media (max-width: 767.98px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1.5rem; /* More space */
+        }
+        .page-header h1 {
+            font-size: 1.75rem;
+        }
+        
+        /* Action buttons in the header become a grid */
+        .header-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        .header-actions .btn {
+            width: 100%;
+        }
+        /* Make the 'Add' button span full width if there are 3 buttons */
+        .header-actions .btn:last-child:nth-child(odd) {
+            grid-column: span 2;
+        }
+
+        /* Better styling for definition list on mobile */
+        .contest-info-list dt, 
+        .contest-info-list dd {
+            width: 100%;
+            padding-left: 0;
+        }
+        .contest-info-list dt {
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+        .contest-info-list dd {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        /* Ensure table is scrollable and looks good */
+        .problems-table .table {
+            white-space: nowrap; /* Prevents text from wrapping */
+        }
+        /* Visual cue for horizontal scroll */
+        .problems-table .table-responsive {
+            position: relative;
+        }
+        .problems-table .table-responsive::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(to left, var(--body-bg, #121212), transparent);
+            pointer-events: none;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="container py-4">
+    <!-- Added .page-header for easier targeting -->
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header">
         <h1><i class="bi bi-trophy-fill me-2"></i>{{ contest.title }}</h1>
-        <div>
-            <a href="{{ url_for('admin.index') }}" class="btn btn-outline-primary me-2">
-                <i class="bi bi-arrow-left-circle me-1"></i> Back to Dashboard
+        <!-- Added .header-actions for easier targeting -->
+        <div class="header-actions">
+            <a href="{{ url_for('admin.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left-circle me-1"></i> Back
             </a>
-            <a href="{{ url_for('admin.edit_contest', contest_id=contest.id) }}"
-               class="btn btn-outline-primary me-2">
-                <i class="bi bi-pencil-square me-1"></i> Edit Contest
+            <a href="{{ url_for('admin.edit_contest', contest_id=contest.id) }}" class="btn btn-outline-warning">
+                <i class="bi bi-pencil-square me-1"></i> Edit
             </a>
-            <a href="{{ url_for('admin.add_problem', contest_id=contest.id) }}"
-               class="btn btn-outline-primary">
+            <a href="{{ url_for('admin.add_problem', contest_id=contest.id) }}" class="btn btn-primary">
                 <i class="bi bi-plus-circle me-1"></i> Add Problem
             </a>
         </div>
     </div>
     
     <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="card">
+        <!-- Added mb-4 mb-md-0 for spacing on mobile only -->
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card h-100">
                 <div class="card-header">
                     <h5 class="mb-0">Contest Information</h5>
                 </div>
                 <div class="card-body">
-                    <dl class="row mb-0">
+                    <!-- Added .contest-info-list for specific styling -->
+                    <dl class="row mb-0 contest-info-list">
                         <dt class="col-sm-4">Start Time</dt>
                         <dd class="col-sm-8">{{ contest.start_time.strftime('%Y-%m-%d %H:%M') }}</dd>
 
@@ -66,33 +158,29 @@
                 <div class="card-header">
                     <h5 class="mb-0">Actions</h5>
                 </div>
-                <div class="card-body d-flex flex-column">
-                    <a href="{{ url_for('admin.generate_credentials', contest_id=contest.id) }}"
-                        class="btn btn-outline-success mb-3">
-                        <i class="bi bi-key-fill"></i> Generate Participant Credentials
+                <div class="card-body d-grid gap-2">
+                    <a href="{{ url_for('admin.generate_credentials', contest_id=contest.id) }}" class="btn btn-outline-success">
+                        <i class="bi bi-key-fill"></i> Generate Credentials
                     </a>
-                    <a href="{{ url_for('contest.leaderboard', contest_id=contest.id) }}"
-                        class="btn btn-outline-info mb-3">
-                        <i class="bi bi-trophy-fill"></i> View Leaderboard
+                    <a href="{{ url_for('contest.leaderboard', contest_id=contest.id) }}" class="btn btn-outline-info">
+                        <i class="bi bi-bar-chart-line-fill"></i> View Leaderboard
                     </a>
-
-                    <a href="{{ url_for('admin.view_submissions', contest_id=contest.id) }}"
-                       class="btn btn-outline-secondary">
+                    <a href="{{ url_for('admin.view_submissions', contest_id=contest.id) }}" class="btn btn-outline-secondary">
                         <i class="bi bi-file-earmark-check"></i> View Submissions
                     </a>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <div class="card">
+    <!-- Problems Table -->
+    <div class="card problems-table">
         <div class="card-header">
             <h5 class="mb-0">Problems</h5>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table mb-0">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -103,24 +191,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for problem in contest.problems.order_by() %}
+                        <!-- THE FIX IS HERE: Changed Problem.id to 'id' -->
+                        {% for problem in contest.problems.order_by('id') %}
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ problem.title }}</td>
                             <td>{{ problem.time_limit }}s</td>
                             <td>{{ problem.submissions.count() }}</td>
                             <td>
-                                <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}"
-                                    class="btn btn-sm btn-outline-primary me-1">
+                                <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="btn btn-sm btn-outline-primary me-1">
                                     <i class="bi bi-eye"></i> View
                                 </a>
-                                <a href="{{ url_for('admin.edit_problem', problem_id=problem.id) }}"
-                                    class="btn btn-sm btn-outline-secondary">
+                                <a href="{{ url_for('admin.edit_problem', problem_id=problem.id) }}" class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                </a>
                             </td>
-
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-4">No problems have been added to this contest yet.</td>
                         </tr>
                         {% endfor %}
                     </tbody>

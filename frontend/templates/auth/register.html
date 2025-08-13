@@ -5,28 +5,270 @@
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <<<<<<< HEAD
 <link href="{{ url_for('static', filename='css/auth-forms.css') }}" rel="stylesheet">
-=======
 <style>
-    body { overflow-x: hidden; overflow-y: auto; }
-    main.auth-main { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - var(--navbar-height)); padding: 2rem 0 !important; background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1350&q=80'); background-size: cover; background-position: center; }
-    .auth-card { background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(15px) saturate(180%); border: 1px solid var(--border-color); border-radius: 1rem; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37); }
-    .auth-card .card-title { color: white; font-weight: 700; }
-    .contest-title { color: var(--primary); font-weight: 500; font-size: 1.1rem; margin-top: -10px; margin-bottom: 2rem; display: block; }
-    .form-control-modern { background: transparent !important; border: none !important; border-bottom: 2px solid var(--border-color) !important; border-radius: 0 !important; color: white !important; padding: .5rem 2.5rem .5rem 0 !important; box-shadow: none !important; transition: border-color 0.3s ease; }
-    .form-control-modern::placeholder { color: var(--text-muted); opacity: 1; }
-    .form-control-modern:focus { border-bottom-color: var(--primary) !important; }
-    .form-control-modern.is-invalid { border-bottom-color: #dc3545 !important; }
-    .invalid-feedback-custom { color: #dc3545; font-size: 0.875em; margin-top: 0.25rem; display: block; }
-    .password-wrapper { position: relative; }
-    .password-toggle { position: absolute; top: 50%; right: 5px; transform: translateY(-50%); color: var(--text-muted); cursor: pointer; transition: color 0.2s ease; }
-    .password-toggle:hover { color: var(--primary); }
-    .btn-auth { background: var(--primary); border: none; color: #000; font-weight: bold; padding: 12px 0; border-radius: 50px; transition: all 0.3s ease; }
-    .btn-auth:hover { background: var(--primary-dark); color: #000; box-shadow: 0 0 15px var(--primary); }
-    .extra-links span { color: var(--text-muted) !important; }
-    .extra-links a { color: var(--primary); text-decoration: none; font-size: 0.9rem; }
-    .extra-links a:hover { text-decoration: underline; }
+    /* Mobile-First Adjustments for Register Page */
+
+    /* General Layout Adjustments */
+    .auth-main {
+        padding: 1.5rem 0.5rem !important; /* Reduced padding for smaller screens */
+        min-height: calc(100vh - var(--navbar-height) - var(--footer-height, 0px)); /* Ensure it fills screen */
+        display: flex; /* Ensure flex properties if not already set by auth-forms.css */
+        align-items: center;
+        justify-content: center;
+    }
+    .auth-main .col-md-7.col-lg-5.col-xl-4 {
+        max-width: 100%; /* Ensure it doesn't exceed screen width */
+        padding: 0 0.5rem; /* Add some internal padding to column for very small screens */
+    }
+
+    /* Auth Card Enhancements */
+    .card.auth-card {
+        margin: 0.75rem auto; /* Center card and provide vertical margin */
+        border-radius: 1rem; /* Slightly more rounded for mobile */
+        /* Disable hover effects for touch devices */
+        transform: none !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important; /* Keep a static shadow */
+    }
+    .card.auth-card:hover {
+        transform: none; /* Override auth-forms hover */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important; /* Keep static shadow */
+    }
+
+    /* Header Section (Icon, Title, Contest Title) */
+    .auth-icon {
+        font-size: 2.5rem; /* Smaller icon for mobile */
+        margin-bottom: 0.75rem; /* Adjusted margin */
+    }
+    .auth-card .card-title {
+        font-size: 1.75rem; /* Smaller title for mobile */
+        margin-bottom: 0.25rem; /* Reduced space */
+    }
+    .contest-title {
+        font-size: 0.9rem; /* Smaller contest title for mobile */
+        padding: 0.5rem 1rem; /* Adjust padding */
+        margin-top: -5px; /* Adjust original negative margin */
+        margin-bottom: 1.5rem !important; /* Ensure enough space below */
+    }
+    .text-center.mb-5 {
+        margin-bottom: 2rem !important; /* Adjusted margin for header block */
+    }
+    .card-body.p-4.p-md-5 {
+        padding: 1.5rem !important; /* Unified smaller padding for card body */
+    }
+
+    /* Progress Indicator */
+    .form-progress {
+        margin-bottom: 1.5rem; /* Adjusted margin */
+    }
+    .progress-step {
+        width: 25px; /* Smaller steps */
+        height: 25px; /* Smaller steps */
+        font-size: 0.75rem; /* Smaller font for step numbers */
+    }
+    .progress-line {
+        top: 12.5px; /* Center line with smaller steps */
+    }
+
+
+    /* Form Controls (inherited from auth-forms.css, fine-tuned here) */
+    .form-group {
+        margin-bottom: 1.5rem; /* Slightly reduced margin between form groups */
+    }
+    .form-control-modern {
+        padding: 0.8rem 0.8rem 0.8rem 2.5rem !important; /* Adjust padding for mobile input */
+        font-size: 0.95rem; /* Smaller font for inputs */
+        border-radius: 0.75rem !important; /* Consistent border-radius */
+    }
+    .input-icon {
+        left: 0.8rem; /* Adjust icon position */
+        font-size: 1rem; /* Smaller input icon */
+    }
+    .form-label {
+        font-size: 0.85rem; /* Smaller label font */
+        margin-bottom: 0.5rem; /* Adjusted margin */
+    }
+
+    /* Submit Button */
+    .btn-auth {
+        padding: 0.85rem 1.5rem; /* Larger padding for touch */
+        font-size: 1rem; /* Readable font size */
+        border-radius: 50px; /* Keep original rounded shape */
+        /* Disable hover effects on mobile */
+        transform: none !important;
+        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.25) !important; /* Static shadow */
+    }
+    .btn-auth:hover {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; /* Keep original background on hover */
+        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.25) !important; /* Keep static shadow */
+        transform: none !important; /* Override auth-forms hover */
+    }
+    .btn-auth::before {
+        display: none; /* Remove shimmering effect on mobile */
+    }
+
+    /* Divider */
+    .divider {
+        margin: 1.5rem 0; /* Adjusted margin */
+    }
+
+    /* Extra Links */
+    .extra-links {
+        margin-top: 1rem; /* Adjusted margin */
+    }
+    .extra-links span, .extra-links a {
+        font-size: 0.9rem; /* Smaller font for links */
+    }
+    .extra-links a {
+        padding: 0.4rem 0.8rem; /* Adjusted padding for link button */
+        border-radius: 1rem; /* More rounded */
+        /* Disable hover effects on mobile */
+        transform: none !important;
+        background: rgba(255, 193, 7, 0.05); /* Lighter background */
+    }
+    .extra-links a:hover {
+        background: rgba(255, 193, 7, 0.05); /* Keep stable background */
+        color: var(--primary); /* Keep color stable */
+        transform: none;
+    }
+
+    /* AOS Library Disable on Mobile */
+    @media (max-width: 767px) {
+        [data-aos] {
+            opacity: 1 !important; /* Elements are visible by default */
+            transform: none !important; /* No initial transform */
+            transition: none !important; /* No animation transitions */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    }
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        .auth-main {
+            padding: 2rem 0 !important; /* Restore desktop padding */
+        }
+        .auth-main .col-md-7.col-lg-5.col-xl-4 {
+            padding: 0; /* Remove internal column padding */
+        }
+        .card.auth-card {
+            margin: 0 auto; /* Restore original margin */
+            border-radius: 1.5rem; /* Restore original border-radius */
+            /* Re-enable hover effects for desktop */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.5); 
+        }
+        .card.auth-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .auth-icon {
+            font-size: 3rem; /* Restore original icon size */
+            margin-bottom: 1rem;
+        }
+        .auth-card .card-title {
+            font-size: 2rem; /* Restore original title size */
+            margin-bottom: 0.5rem;
+        }
+        .contest-title {
+            font-size: 1.1rem; /* Restore original contest title size */
+            padding: 0.75rem 1.5rem; /* Restore original padding */
+            margin-top: -5px; /* Restore original margin */
+            margin-bottom: 2rem !important; /* Restore original margin */
+        }
+        .text-center.mb-5 {
+            margin-bottom: 2.5rem !important; /* Restore original margin */
+        }
+        .card-body.p-4.p-md-5 {
+            padding: 2.5rem !important; /* Restore original desktop padding */
+        }
+
+        /* Progress Indicator */
+        .form-progress {
+            margin-bottom: 2rem; /* Restore original margin */
+        }
+        .progress-step {
+            width: 30px; /* Restore original size */
+            height: 30px; /* Restore original size */
+            font-size: 0.875rem; /* Restore original font size */
+        }
+        .progress-line {
+            top: 15px; /* Restore original position */
+        }
+
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 2rem; /* Restore original margin */
+        }
+        .form-control-modern {
+            padding: 1rem 1rem 1rem 3rem !important; /* Restore original padding */
+            font-size: 1rem; /* Restore original font size */
+            border-radius: 12px !important; /* Restore original border-radius */
+        }
+        .input-icon {
+            left: 1rem; /* Restore original icon position */
+            font-size: 1.1rem; /* Restore original icon size */
+        }
+        .form-label {
+            font-size: 0.95rem; /* Restore original label font */
+            margin-bottom: 0.75rem;
+        }
+
+        /* Submit Button */
+        .btn-auth {
+            padding: 1rem 2rem; /* Restore original padding */
+            font-size: 1.1rem; /* Restore original font size */
+            /* Re-enable hover effects for desktop */
+            transition: all 0.3s ease; 
+            box-shadow: none !important; /* Let original style handle shadow */
+        }
+        .btn-auth:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary)) !important; 
+            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.3) !important; 
+            transform: translateY(-3px) !important;
+        }
+        .btn-auth::before {
+            display: block; /* Re-enable shimmering effect */
+        }
+
+        .divider {
+            margin: 2rem 0; /* Restore original margin */
+        }
+
+        .extra-links {
+            margin-top: 1.5rem; /* Restore original margin */
+        }
+        .extra-links span, .extra-links a {
+            font-size: 1rem; /* Restore original font size */
+        }
+        .extra-links a {
+            padding: 0.5rem 1rem; /* Restore original padding */
+            border-radius: 20px; /* Restore original border-radius */
+            /* Re-enable hover effects for desktop */
+            transition: all 0.3s ease;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        .extra-links a:hover { 
+            background: rgba(255, 193, 7, 0.2);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Re-enable AOS animations for larger screens */
+        [data-aos] {
+            opacity: 0; /* Allow AOS to control opacity */
+            transform: translateY(20px); /* Allow AOS to control transform */
+            transition: all 0.3s cubic-bezier(0.3, 0.5, 0.4, 1.2); /* AOS default transition */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+             opacity: 0; /* Ensure hidden initially for AOS animation */
+             transform: translateY(20px);
+        }
+    }
 </style>
->>>>>>> b9866e3fe083854ba53d6624fd8b9f1bc2ef1a05
 {% endblock %}
 
 {% block content %}
@@ -89,7 +331,9 @@
                             
                             <div class="form-group" data-step="3">
                                 <div class="d-grid mt-4">
-                                    {{ form.submit(class="btn btn-auth", id="registerBtn") }}
+                                    <button type="submit" class="btn btn-auth" id="registerBtn">
+                                        <span data-translate-key="register_button_text">Create Account</span>
+                                    </button>
                                 </div>
                             </div>
                             
@@ -135,12 +379,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         input.addEventListener('focus', function() {
-            this.parentElement.classList.add('focused');
+            this.closest('.form-group').classList.add('focused'); // Use closest to handle different nested structures
             updateProgress();
         });
         
         // Add step attribute for progress tracking
-        input.closest('.form-group').setAttribute('data-step', index + 1);
+        // This is handled by data-step on form-group in HTML directly now, so no need to set here
+        // input.closest('.form-group').setAttribute('data-step', index + 1); // Removed: already in HTML
     });
     
     // Form submission
@@ -152,7 +397,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show loading state
         submitBtn.classList.add('loading');
-        submitBtn.value = 'Creating Account...';
+        // Update button text to 'Creating Account...'
+        const currentLang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[currentLang];
+        const creatingAccountText = langDict.creating_account_text || 'Creating Account...';
+        submitBtn.querySelector('span').textContent = creatingAccountText;
     });
     
     function validateField(field) {
@@ -203,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function updateProgress() {
         let completedSteps = 0;
-        let totalSteps = inputs.length;
+        let totalSteps = inputs.length; // Number of input fields
         
         inputs.forEach(input => {
             if (input.classList.contains('is-valid')) {
@@ -219,12 +468,19 @@ document.addEventListener('DOMContentLoaded', function() {
         progressSteps.forEach((step, index) => {
             step.classList.remove('active', 'completed');
             
-            if (index < completedSteps) {
+            // The step number corresponds to index + 1
+            if ((index + 1) <= completedSteps) { // If the actual step number is less than or equal to completed inputs
                 step.classList.add('completed');
-            } else if (index === completedSteps) {
+            } else if ((index + 1) === (completedSteps + 1)) { // The next step to be completed
                 step.classList.add('active');
             }
         });
+
+        // If all steps are completed, make the last step 'completed' as well
+        if (completedSteps === totalSteps) {
+            progressSteps[totalSteps - 1].classList.add('completed');
+            progressSteps[totalSteps - 1].classList.remove('active'); // Remove active from last if completed
+        }
     }
     
     // Enhanced accessibility
@@ -243,7 +499,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Auto-focus first input
-    inputs[0].focus();
+    // Only auto-focus if not on a small mobile device to avoid keyboard popping up immediately
+    if (window.innerWidth >= 576) { 
+        inputs[0].focus();
+    }
     
     // Language translations
     const registerTranslations = {
@@ -256,7 +515,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'username_placeholder': 'e.g. johndoe', 
             'email_placeholder': 'e.g. john.doe@example.com',
             'have_account': 'Already have an account?', 
-            'sign_in': 'Sign In' 
+            'sign_in': 'Sign In',
+            'register_button_text': 'Create Account', /* New key for the button text */
+            'creating_account_text': 'Creating Account...' /* New key for loading state */
         },
         'hy': { 
             'page_register': 'Գրանցում', 
@@ -267,7 +528,9 @@ document.addEventListener('DOMContentLoaded', function() {
             'username_placeholder': 'օր.՝ poghosyan', 
             'email_placeholder': 'օր.՝ poghos@example.com',
             'have_account': 'Արդեն ունե՞ք հաշիվ', 
-            'sign_in': 'Մուտք' 
+            'sign_in': 'Մուտք',
+            'register_button_text': 'Ստեղծել Հաշիվ', /* New key */
+            'creating_account_text': 'Հաշիվը ստեղծվում է...' /* New key */
         },
         'ru': { 
             'page_register': 'Регистрация', 
@@ -278,11 +541,16 @@ document.addEventListener('DOMContentLoaded', function() {
             'username_placeholder': 'напр. ivanov', 
             'email_placeholder': 'напр. ivan.ivanov@example.com',
             'have_account': 'Уже есть аккаунт?', 
-            'sign_in': 'Войти' 
+            'sign_in': 'Войти',
+            'register_button_text': 'Создать аккаунт', /* New key */
+            'creating_account_text': 'Создание аккаунта...' /* New key */
         }
     };
     
+    // Merge translations into global window.translations object
+    if (!window.translations) window.translations = {}; // Ensure global object exists
     Object.keys(registerTranslations).forEach(lang => { 
+        if (!window.translations[lang]) window.translations[lang] = {};
         Object.assign(window.translations[lang], registerTranslations[lang]); 
     });
     
@@ -292,24 +560,27 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.querySelectorAll('[data-translate-key]').forEach(el => {
             const key = el.dataset.translateKey;
-            if(el.type === 'submit') { 
-                if(langDict.register_button_text) el.value = langDict.register_button_text; 
-            } else if (langDict[key]) { 
+            
+            // Handle placeholders for input fields
+            if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+                if (key === 'username_placeholder') el.placeholder = langDict.username_placeholder || '';
+                if (key === 'email_placeholder') el.placeholder = langDict.email_placeholder || '';
+            } 
+            // Handle button text (specifically the span inside it)
+            else if (el.tagName === 'SPAN' && el.closest('#registerBtn') && key === 'register_button_text') {
+                el.textContent = langDict.register_button_text || '';
+            }
+            // For regular text content
+            else if (langDict[key]) { 
                 el.textContent = langDict[key]; 
             }
         });
-        
-        const userInput = document.querySelector('input[name="username"]'), 
-              emailInput = document.querySelector('input[name="email"]');
-        
-        if(userInput) userInput.placeholder = langDict.username_placeholder || '';
-        if(emailInput) emailInput.placeholder = langDict.email_placeholder || '';
     };
     
     updatePageText(); 
     window.addEventListener('languageChanged', updatePageText);
     
-    // Initialize progress
+    // Initialize progress on load
     updateProgress();
 });
 </script>

@@ -5,41 +5,78 @@
 {% block extra_css %}
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 <style>
+    /* General Mobile-First adjustments for all sections */
     main { padding: 0 !important; }
-    
+    section { padding: 3rem 0; /* Default smaller padding for mobile */ }
+
+    /* Hero Section */
     .hero-section {
-        padding: 6rem 0;
+        padding: 4rem 0; /* Reduced padding for mobile */
         background: linear-gradient(45deg, #121212 0%, #000000 100%);
         color: white;
     }
     .glowing-icon {
-        font-size: 4rem;
+        font-size: 3rem; /* Smaller icon for mobile */
         color: var(--primary); 
-        text-shadow: 0 0 15px var(--primary), 0 0 25px var(--primary-dark);
+        text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary-dark);
         animation: glowing-icon 2.5s ease-in-out infinite alternate;
     }
     @keyframes glowing-icon {
-        from { opacity: 0.8; transform: scale(1); } to { opacity: 1; transform: scale(1.05); text-shadow: 0 0 25px var(--primary), 0 0 40px var(--primary-dark); }
+        from { opacity: 0.8; transform: scale(1); } to { opacity: 1; transform: scale(1.05); text-shadow: 0 0 20px var(--primary), 0 0 30px var(--primary-dark); }
     }
-    .hero-section .display-3 { text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .hero-section .display-3 { 
+        font-size: 2.5rem; /* Smaller title for mobile */
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+    }
+    .hero-section .lead {
+        font-size: 1.1rem; /* Smaller lead text for mobile */
+        padding: 0 1rem; /* Add some horizontal padding */
+    }
     .hero-section .btn-primary, .cta-section .btn-primary { 
         background-color: var(--primary); border: none; color: #000; font-weight: bold;
-        padding: 12px 30px; border-radius: 50px;
+        padding: 0.75rem 1.5rem; /* Smaller padding for mobile buttons */
+        font-size: 1rem; /* Smaller font size */
+        border-radius: 50px;
     }
 
-    .section-title h2 { font-weight: 700; color: white; }
-    .section-title p { color: var(--text-muted); }
+    /* Section Titles */
+    .section-title {
+        margin-bottom: 3rem !important; /* Adjust margin for mobile */
+    }
+    .section-title h2 { 
+        font-weight: 700; 
+        color: white; 
+        font-size: 2rem; /* Smaller title for mobile */
+    }
+    .section-title p { 
+        color: var(--text-muted); 
+        font-size: 0.95rem; /* Smaller subtitle for mobile */
+    }
 
+    /* Feature and Step Cards */
     .feature-card, .step-card {
         background: #1a1a1a;
         border: 1px solid var(--border-color);
-        padding: 2rem; border-radius: 1rem; transition: all 0.3s ease;
+        padding: 1.5rem; /* Reduced padding for mobile */
+        border-radius: 1rem; 
+        transition: all 0.3s ease;
     }
-    .feature-card:hover, .step-card:hover { transform: translateY(-10px); background: #212121; }
-    .feature-icon, .step-icon { font-size: 3rem; color: var(--primary); }
-    
-    .cta-section { background: linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1350&q=80') center center; background-size: cover; }
+    .feature-card:hover, .step-card:hover { 
+        transform: none; /* Disable hover transform on mobile for better touch experience */
+        background: #1a1a1a; /* Keep background stable */
+    }
+    .feature-icon, .step-icon { 
+        font-size: 2.5rem; /* Smaller icons for mobile */
+        color: var(--primary); 
+    }
+    .feature-card h5, .step-card h4 {
+        font-size: 1.25rem; /* Adjust title size within cards */
+    }
+    .feature-card p, .step-card p {
+        font-size: 0.875rem; /* Adjust text size within cards */
+    }
 
+    /* Contest Cards */
     .contest-card {
         background: #1a1a1a;
         border: 1px solid var(--border-color);
@@ -47,9 +84,9 @@
         transition: all 0.3s ease;
     }
     .contest-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        border-color: var(--primary);
+        transform: none; /* Disable hover transform on mobile */
+        box-shadow: none; /* Disable hover shadow */
+        border-color: var(--border-color); /* Keep border stable */
     }
     .contest-card .card-header,
     .contest-card .card-body,
@@ -58,11 +95,134 @@
         border-color: var(--border-color) !important;
     }
     .contest-card .card-header { background-color: #212121 !important; }
-    .contest-card .card-title { color: var(--primary); }
+    .contest-card .card-title { 
+        color: var(--primary); 
+        font-size: 1.1rem; /* Smaller title for contest cards */
+    }
+    .contest-card .card-body p {
+        font-size: 0.85rem; /* Smaller description for contest cards */
+    }
+    .contest-card .card-footer {
+        flex-direction: column; /* Stack timer and buttons on small screens */
+        align-items: center;
+        gap: 0.75rem; /* Space between stacked items */
+        padding: 1rem; /* Adjust padding for stacked content */
+    }
+    .contest-card .card-footer .badge {
+        font-size: 0.85rem; /* Smaller badge font size */
+        margin-bottom: 0.5rem; /* Space below badge when stacked */
+    }
+    .contest-card .card-footer div {
+        display: flex; /* Ensure buttons stay in a row */
+        gap: 0.5rem; /* Space between buttons */
+    }
+    .contest-card .card-footer .btn {
+        padding: 0.6rem 1rem; /* Smaller buttons for mobile */
+        font-size: 0.85rem;
+    }
+
+    /* AOS Library adjustments for mobile */
+    [data-aos] {
+        opacity: 1 !important; /* Keep elements visible to avoid blank spaces if AOS is problematic */
+        transform: none !important; /* Disable transforms by AOS on mobile */
+        transition: none !important; /* Disable transitions by AOS on mobile */
+    }
+    .aos-init[data-aos][data-aos]:not(.aos-animate) {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+    .aos-animate {
+        /* Re-enable animations for larger screens or if needed */
+    }
+
+
+    /* Media Queries for larger screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        section { padding: 5rem 0; /* Restore padding for larger screens */ }
+        
+        .hero-section {
+            padding: 6rem 0; /* Restore original padding */
+        }
+        .glowing-icon {
+            font-size: 4rem; /* Restore original icon size */
+            text-shadow: 0 0 15px var(--primary), 0 0 25px var(--primary-dark);
+        }
+        .hero-section .display-3 { 
+            font-size: 3.5rem; /* Restore original title size (or adjust as needed for wider screens) */
+        }
+        .hero-section .lead {
+            font-size: 1.25rem; /* Restore original lead text size */
+            padding: 0; /* Remove horizontal padding */
+        }
+        .hero-section .btn-primary, .cta-section .btn-primary { 
+            padding: 12px 30px; /* Restore original button padding */
+            font-size: 1.1rem; /* Restore original font size */
+        }
+
+        .section-title {
+            margin-bottom: 5rem !important; /* Restore margin */
+        }
+        .section-title h2 { 
+            font-size: 2.5rem; /* Restore original title size */
+        }
+        .section-title p { 
+            font-size: 1rem; /* Restore original subtitle size */
+        }
+
+        .feature-card, .step-card {
+            padding: 2rem; /* Restore original padding */
+        }
+        .feature-card:hover, .step-card:hover { 
+            transform: translateY(-10px); /* Re-enable hover transform */
+            background: #212121; /* Re-enable hover background */
+        }
+        .feature-icon, .step-icon { 
+            font-size: 3rem; /* Restore original icon size */
+        }
+        .feature-card h5, .step-card h4 {
+            font-size: 1.5rem; /* Restore original title size */
+        }
+        .feature-card p, .step-card p {
+            font-size: 1rem; /* Restore original text size */
+        }
+
+        .contest-card:hover {
+            transform: translateY(-5px); /* Re-enable hover transform */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); /* Re-enable hover shadow */
+            border-color: var(--primary); /* Re-enable hover border */
+        }
+        .contest-card .card-title { 
+            font-size: 1.25rem; /* Restore original title size */
+        }
+        .contest-card .card-body p {
+            font-size: 1rem; /* Restore original description size */
+        }
+        .contest-card .card-footer {
+            flex-direction: row; /* Revert to row layout */
+            justify-content: space-between; /* Space out items */
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+        }
+        .contest-card .card-footer .badge {
+            font-size: 1rem; /* Restore original badge font size */
+            margin-bottom: 0; /* Remove bottom margin */
+        }
+         .contest-card .card-footer .btn {
+            padding: 0.375rem 0.75rem; /* Restore original button size */
+            font-size: 0.875rem;
+        }
+
+        /* Re-enable AOS animations for larger screens */
+        [data-aos] {
+            opacity: 0; /* Allow AOS to control opacity */
+            transform: translateY(20px); /* Allow AOS to control transform */
+            transition: all 0.3s cubic-bezier(0.3, 0.5, 0.4, 1.2); /* AOS default transition */
+        }
+    }
 </style>
 {% endblock %}
 
 {% block content %}
+
 <div class="content-wrapper">
     <!-- Hero Section -->
     <section class="hero-section text-center">
@@ -78,86 +238,115 @@
         </div>
     </section>
 
-    <!-- How It Works Section -->
-    <section class="py-5">
-        <div class="container">
-            <div class="section-title text-center mb-5" data-aos="fade-up">
-                <h2 data-translate-key="how_it_works_title">How It Works</h2>
-                <p data-translate-key="how_it_works_subtitle">Start your journey in 3 simple steps</p>
-            </div>
-            <div class="row text-center gy-4">
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100"><div class="step-card h-100"><i class="bi bi-person-plus-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step1_title">Register</h4><p class="mb-0 text-white-50" data-translate-key="step1_desc">Create your account and join a community of coders.</p></div></div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200"><div class="step-card h-100"><i class="bi bi-keyboard-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step2_title">Compete</h4><p class="mb-0 text-white-50" data-translate-key="step2_desc">Choose a contest and solve challenges to earn points.</p></div></div>
-                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300"><div class="step-card h-100"><i class="bi bi-award-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step3_title">Win</h4><p class="mb-0 text-white-50" data-translate-key="step3_desc">Climb the leaderboard and win amazing prizes and recognition.</p></div></div>
-            </div>
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-title text-center mb-5" data-aos="fade-up">
+            <h2 data-translate-key="how_it_works_title">How It Works</h2>
+            <p data-translate-key="how_it_works_subtitle">Start your journey in 3 simple steps</p>
         </div>
-    </section>
-    
-    <!-- Why LogiComp Section -->
-    <section class="py-5" style="background-color: #1a1a1a;">
-        <div class="container">
-            <div class="section-title text-center mb-5" data-aos="fade-up">
-                <h2 data-translate-key="why_choose_us_title">Why Choose LogiComp?</h2>
-                <p data-translate-key="why_choose_us_subtitle">The features that make us stand out</p>
-            </div>
-            <div class="row gy-4">
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100"><div class="feature-card text-center h-100"><i class="bi bi-robot feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature1_title">Instant Judging</h5><p class="text-white-50" data-translate-key="feature1_desc">Get immediate, accurate feedback on your code with our robust automated judging system.</p></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200"><div class="feature-card text-center h-100"><i class="bi bi-bar-chart-line-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature2_title">Live Leaderboards</h5><p class="text-white-50" data-translate-key="feature2_desc">Track your progress in real-time and see how you stack up against the competition.</p></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300"><div class="feature-card text-center h-100"><i class="bi bi-puzzle-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature3_title">Diverse Problems</h5><p class="text-white-50" data-translate-key="feature3_desc">Challenge yourself with a wide variety of problems, from beginner-friendly to expert-level.</p></div></div>
-                <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400"><div class="feature-card text-center h-100"><i class="bi bi-people-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature4_title">Growing Community</h5><p class="text-white-50" data-translate-key="feature4_desc">Join a vibrant community of developers, learn from others, and share your knowledge.</p></div></div>
-            </div>
+        <div class="row text-center gy-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100"><div class="step-card h-100"><i class="bi bi-person-plus-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step1_title">Register</h4><p class="mb-0 text-white-50" data-translate-key="step1_desc">Create your account and join a community of coders.</p></div></div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200"><div class="step-card h-100"><i class="bi bi-keyboard-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step2_title">Compete</h4><p class="mb-0 text-white-50" data-translate-key="step2_desc">Choose a contest and solve challenges to earn points.</p></div></div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300"><div class="step-card h-100"><i class="bi bi-award-fill step-icon mb-3"></i><h4 class="text-white" data-translate-key="step3_title">Win</h4><p class="mb-0 text-white-50" data-translate-key="step3_desc">Climb the leaderboard and win amazing prizes and recognition.</p></div></div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Active Contests Section -->
-    {% if active_contests %}
-    <section class="py-5">
-        <div class="container">
-            <div class="section-title text-center mb-5" data-aos="fade-up">
-                <h2 class="text-white" data-translate-key="active_contests">Active Contests</h2>
-            </div>
-            <div class="row">
-                {% for contest in active_contests[:3] %}
-                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ 100 * loop.index }}">
-                    <div class="card contest-card h-100 d-flex flex-column" style="color:white;">
-                        <div class="card-header"><h4 class="card-title mb-0">{{ contest.title }}</h4></div>
-                        <div class="card-body flex-grow-1">
-                            <p class="text-white-75" style="color:white;">{{ contest.description|truncate(120) }}</p>
-                            <div class="d-flex justify-content-start align-items-center text-white-50 small mt-3">
-                                <span class="me-3" style="color:white;">
-                                    <i style="color:white;" class="bi bi-code-slash me-1"></i>
-                                    <strong style="color:white;" class="text-white">{{ contest.problems.count() }}</strong>
-                                    <span data-translate-key="text_problems" style="color:white;">Problems</span>  
-                                </span>
-                            </div>
+<!-- Why LogiComp Section -->
+<section class="py-5" style="background-color: #1a1a1a;">
+    <div class="container">
+        <div class="section-title text-center mb-5" data-aos="fade-up">
+            <h2 data-translate-key="why_choose_us_title">Why Choose LogiComp?</h2>
+            <p data-translate-key="why_choose_us_subtitle">The features that make us stand out</p>
+        </div>
+        <div class="row gy-4">
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100"><div class="feature-card text-center h-100"><i class="bi bi-robot feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature1_title">Instant Judging</h5><p class="text-white-50" data-translate-key="feature1_desc">Get immediate, accurate feedback on your code with our robust automated judging system.</p></div></div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200"><div class="feature-card text-center h-100"><i class="bi bi-bar-chart-line-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature2_title">Live Leaderboards</h5><p class="text-white-50" data-translate-key="feature2_desc">Track your progress in real-time and see how you stack up against the competition.</p></div></div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300"><div class="feature-card text-center h-100"><i class="bi bi-puzzle-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature3_title">Diverse Problems</h5><p class="text-white-50" data-translate-key="feature3_desc">Challenge yourself with a wide variety of problems, from beginner-friendly to expert-level.</p></div></div>
+            <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400"><div class="feature-card text-center h-100"><i class="bi bi-people-fill feature-icon mb-3"></i><h5 class="text-white" data-translate-key="feature4_title">Growing Community</h5><p class="text-white-50" data-translate-key="feature4_desc">Join a vibrant community of developers, learn from others, and share your knowledge.</p></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Active Contests Section -->
+{% if active_contests %}
+<section class="py-5">
+    <div class="container">
+        <div class="section-title text-center mb-5" data-aos="fade-up">
+            <h2 class="text-white" data-translate-key="active_contests">Active Contests</h2>
+        </div>
+        <div class="row">
+            {% for contest in active_contests[:3] %}
+            <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ 100 * loop.index }}">
+                <div class="card contest-card h-100 d-flex flex-column" style="color:white;">
+                    <div class="card-header"><h4 class="card-title mb-0">{{ contest.title }}</h4></div>
+                    <div class="card-body flex-grow-1">
+                        <p class="text-white-75" style="color:white;">{{ contest.description|truncate(120) }}</p>
+                        <div class="d-flex justify-content-start align-items-center text-white-50 small mt-3">
+                            <span class="me-3" style="color:white;">
+                                <i style="color:white;" class="bi bi-code-slash me-1"></i>
+                                <strong style="color:white;" class="text-white">{{ contest.problems.count() }}</strong>
+                                <span data-translate-key="text_problems" style="color:white;">Problems</span>  
+                            </span>
                         </div>
-                        <div class="card-footer d-flex justify-content-between align-items-center">
-                            <span class="badge fs-6" id="home-timer-{{ contest.id }}"><span class="timer-text"></span></span>
-                            <div>
-                            {% if current_user and current_user.is_authenticated %}
-                                <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-warning"><span data-translate-key="enter_contest">Enter</span> <i class="bi bi-arrow-right-short"></i></a>
-                            {% else %}
-                                <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-secondary"><span data-translate-key="view_details">Details</span></a>
-                                <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" class="btn btn-sm btn-warning"><span data-translate-key="register_to_join">Register</span></a>
-                            {% endif %}
-                            </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <span class="badge fs-6" id="home-timer-{{ contest.id }}"><span class="timer-text"></span></span>
+                        <div>
+                        {% if current_user and current_user.is_authenticated %}
+                            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-warning"><span data-translate-key="enter_contest">Enter</span> <i class="bi bi-arrow-right-short"></i></a>
+                        {% else %}
+                            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-secondary"><span data-translate-key="view_details">Details</span></a>
+                            <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" class="btn btn-sm btn-warning"><span data-translate-key="register_to_join">Register</span></a>
+                        {% endif %}
                         </div>
                     </div>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
         </div>
-    </section>
-    {% endif %}
+    </div>
+</section>
+{% endif %}
 </div>
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
+
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize AOS with adjusted settings for better mobile performance (e.g., lower offset, once: true)
     AOS.init({ duration: 800, offset: 50, once: true });
+
+    // Custom logic to disable AOS on smaller screens (optional, but can improve performance)
+    function disableAOSOnMobile() {
+        if (window.innerWidth < 768) { // Adjust breakpoint as needed
+            document.querySelectorAll('[data-aos]').forEach(el => {
+                el.removeAttribute('data-aos');
+                el.removeAttribute('data-aos-delay');
+                // Ensure elements are immediately visible
+                el.style.opacity = '1';
+                el.style.transform = 'none';
+                el.style.transition = 'none';
+            });
+        } else {
+            // If AOS was disabled, re-enable it for larger screens
+            // This might require re-initializing AOS or adding data-aos attributes back
+            // For simplicity, we just won't apply the 'none' styles if > 768px
+            // If you need re-initialization, store original data-aos attributes
+            // and reapply them before AOS.init()
+        }
+    }
+
+    // Run on load and resize
+    disableAOSOnMobile();
+    window.addEventListener('resize', disableAOSOnMobile);
+
+
     const welcomeTranslations = {
         'en': { 'page_welcome': 'Welcome', 'welcome_title': 'Welcome to LogiComp', 'welcome_subtitle': 'The ultimate platform for competitive programming.', 'view_contests': 'View Contests', 'how_it_works_title': 'How It Works', 'how_it_works_subtitle': 'Start your journey in 3 simple steps', 'step1_title': 'Register', 'step1_desc': 'Create your account and join a community of coders.', 'step2_title': 'Compete', 'step2_desc': 'Choose a contest and solve challenges to earn points.', 'step3_title': 'Win', 'step3_desc': 'Climb the leaderboard and win amazing prizes.', 'why_choose_us_title': 'Why Choose LogiComp?', 'why_choose_us_subtitle': 'The features that make us stand out', 'feature1_title': 'Instant Judging', 'feature1_desc': 'Get immediate, accurate feedback on your code.', 'feature2_title': 'Live Leaderboards', 'feature2_desc': 'Track your progress in real-time against others.', 'feature3_title': 'Diverse Problems', 'feature3_desc': 'Challenge yourself with a wide variety of problems.', 'feature4_title': 'Growing Community', 'feature4_desc': 'Join a vibrant community and learn from others.', 'active_contests': 'Active Contests', 'text_problems': 'problems', 'view_details': 'Details', 'register_to_join': 'Register', 'enter_contest': 'Enter', 'timer_ended': 'Ended', 'timer_ends_in': 'Ends in', 'timer_d': 'd', 'timer_h': 'h', 'timer_m': 'm', 'timer_s': 's' },
         'hy': { 'page_welcome': 'Բարի Գալուստ', 'welcome_title': 'Բարի Գալուստ LogiComp', 'welcome_subtitle': 'Ծրագրավորման մրցույթների լավագույն հարթակը։', 'view_contests': 'Դիտել Մրցույթները', 'how_it_works_title': 'Ինչպես է աշխատում', 'how_it_works_subtitle': 'Սկսեք ձեր ճանապարհը 3 պարզ քայլով', 'step1_title': 'Գրանցվեք', 'step1_desc': 'Ստեղծեք ձեր հաշիվը և միացեք կոդերների համայնքին։', 'step2_title': 'Մրցեք', 'step2_desc': 'Ընտրեք մրցույթ և լուծեք խնդիրներ՝ միավորներ վաստակելու համար։', 'step3_title': 'Հաղթեք', 'step3_desc': 'Բարձրացեք առաջատարների աղյուսակում և շահեք մրցանակներ։', 'why_choose_us_title': 'Ինչու՞ ընտրել LogiComp-ը', 'why_choose_us_subtitle': 'Առանձնահատկություններ, որոնք մեզ առանձնացնում են', 'feature1_title': 'Ակնթարթային Ստուգում', 'feature1_desc': 'Ստացեք անմիջական, ճշգրիտ արձագանք ձեր կոդի վերաբերյալ։', 'feature2_title': 'Կենդանի Աղյուսակներ', 'feature2_desc': 'Հետևեք ձեր առաջընթացին իրական ժամանակում։', 'feature3_title': 'Բազմազան Խնդիրներ', 'feature3_desc': 'Մարտահրավեր նետեք ինքներդ ձեզ տարբեր խնդիրներով։', 'feature4_title': 'Աճող Համայնք', 'feature4_desc': 'Միացեք ակտիվ համայնքին և սովորեք ուրիշներից։', 'active_contests': 'Ակտիվ Մրցույթներ', 'text_problems': 'խնդիր', 'view_details': 'Մանրամասներ', 'register_to_join': 'Գրանցվել', 'enter_contest': 'Մուտք', 'timer_ended': 'Ավարտված է', 'timer_ends_in': 'Ավարտին՝', 'timer_d': 'օ', 'timer_h': 'ժ', 'timer_m': 'ր', 'timer_s': 'վ' },

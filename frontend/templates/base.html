@@ -32,201 +32,239 @@
     />
 
     <style>
-      :root {
-        --primary: #ffc107; /* Հիմնական շեշտադրման գույն՝ վառ դեղին */
-        --primary-dark: #ffa000; /* Մուգ դեղին՝ hover-ի համար */
-        --dark: #121212; /* Շատ մուգ ֆոն */
-        --text-light: #e0e0e0;
-        --text-muted: #888;
-        --border-color: rgba(255, 255, 255, 0.1);
-        --navbar-height: 70px;
-        --footer-bg: rgba(18, 18, 18, 0.75) !important;
-      }
+        :root {
+            --primary: #FFC107; 
+            --primary-dark: #FFA000; 
+            --dark: #121212; 
+            --text-light: #e0e0e0;
+            --text-muted: #888;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --navbar-height: 56px; 
+            --footer-bg:rgba(18, 18, 18, 0.75) !important;
+            --navbar-bg:rgba(18, 18, 18, 0.75); 
+        }
+        
+        body {
+            padding-top: var(--navbar-height);
+            background-color: var(--dark);
+            color: var(--text-light);
+            overflow-x: hidden; 
+        }
 
-      body {
-        padding-top: var(--navbar-height);
-        background-color: var(--dark);
-        color: var(--text-light);
-      }
-      .navbar-toggler {
-        border-color: var(--primary) !important;
-        color: var(--primary);
-      }
+        .navbar.glassmorphism {
+            height: var(--navbar-height); 
+            position: fixed;
+            top: 0; 
+            width: 100%; 
+            z-index: 1030;
+            backdrop-filter: blur(10px) saturate(180%);
+            background-color: var(--navbar-bg) !important;
+            border-bottom: 1px solid transparent; 
+            transition: all 0.3s ease;
+        }
+        .navbar.glassmorphism.scrolled {
+             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+             border-bottom: 1px solid var(--border-color);
+        }
 
+        .navbar-brand { 
+            font-weight: 700 !important; 
+            color: #fff !important; 
+            font-size: 1.25rem; ժ
+        }ժ
+        .navbar-brand i {
+            font-size: 1.5rem; ժ
+        }
 
-      .navbar.glassmorphism {
-        height: var(--navbar-height);
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 1030;
-        backdrop-filter: blur(10px) saturate(180%);
-        background-color: var(--navbar-bg) !important;
-        border-bottom: 1px solid transparent;
-        transition: all 0.3s ease;
-      }
-      .navbar.glassmorphism.scrolled {
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        border-bottom: 1px solid var(--border-color);
-      }
+        .navbar-dark .nav-link { 
+            color: rgba(255, 255, 255, 0.8) !important; 
+            padding: 0.75rem 1rem;
+            text-align: center;
+        }
+        .navbar-dark .nav-link:hover, 
+        .navbar-dark .nav-link:focus { 
+            color: var(--primary) !important; 
+            background-color: rgba(255, 255, 255, 0.05); 
+        }
 
-      .navbar-brand {
-        font-weight: 700 !important;
-        color: #fff !important;
-      }
-      .navbar-dark .nav-link {
-        color: rgba(255, 255, 255, 0.8) !important;
-      }
-      .navbar-dark .nav-link:hover,
-      .navbar-dark .nav-link:focus {
-        color: var(--primary) !important;
-      }
-
-      .dropdown-menu {
-        background-color: rgba(30, 30, 30, 0.9) !important;
-        border: 1px solid var(--border-color) !important;
-        backdrop-filter: blur(10px);
-      }
-      .dropdown-item {
-        color: var(--text-light) !important;
-      }
-      .dropdown-item:hover,
-      .dropdown-item:focus,
-      .dropdown-item.active {
-        background-color: var(--primary) !important;
-        color: #000 !important;
-      }
-
-      .flag-icon {
-        width: 22px;
-        height: 16px;
-        object-fit: cover;
-        border-radius: 3px;
-        box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-      }
-
-      .site-footer {
-        background-color: var(--footer-bg);
-      }
-      .site-footer p {
-        color: var(--text-muted);
-      }
-      .site-footer a {
-        color: var(--primary);
-      }
-      .site-footer a:hover {
-        color: var(--primary-dark);
-      }
-      .navbar.glassmorphism {
-        height: var(--navbar-height, 70px);
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 1030;
-        backdrop-filter: blur(10px) saturate(180%);
-        -webkit-backdrop-filter: blur(10px) saturate(180%);
-        background-color: var(--navbar-bg, rgba(18, 18, 18, 0.75)) !important;
-        border-bottom: 1px solid transparent;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-      }
-
-      .navbar.glassmorphism.scrolled {
-        background-color: rgba(18, 18, 18, 0.9) !important;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        border-bottom-color: var(--border-color, rgba(255, 255, 255, 0.1));
-      }
-
-      .navbar-dark .nav-link {
-        color: var(--text-light, #e0e0e0) !important;
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
-        transition: color 0.3s ease, background-color 0.3s ease;
-      }
-
-      .navbar-dark .nav-link:hover,
-      .navbar-dark .nav-link:focus {
-        color: var(--primary, #FFC107) !important;
-        background-color: rgba(255, 255, 255, 0.05);
-      }
-
-      .dropdown-menu {
-        background-color: rgba(30, 30, 30, 0.9) !important;
-        border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1)) !important;
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
-        border-radius: 0.5rem;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
-        padding: 0.5rem 0;
-      }
-
-      .dropdown-item {
-        color: var(--text-light, #e0e0e0) !important;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.5rem 1.25rem;
-        transition: background-color 0.2s ease, color 0.2s ease;
-      }
-
-      .dropdown-item:hover,
-      .dropdown-item:focus,
-      .dropdown-item.active {
-        background-color: var(--primary, #FFC107) !important;
-        color: var(--dark, #121212) !important;
-      }
-
-      .dropdown-divider {
-        border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
-      }
-
-      .language-dropdown .dropdown-toggle .flag-icon {
-        margin-right: 0.5rem;
-      }
-
-      .flag-icon {
-        width: 22px;
-        height: 16px;
-        object-fit: cover;
-        border-radius: 3px;
-        box-shadow: 0 0 3px rgba(0,0,0,0.5);
-      }
-
-      .btn-login {
-        background: var(--primary, #FFC107);
-        border: none;
-        color: #000 !important; 
-        font-weight: 600;
-        padding: 0.5rem 1.25rem;
-        border-radius: 2rem; 
-        transition: background-color 0.3s ease, transform 0.2s ease;
-      }
-
-      .btn-login:hover {
-        background: var(--primary-dark, #FFA000);
-        transform: translateY(-2px); 
-      }
-
-      @media (max-width: 991.98px) {
+        
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+        }
+        
+        .navbar-toggler {
+            border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+            padding: 0.25rem 0.5rem; 
+        }
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25) !important; 
+        }
+        
         .navbar-collapse {
-          background-color: rgba(18, 18, 18, 0.98);
-          border-radius: 0.5rem;
-          margin-top: 0.5rem;
-          padding: 1rem;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            background-color: var(--dark); 
+            border-top: 1px solid var(--border-color); 
+            padding-bottom: 1rem; 
+            margin-top: 0.5rem; 
+            border-radius: 0.5rem; 
         }
-        .navbar-nav .nav-link {
-          padding: 0.75rem 0.5rem;
+        
+        
+        .dropdown-menu {
+            background-color: rgba(30, 30, 30, 0.9) !important;
+            border: 1px solid var(--border-color) !important; 
+            backdrop-filter: blur(10px);
+            
+            width: 100%; 
+            left: 0 !important; 
+            right: 0 !important; 
+            margin-top: 0.5rem; 
+            border-radius: 0.5rem; 
+        }
+        .dropdown-item { 
+            color: var(--text-light) !important; 
+            text-align: center; 
+            padding: 0.75rem 1rem; 
+        }
+        .dropdown-item:hover, 
+        .dropdown-item:focus, 
+        .dropdown-item.active {
+            background-color: var(--primary) !important; 
+            color: #000 !important;
+        }
+        
+        .flag-icon { 
+            width: 20px; 
+            height: 14px; 
+            object-fit: cover; 
+            border-radius: 3px; 
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+            margin-right: 0.5rem; 
+            vertical-align: middle; 
+        }
+        
+        .language-dropdown .dropdown-toggle .flag-icon {
+             margin-right: 0; 
+        }
+        .language-dropdown .dropdown-toggle span {
+            display: none; 
+        }
+        
+        @media (min-width: 992px) { 
+            .language-dropdown .dropdown-toggle span {
+                display: inline !important; 
+            }
+            .language-dropdown .dropdown-toggle .flag-icon {
+                 margin-right: 0.5rem; 
+            }
         }
 
-        .user-dropdown, .language-dropdown {
-          margin-top: 0.5rem;
+
+        .site-footer {
+            background-color: var(--footer-bg);
+            padding: 1rem 0; 
+            font-size: 0.85rem; 
         }
-        .btn-login {
-          width: 100%;
-          margin-top: 1rem;
+        .site-footer p {
+             color: var(--text-muted);
         }
-}
+        .site-footer a { color: var(--primary); }
+        .site-footer a:hover { color: var(--primary-dark); }
+
+        
+        @media (max-width: 767px) { 
+            .navbar-nav .btn-primary {
+                width: calc(100% - 2rem); 
+                margin: 0.75rem auto 0.5rem auto !important; 
+                
+                
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                
+                
+                padding: 0.75rem 1.5rem; 
+                font-size: 1rem; 
+                border-radius: 0.5rem; 
+                box-shadow: 0 4px 10px rgba(255, 193, 7, 0.2); 
+                transition: all 0.2s ease-in-out; 
+                background: var(--primary) !important; 
+                color: #000 !important; 
+                font-weight: 500 !important; 
+                border: none !important; 
+                
+                
+                text-align: center; 
+            }
+
+            
+            .navbar-nav .btn-primary:hover,
+            .navbar-nav .btn-primary:focus {
+                background: var(--primary-dark) !important; 
+                color: #000 !important; 
+                box-shadow: 0 6px 15px rgba(255, 193, 7, 0.3); 
+                transform: translateY(-2px); 
+            }
+        }
+
+        
+        @media (min-width: 768px) {
+            :root {
+                --navbar-height: 70px; 
+            }
+
+            .navbar-brand { 
+                font-size: 1.5rem; 
+            }
+            .navbar-brand i {
+                font-size: inherit; 
+            }
+
+            .navbar-dark .nav-link { 
+                padding: 0.5rem 1rem; 
+                text-align: left; 
+            }
+            .navbar-collapse {
+                background-color: transparent; 
+                border-top: none; 
+                padding-bottom: 0; 
+                margin-top: 0; 
+                border-radius: 0; 
+            }
+            .dropdown-menu {
+                width: auto; 
+                left: auto !important; 
+                right: 0 !important; 
+                margin-top: 0;
+            }
+            .dropdown-item { 
+                text-align: left; 
+            }
+            .site-footer {
+                padding: 30px 0; 
+                font-size: inherit; 
+            }
+            .navbar-nav .btn-primary {
+                width: auto; 
+                margin: 0 0 0 0.5rem !important; 
+                
+                display: inline-block; 
+                justify-content: unset; 
+                align-items: unset; 
+                text-align: unset; 
+
+                padding: 0.375rem 0.75rem; 
+                font-size: 0.875rem; 
+                border-radius: 0.3rem; 
+                box-shadow: none; 
+                transform: none; 
+            }
+             .navbar-nav .btn-primary:hover,
+             .navbar-nav .btn-primary:focus {
+                background: var(--primary) !important; 
+                box-shadow: none; 
+                transform: none; 
+             }
+        }
     </style>
     {% block extra_css %}{% endblock %}
   </head>
@@ -253,92 +291,57 @@
     {% endif %} {% endwith %}
   </main>
 
-  <body class="d-flex flex-column min-vh-100">
-    <nav
-      id="main-navbar"
-      class="navbar navbar-expand-lg navbar-dark glassmorphism"
-    >
-      <div class="container">
-        <a class="navbar-brand" href="{{ url_for('main.index') }}"
-          ><i class="bi bi-code-square"></i> LogiComp</a
-        >
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          style="border-color: var(--primary); color:var(--primary);"
-        >
-          <span class="navbar-toggler-icon" style="color: var(--primary)"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('contest.index') }}" data-translate-key="nav_contests">Contests</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.about') }}" data-translate-key="nav_about">About</a>
-        </li>
-    </ul>
-
-    <ul class="navbar-nav align-items-center">
-        <!-- Language Dropdown -->
-        <li class="nav-item dropdown language-dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="language-selector-btn" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="language-selector-btn">
-                <li>
-                    <a id="lang-en" class="dropdown-item" href="#" onclick="changeLanguage('en')">
-                        <img src="https://flagcdn.com/w40/us.png" class="flag-icon" alt="USA Flag"/>
-                        <span data-translate-key="lang_english">English</span>
-                    </a>
-                </li>
-                <li>
-                    <a id="lang-hy" class="dropdown-item" href="#" onclick="changeLanguage('hy')">
-                        <img src="https://flagcdn.com/w40/am.png" class="flag-icon" alt="Armenian Flag"/>
-                        <span data-translate-key="lang_armenian">Հայերեն</span>
-                    </a>
-                </li>
-                <li>
-                    <a id="lang-ru" class="dropdown-item" href="#" onclick="changeLanguage('ru')">
-                        <img src="https://flagcdn.com/w40/ru.png" class="flag-icon" alt="Russian Flag"/>
-                        <span data-translate-key="lang_russian">Русский</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-
-        {% if current_user.is_authenticated %}
-            {% if current_user.role == 'admin' %}
-            <li class="nav-item dropdown user-dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-shield-lock-fill me-1"></i>{{ current_user.username }}
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                    <li><a class="dropdown-item" href="{{ url_for('admin.index') }}" data-translate-key="nav_admin_panel">Admin Panel</a></li>
-                    <li><hr class="dropdown-divider"/></li>
-                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
+<body class="d-flex flex-column min-vh-100">
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-dark glassmorphism">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.index') }}"><i class="bi bi-code-square"></i> LogiComp</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('contest.index') }}" data-translate-key="nav_contests">Contests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('main.about') }}" data-translate-key="nav_about">About</a></li>
                 </ul>
-            </li>
-            {% else %}
-            <li class="nav-item dropdown user-dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-person-fill me-1"></i>{{ current_user.username }}
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
+                <ul class="navbar-nav align-items-center">
+                    <!-- Language Dropdown -->
+                    <li class="nav-item dropdown language-dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="language-selector-btn" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="language-selector-btn">
+                            <li><a id="lang-en" class="dropdown-item" href="#" onclick="changeLanguage('en')"><img src="https://flagcdn.com/w40/us.png" class="flag-icon" alt="USA Flag"><span data-translate-key="lang_english">English</span></a></li>
+                            <li><a id="lang-hy" class="dropdown-item" href="#" onclick="changeLanguage('hy')"><img src="https://flagcdn.com/w40/am.png" class="flag-icon" alt="Armenian Flag"><span data-translate-key="lang_armenian">Հայերեն</span></a></li>
+                            <li><a id="lang-ru" class="dropdown-item" href="#" onclick="changeLanguage('ru')"><img src="https://flagcdn.com/w40/ru.png" class="flag-icon" alt="Russian Flag"><span data-translate-key="lang_russian">Русский</span></a></li>
+                        </ul>
+                    </li>
+                    
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'admin' %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-shield-lock-fill me-1"></i>{{ current_user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('admin.index') }}" data-translate-key="nav_admin_panel">Admin Panel</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
+                            </ul>
+                        </li>
+                        {% else %}
+                        <li class="nav-item dropdown">
+                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                               <i class="bi bi-person-fill me-1"></i>{{ current_user.username }}
+                             </a>
+                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                               <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}" data-translate-key="nav_logout">Logout</a></li>
+                             </ul>
+                        </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="btn btn-primary btn-sm" style="background: var(--primary); border: none; color: #000; font-weight: 500;" href="{{ url_for('auth.login') }}" data-translate-key="nav_login">Login</a>
+                        </li>
+                    {% endif %}
                 </ul>
-            </li>
-            {% endif %}
-        {% else %}
-            <li class="nav-item">
-                <a class="btn btn-primary btn-login ms-2" href="{{ url_for('auth.login') }}" data-translate-key="nav_login">Login</a>
-            </li>
-        {% endif %}
-    </ul>
-</div>
-      </div>
+            </div>
+        </div>
     </nav>
     <main class="flex-grow-1">{% block content %}{% endblock %}</main>
     <footer class="site-footer">
@@ -354,87 +357,42 @@
     <script src="{{ url_for('static', filename='js/mobile.js') }}"></script>
     {% block scripts %}
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("current-year").textContent =
-          new Date().getFullYear();
-        const navbar = document.getElementById("main-navbar");
-        if (navbar) {
-          window.addEventListener("scroll", () => {
-            navbar.classList.toggle("scrolled", window.scrollY > 50);
-          });
-        }
-
-        window.translations = { en: {}, hy: {}, ru: {} };
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+        const navbar = document.getElementById('main-navbar');
+        if (navbar) { window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 50); }); }
+        
+        window.translations = { 'en': {}, 'hy': {}, 'ru': {} };
         const baseTranslations = {
-          en: {
-            site_title: "Olympiad Platform",
-            nav_contests: "Contests",
-            nav_about: "About",
-            nav_login: "Login",
-            lang_english: "English",
-            lang_armenian: "Armenian",
-            lang_russian: "Russian",
-            footer_rights: "All rights reserved.",
-            nav_admin_panel: "Admin Panel",
-            nav_logout: "Logout",
-          },
-          hy: {
-            site_title: "Օլիմպիական Հարթակ",
-            nav_contests: "Մրցույթներ",
-            nav_about: "Մեր մասին",
-            nav_login: "Մուտք",
-            lang_english: "Անգլերեն",
-            lang_armenian: "Հայերեն",
-            lang_russian: "Ռուսերեն",
-            footer_rights: "Բոլոր իրավունքները պաշտպանված են։",
-            nav_admin_panel: "Admin Panel",
-            nav_logout: "Ելք",
-          },
-          ru: {
-            site_title: "Платформа Олимпиад",
-            nav_contests: "Конкурсы",
-            nav_about: "О нас",
-            nav_login: "Войти",
-            lang_english: "Английский",
-            lang_armenian: "Армянский",
-            lang_russian: "Русский",
-            footer_rights: "Все права защищены.",
-            nav_admin_panel: "Admin Panel",
-            nav_logout: "Выйти",
-          },
+            'en': { 'site_title': 'Olympiad Platform', 'nav_contests': 'Contests', 'nav_about': 'About', 'nav_login': 'Login', 'lang_english': 'English', 'lang_armenian': 'Armenian', 'lang_russian': 'Russian', 'footer_rights': 'All rights reserved.', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Logout' },
+            'hy': { 'site_title': 'Օլիմպիական Հարթակ', 'nav_contests': 'Մրցույթներ', 'nav_about': 'Մեր մասին', 'nav_login': 'Մուտք', 'lang_english': 'Անգլերեն', 'lang_armenian': 'Հայերեն', 'lang_russian': 'Ռուսերեն', 'footer_rights': 'Բոլոր իրավունքները պաշտպանված են։', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Ելք' },
+            'ru': { 'site_title': 'Платформа Олимпиад', 'nav_contests': 'Конкурсы', 'nav_about': 'О нас', 'nav_login': 'Войти', 'lang_english': 'Английский', 'lang_armenian': 'Արմյանսկի', 'lang_russian': 'Русский', 'footer_rights': 'Все права защищены.', 'nav_admin_panel': 'Admin Panel', 'nav_logout': 'Выйти' }
         };
-        Object.keys(baseTranslations).forEach((lang) => {
-          Object.assign(window.translations[lang], baseTranslations[lang]);
-        });
-
-        const langSelectorBtn = document.getElementById(
-          "language-selector-btn"
-        );
-        const langLinks = {
-          en: document.getElementById("lang-en"),
-          hy: document.getElementById("lang-hy"),
-          ru: document.getElementById("lang-ru"),
-        };
-
+        Object.keys(baseTranslations).forEach(lang => { Object.assign(window.translations[lang], baseTranslations[lang]); });
+        
+        const langSelectorBtn = document.getElementById('language-selector-btn');
+        const langLinks = { en: document.getElementById('lang-en'), hy: document.getElementById('lang-hy'), ru: document.getElementById('lang-ru') };
+        
         const applyTranslations = (lang) => {
-          const langDict =
-            window.translations[lang] || window.translations["en"];
-          document.querySelectorAll("[data-translate-key]").forEach((el) => {
-            const key = el.dataset.translateKey;
-            if (langDict[key]) el.textContent = langDict[key];
-          });
-          document.documentElement.lang = lang;
-          if (langSelectorBtn && langLinks[lang]) {
-            const activeLinkContent = langLinks[lang].innerHTML;
-            langSelectorBtn.innerHTML = activeLinkContent.replace(
-              "<span",
-              '<span class="d-none d-lg-inline ms-2"'
-            );
-          }
-          for (const key in langLinks) {
-            langLinks[key].classList.toggle("active", key === lang);
-          }
-          updatePageTitle(lang);
+            const langDict = window.translations[lang] || window.translations['en'];
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.dataset.translateKey; if(langDict[key]) el.textContent = langDict[key];
+            });
+            document.documentElement.lang = lang;
+            if (langSelectorBtn && langLinks[lang]) {
+                const activeLinkContent = langLinks[lang].innerHTML;
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = activeLinkContent;
+                const spanElement = tempDiv.querySelector('span');
+                if (spanElement) {
+                    spanElement.classList.add('d-none', 'd-lg-inline');
+                    spanElement.classList.add('ms-2'); 
+                }
+                langSelectorBtn.innerHTML = tempDiv.innerHTML;
+            }
+            for (const key in langLinks) { langLinks[key].classList.toggle('active', key === lang); }
+            updatePageTitle(lang);  
+
         };
 
         window.changeLanguage = (lang) => {

@@ -4,13 +4,33 @@
 
 {% block extra_css %}
 <style>
+    /* Mobile-First Default Styles */
     main { background-color: #121212; }
+    
+    /* Global Section Padding for mobile */
+    .container.py-5 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    /* Header Section (Contests Title) */
+    .d-flex.justify-content-between.align-items-center.mb-4 {
+        flex-direction: column; /* Stack header items vertically on mobile */
+        align-items: flex-start !important; /* Align to the start (left) */
+    }
+    .d-flex.justify-content-between.align-items-center.mb-4 h1 {
+        font-size: 1.8rem; /* Smaller header title for mobile */
+        margin-bottom: 1rem; /* Space below title when stacked */
+    }
+
+    /* Tabs Navigation */
     .nav-tabs .nav-link {
         border: none;
         border-bottom: 3px solid transparent;
         color: var(--text-muted);
         font-weight: 500;
-        padding: 0.75rem 1.25rem;
+        padding: 0.6rem 1rem; /* Slightly smaller padding for tabs on mobile */
+        font-size: 0.9rem; /* Smaller font for tabs on mobile */
     }
     .nav-tabs .nav-link.active,
     .nav-tabs .nav-link:hover {
@@ -18,17 +38,24 @@
         background-color: transparent;
         border-bottom-color: var(--primary);
     }
+    .nav-tabs {
+        flex-wrap: wrap; /* Allow tabs to wrap if too many on mobile */
+        justify-content: center; /* Center tabs if they wrap */
+        margin-bottom: 1.5rem !important; /* Adjust margin below tabs */
+    }
     
+    /* Contest Card (for Active Contests) */
     .contest-card {
         background: #1a1a1a;
         border: 1px solid var(--border-color);
         border-radius: 0.75rem;
         transition: all 0.3s ease;
+        padding: 1rem; /* Reduced padding for card content on mobile */
     }
     .contest-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        border-color: var(--primary);
+        transform: none; /* Disable hover transform on mobile */
+        box-shadow: none; /* Disable hover shadow on mobile */
+        border-color: var(--border-color); /* Keep border stable on mobile */
     }
     .contest-card .card-header,
     .contest-card .card-body,
@@ -36,26 +63,176 @@
         background-color: transparent !important;
         border-color: var(--border-color) !important;
     }
-    .contest-card .card-header { background-color: #212121 !important; }
-    .contest-card .card-title { color: var(--primary); }
+    .contest-card .card-header { 
+        background-color: #212121 !important; 
+        padding: 0.75rem 1rem; /* Smaller padding for header on mobile */
+    }
+    .contest-card .card-title { 
+        color: var(--primary); 
+        font-size: 1.1rem; /* Smaller title in card header on mobile */
+    }
+    .contest-card .card-body p {
+        font-size: 0.85rem; /* Smaller description text on mobile */
+    }
+    .contest-card .card-footer {
+        flex-direction: column; /* Stack timer and buttons vertically on mobile */
+        align-items: center !important; /* Center items when stacked */
+        padding: 1rem; /* Adjust padding for stacked items */
+        gap: 0.75rem; /* Space between stacked items */
+    }
+    .contest-card .card-footer .badge {
+        font-size: 0.85rem; /* Smaller badge font size on mobile */
+        margin-bottom: 0.5rem; /* Space below badge when stacked */
+    }
+    .contest-card .card-footer > div { /* For the buttons container */
+        display: flex; /* Keep buttons side by side within their container */
+        gap: 0.5rem; /* Space between buttons */
+    }
+    .contest-card .card-footer .btn {
+        padding: 0.6rem 1rem; /* Smaller buttons for mobile */
+        font-size: 0.85rem;
+    }
 
+    /* List Group Item (for Upcoming/Past Contests) */
     .list-group-item {
         background-color: #1a1a1a !important;
         border-color: var(--border-color) !important;
         color: var(--text-light) !important;
         margin-bottom: 1rem;
         border-radius: 0.5rem !important;
+        padding: 1rem; /* Adjust padding for list items on mobile */
     }
     .list-group-item:hover { background-color: #212121 !important; }
-    
+    .list-group-item h5 {
+        font-size: 1rem; /* Smaller title in list items on mobile */
+    }
+    .list-group-item p {
+        font-size: 0.85rem; /* Smaller description in list items on mobile */
+    }
+    .list-group-item .badge {
+        font-size: 0.8rem; /* Smaller badge for list items on mobile */
+        padding: 0.4em 0.7em;
+    }
+    .list-group-item.list-group-item-action:hover { /* For past contests clickable rows */
+        background-color: #212121 !important;
+        color: var(--primary) !important;
+    }
+
+    /* Empty State Card */
     .empty-state-card {
         background-color: #1a1a1a;
         border: 1px dashed var(--border-color);
         border-radius: 0.75rem;
+        padding: 2.5rem !important; /* Adjust padding */
     }
     .empty-state-card i {
-        font-size: 3rem;
-        color: var(--text-muted);
+        font-size: 2.5rem; /* Smaller icon */
+    }
+    .empty-state-card h5 {
+        font-size: 1.2rem; /* Smaller title */
+    }
+    .empty-state-card p {
+        font-size: 0.9rem; /* Smaller text */
+    }
+
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        .container.py-5 {
+            padding-top: 3rem !important; /* Restore default py-5 */
+            padding-bottom: 3rem !important; /* Restore default py-5 */
+        }
+        
+        /* Header Section */
+        .d-flex.justify-content-between.align-items-center.mb-4 {
+            flex-direction: row; /* Revert to row layout */
+            align-items: center !important; /* Revert alignment */
+        }
+        .d-flex.justify-content-between.align-items-center.mb-4 h1 {
+            font-size: 2.5rem; /* Restore header title size */
+            margin-bottom: 0;
+        }
+
+        /* Tabs Navigation */
+        .nav-tabs .nav-link {
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+            font-size: inherit; /* Restore default font size */
+        }
+        .nav-tabs {
+            flex-wrap: nowrap; /* Prevent wrapping */
+            justify-content: flex-start; /* Align tabs to start */
+            margin-bottom: 1.5rem !important; /* Keep consistent margin */
+        }
+
+        /* Contest Card (Active Contests) */
+        .contest-card {
+            padding: 1.25rem; /* Restore slightly larger padding */
+        }
+        .contest-card:hover {
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); 
+            border-color: var(--primary); 
+        }
+        .contest-card .card-header {
+            padding: 1rem 1.25rem; /* Restore original padding */
+        }
+        .contest-card .card-title {
+            font-size: 1.25rem; /* Restore original title size */
+        }
+        .contest-card .card-body p {
+            font-size: 1rem; /* Restore original description text */
+        }
+        .contest-card .card-footer {
+            flex-direction: row; /* Revert to row layout */
+            justify-content: space-between; /* Space out items */
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+            gap: 0; /* Remove gap */
+        }
+        .contest-card .card-footer .badge {
+            font-size: 1rem; /* Restore original badge font size */
+            margin-bottom: 0; /* Remove bottom margin */
+        }
+        .contest-card .card-footer .btn {
+            padding: 0.375rem 0.75rem; /* Standard Bootstrap btn-sm padding */
+            font-size: 0.875rem; /* Standard Bootstrap btn-sm font size */
+        }
+
+        /* List Group Item (Upcoming/Past Contests) */
+        .list-group-item {
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+        }
+        .list-group-item h5 {
+            font-size: 1.25rem; /* Restore original title size */
+        }
+        .list-group-item p {
+            font-size: 1rem; /* Restore original description size */
+        }
+        .list-group-item .badge {
+            font-size: inherit; /* Restore default font size */
+            padding: 0.35em 0.65em; /* Restore default padding */
+        }
+
+        /* Empty State Card */
+        .empty-state-card {
+             padding: 5rem !important; /* Restore original padding */
+        }
+        .empty-state-card i {
+            font-size: 3rem; /* Restore original icon size */
+        }
+        .empty-state-card h5 {
+            font-size: 1.5rem; /* Restore original title size */
+        }
+        .empty-state-card p {
+            font-size: 1rem; /* Restore original text size */
+        }
+    }
+
+    /* Further adjustments for large screens (optional) */
+    @media (min-width: 992px) { /* Bootstrap's 'lg' breakpoint */
+        .col-lg-6.mb-4 {
+            /* If you want to adjust column widths for even larger screens,
+               e.g., to show more cards per row, do it here. */
+        }
     }
 </style>
 {% endblock %}

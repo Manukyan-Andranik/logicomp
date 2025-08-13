@@ -2,109 +2,254 @@
 
 {% block title %}Add Problem{% endblock %}
 
+{% block extra_css %}
+<style>
+    .problem-creation-page {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+    }
+
+    .form-card {
+        background-color: var(--component-bg, #1a1a1a);
+        border: 1px solid var(--border-color, #333);
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+    .form-card .card-header {
+        background-color: #212121;
+        border-bottom-color: var(--border-color, #333);
+    }
+    .form-card .card-body {
+        padding: 1.5rem;
+    }
+
+    .form-floating-group { position: relative; }
+    .form-control-modern {
+        background: transparent !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 0.5rem !important;
+        color: white !important;
+        padding: 1rem !important;
+        transition: all 0.2s ease !important;
+    }
+    .form-control-modern ~ label {
+        position: absolute; top: 1rem; left: 1rem; color: rgba(255, 255, 255, 0.5);
+        transition: all 0.2s ease-out; pointer-events: none; background-color: #1a1a1a;
+    }
+    .form-control-modern:focus, .form-control-modern:not(:placeholder-shown) {
+        border-color: var(--primary, #FFC107) !important;
+    }
+    .form-control-modern:focus ~ label, .form-control-modern:not(:placeholder-shown) ~ label {
+        top: -0.5rem; left: 0.75rem; font-size: 0.75rem;
+        color: var(--primary, #FFC107); padding: 0 0.25rem;
+    }
+    
+    .nav-tabs .nav-link {
+        background-color: transparent;
+        border-color: transparent;
+        color: #aaa;
+        border-bottom: 2px solid transparent;
+    }
+    .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+        color: var(--primary, #FFC107);
+        border-bottom-color: var(--primary, #FFC107);
+    }
+    .tab-content {
+        padding-top: 1.5rem;
+    }
+
+    .file-upload-zone {
+        border: 2px dashed rgba(255, 255, 255, 0.3); border-radius: 0.75rem; padding: 2rem;
+        text-align: center; cursor: pointer; transition: all 0.3s ease;
+    }
+    .file-upload-zone:hover {
+        border-color: var(--primary, #FFC107); background-color: rgba(255, 193, 7, 0.05);
+    }
+    .file-upload-zone .upload-icon { font-size: 2.5rem; color: var(--primary, #FFC107); }
+    .file-upload-zone p { margin-bottom: 0; color: #aaa;}
+    #json_file_input { display: none; }
+    #file-name-display { margin-top: 1rem; color: #ccc; font-style: italic; font-size: 0.9rem; }
+    
+    #manual-test-cases-container .test-case {
+        background: rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    .btn-outline-dashed { border: 1px dashed #555; color: #aaa; width: 100%; }
+    .btn-outline-dashed:hover { border-color: var(--primary, #FFC107); color: var(--primary, #FFC107); }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
+<div class="container problem-creation-page">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Add Problem to Contest</h1>
-        <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
-            Back to Contest
+        <h2>Add Problem to "{{ contest.title }}"</h2>
+        <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back
         </a>
     </div>
+
     <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-
-        <div class="mb-3">
-            {{ form.title.label(class="form-label") }}
-            {{ form.title(class="form-control") }}
-        </div>
-
-        <div class="mb-3">
-            {{ form.description.label(class="form-label") }}
-            {{ form.description(class="form-control", rows=10) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form.expected_input.label(class="form-label") }}
-            {{ form.expected_input(class="form-control", rows=3) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form.expected_output.label(class="form-label") }}
-            {{ form.expected_output(class="form-control", rows=3) }}
-        </div>
-
-        <div class="mb-3">
-            {{ form.time_limit.label(class="form-label") }}
-            {{ form.time_limit(class="form-control") }}
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>Upload Test Cases (JSON)</h5>
-            </div>
-            <div class="card-body">
-                {{ form.test_case_upload.hidden_tag() }}
-
-                <div class="mb-3">
-                    {{ form.test_case_upload.json_file.label(class="form-label") }}
-                    {{ form.test_case_upload.json_file(class="form-control") }}
-                    <small class="text-muted">Upload a JSON file with test cases (fields: expected_input,
-                        expected_output, is_sample)</small>
+        <div class="row">
+            <!-- Left Column: Problem Statement & Sample -->
+            <div class="col-lg-7">
+                <div class="card form-card">
+                    <div class="card-header"><h5 class="mb-0">Problem Statement</h5></div>
+                    <div class="card-body">
+                        <div class="form-floating-group mb-4">
+                            {{ form.title(class="form-control form-control-modern", placeholder=" ") }}
+                            {{ form.title.label }}
+                        </div>
+                        <div class="form-floating-group">
+                            {{ form.description(class="form-control form-control-modern", rows=12, placeholder=" ") }}
+                            {{ form.description.label }}
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-check mb-3">
-                    {{ form.test_case_upload.keep_existing(class="form-check-input") }}
-                    {{ form.test_case_upload.keep_existing.label(class="form-check-label") }}
+                <div class="card form-card">
+                    <div class="card-header"><h5 class="mb-0">Sample Case</h5></div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <div class="form-floating-group">
+                                    {{ form.expected_input(class="form-control form-control-modern", rows=4, placeholder=" ") }}
+                                    {{ form.expected_input.label }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating-group">
+                                    {{ form.expected_output(class="form-control form-control-modern", rows=4, placeholder=" ") }}
+                                    {{ form.expected_output.label }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Configuration & Test Cases -->
+            <div class="col-lg-5">
+                <div class="card form-card">
+                    <div class="card-header"><h5 class="mb-0">Execution</h5></div>
+                    <div class="card-body">
+                        <div class="form-floating-group">
+                            {{ form.time_limit(class="form-control form-control-modern", placeholder=" ") }}
+                            {{ form.time_limit.label }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card form-card">
+                    <div class="card-header"><h5 class="mb-0">Test Cases</h5></div>
+                    <div class="card-body">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab" aria-controls="upload" aria-selected="true">Upload JSON</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button" role="tab" aria-controls="manual" aria-selected="false">Manual Entry</button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="upload" role="tabpanel" aria-labelledby="upload-tab">
+                                {{ form.test_case_upload.hidden_tag() }}
+                                <label for="json_file_input" class="file-upload-zone">
+                                    <i class="bi bi-file-earmark-arrow-up upload-icon"></i>
+                                    <p class="mt-2 fw-bold">Upload a JSON file</p>
+                                    <p class="small">Drag & drop or click to select</p>
+                                </label>
+                                {{ form.test_case_upload.json_file(id="json_file_input") }}
+                                <div id="file-name-display"></div>
+                                <div class="form-check mt-3">
+                                    {{ form.test_case_upload.keep_existing(class="form-check-input") }}
+                                    {{ form.test_case_upload.keep_existing.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="manual" role="tabpanel" aria-labelledby="manual-tab">
+                                <div id="manual-test-cases-container">
+                                    <!-- Dynamic test cases will be added here -->
+                                </div>
+                                <button type="button" id="add-test-case" class="btn btn-outline-dashed mt-2">
+                                    <i class="bi bi-plus-lg me-1"></i> Add Test Case
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid mt-4">
+                    {{ form.submit(class="btn btn-primary btn-lg") }}
                 </div>
             </div>
         </div>
-
-
-</div>
-
-<div class="mt-3">
-    {{ form.submit(class="btn btn-primary") }}
-</div>
-</form>
+    </form>
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const testCasesContainer = document.getElementById('test-cases');
+        const testCasesContainer = document.getElementById('manual-test-cases-container');
         const addButton = document.getElementById('add-test-case');
-        let testCaseCount = "{{ form.test_cases|length }}";
+        let testCaseCount = 0; 
 
-        addButton.addEventListener('click', function () {
+        function addTestCase() {
             const index = testCaseCount;
-            const newCase = document.createElement('div');
-            newCase.className = 'test-case mb-3 p-3 border rounded';
-            newCase.innerHTML = `
-            <div class="mb-3">
-                <label for="test_cases-${index}-expected_input" class="form-label">Expected Input</label>
-                <textarea name="test_cases-${index}-expected_input" class="form-control" rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="test_cases-${index}-expected_output" class="form-label">Expected Output</label>
-                <textarea name="test_cases-${index}-expected_output" class="form-control" rows="3"></textarea>
-            </div>
-            <div class="form-check mb-2">
-                <input type="checkbox" name="test_cases-${index}-is_sample" class="form-check-input" id="test_cases-${index}-is_sample">
-                <label for="test_cases-${index}-is_sample" class="form-check-label">Is Sample</label>
-            </div>
-            <button type="button" class="btn btn-sm btn-danger remove-test-case">Remove</button>
-        `;
-            testCasesContainer.appendChild(newCase);
+            const newCaseHTML = `
+                <div class="test-case">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="text-muted mb-0">Test Case #${index + 1}</h6>
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-test-case">&times;</button>
+                    </div>
+                    <div class="form-floating-group mb-2">
+                        <textarea name="test_cases-${index}-expected_input" class="form-control form-control-modern" rows="3" placeholder=" "></textarea>
+                        <label>Expected Input</label>
+                    </div>
+                    <div class="form-floating-group mb-2">
+                        <textarea name="test_cases-${index}-expected_output" class="form-control form-control-modern" rows="3" placeholder=" "></textarea>
+                        <label>Expected Output</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" name="test_cases-${index}-is_sample" class="form-check-input" id="test_cases-${index}-is_sample">
+                        <label class="form-check-label" for="test_cases-${index}-is_sample">Is Sample</label>
+                    </div>
+                </div>
+            `;
+            testCasesContainer.insertAdjacentHTML('beforeend', newCaseHTML);
             testCaseCount++;
+        }
+        
+        const manualTab = document.getElementById('manual-tab');
+        manualTab.addEventListener('shown.bs.tab', function() {
+            if (testCaseCount === 0) {
+                addTestCase();
+            }
         });
+
+        addButton.addEventListener('click', addTestCase);
 
         testCasesContainer.addEventListener('click', function (e) {
             if (e.target.classList.contains('remove-test-case')) {
-                const testCases = document.querySelectorAll('.test-case');
-                if (testCases.length > 1) {
-                    e.target.closest('.test-case').remove();
-                } else {
-                    alert('At least one test case is required.');
-                }
+                e.target.closest('.test-case').remove();
+                document.querySelectorAll('#manual-test-cases-container .test-case h6').forEach((header, i) => {
+                    header.textContent = `Test Case #${i + 1}`;
+                });
+                testCaseCount--;
+            }
+        });
+
+        const fileInput = document.getElementById('json_file_input');
+        const fileNameDisplay = document.getElementById('file-name-display');
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                fileNameDisplay.textContent = `Selected: ${fileInput.files[0].name}`;
+            } else {
+                fileNameDisplay.textContent = '';
             }
         });
     });

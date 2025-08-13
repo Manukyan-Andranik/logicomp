@@ -5,12 +5,54 @@
 {% block extra_css %}
 <style>
     main { background-color: #121212; }
-    .page-header h1 { color: white; font-weight: 700; }
-    
+    :root {
+        --primary: #FFC107; 
+        --primary-dark: #FFA000;
+        --dark: #121212; 
+        --text-light: #e0e0e0;
+        --text-muted: #888;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --bs-success-bg-subtle: rgba(40, 167, 69, 0.15); 
+        --bs-success-text-emphasis: #28a745; 
+        --bs-danger-bg-subtle: rgba(220, 53, 69, 0.15);   
+        --bs-danger-text-emphasis: #dc3545;     
+        --bs-warning-bg-subtle: rgba(255, 193, 7, 0.15); 
+        --bs-warning-text-emphasis: #FFC107;   
+        --bs-secondary-bg-subtle: rgba(108, 117, 125, 0.15); 
+        --bs-secondary-text-emphasis: #6c757d;  
+    }
+
+    .container.py-5 {
+        padding-top: 2rem !important; 
+        padding-bottom: 2rem !important; 
+    }
+
+    .page-header {
+        flex-direction: row; 
+        align-items: center;
+        margin-bottom: 1.5rem !important; 
+        padding-bottom: 0.5rem !important; 
+    }
+    .page-header h1 { 
+        font-weight: 700; 
+        font-size: 1.75rem;
+        margin-bottom: 0;
+        color: white; 
+    }
+    .page-header h1 .text-primary {
+        color: var(--primary) !important; 
+    }
+    .page-header .btn {
+        width: auto; 
+        padding: 0.375rem 0.75rem; 
+        font-size: 0.875rem; 
+        text-align: unset; 
+    }
+
     .submission-card {
         background: #1a1a1a;
         border: 1px solid var(--border-color);
-        border-radius: 0.75rem;
+        border-radius: 0.75rem; 
     }
     .submission-card .card-header {
         background-color: #212121;
@@ -24,6 +66,7 @@
         color: #e0e0e0 !important;
         border: 1px solid var(--border-color) !important;
         border-radius: 0.5rem !important;
+        font-size: 0.9rem; 
     }
     .form-control-dark:focus, .form-select-dark:focus {
         border-color: var(--primary) !important;
@@ -31,20 +74,91 @@
     }
     .code-textarea {
         font-family: 'SF Mono', 'Courier New', monospace;
-        font-size: 0.9rem;
-        min-height: 400px;
+        font-size: 0.9rem; 
+        min-height: 400px; 
         white-space: pre-wrap;
     }
     
-    /* Fix button text colors */
     .btn-secondary {
         color: white !important;
     }
     .btn-secondary:hover {
         color: white !important;
     }
+
+    .d-flex.justify-content-between.align-items-center.border-top.border-secondary.pt-4.mt-4 {
+        flex-direction: row; 
+    }
+    .d-flex.justify-content-between.align-items-center.border-top.border-secondary.pt-4.mt-4 .btn {
+        width: auto;
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem; 
+    }
+
+    @media (max-width: 767px) {
+        .container.py-5 {
+            padding-top: 1.5rem !important; 
+            padding-bottom: 1.5rem !important;
+            padding-left: 0.8rem !important; 
+            padding-right: 0.8rem !important; 
+        }
+
+        .page-header {
+            flex-direction: column; 
+            align-items: flex-start !important; 
+            margin-bottom: 1rem !important; 
+            padding-bottom: 1rem !important; 
+        }
+        .page-header h1 {
+            font-size: 1.6rem; 
+            margin-bottom: 0.75rem; 
+        }
+        .page-header .btn {
+            width: 100%; 
+            padding: 0.6rem 1rem; 
+            font-size: 0.95rem; 
+            text-align: center; 
+        }
+
+        .submission-card {
+            border-radius: 0.75rem; 
+        }
+        .submission-card .card-body {
+            padding: 1rem !important; 
+        }
+
+        .form-label {
+            font-size: 0.9rem; 
+        }
+        .form-control-dark, .form-select-dark {
+            font-size: 0.85rem;
+            padding: 0.6rem 0.75rem !important; 
+            border-radius: 0.5rem !important; 
+        }
+        .code-textarea {
+            font-size: 0.8rem; 
+            min-height: 250px; 
+            padding: 0.6rem 0.75rem !important;
+        }
+        .text-muted.d-block { 
+            font-size: 0.75rem; 
+        }
+
+        .d-flex.justify-content-between.align-items-center.border-top.border-secondary.pt-4.mt-4 {
+            flex-direction: column;
+            gap: 0.75rem; 
+            padding-top: 1rem !important;
+            margin-top: 1rem !important; 
+        }
+        .d-flex.justify-content-between.align-items-center.border-top.border-secondary.pt-4.mt-4 .btn {
+            width: 100%; 
+            padding: 0.6rem 1rem; 
+            font-size: 0.95rem;
+        }
+    }
 </style>
 {% endblock %}
+
 
 {% block content %}
 <div class="container py-5">
@@ -111,6 +225,7 @@
         if (!codeTextarea || !languageSelect) return;
     
         // Data from backend
+        // Note: Jinja2 variables rendered as strings, ensure proper escaping for JS
         const initialCode = `{{ initial_code | safe | replace('\n', '\\n') | replace('\r', '\\r') | replace('\t', '\\t') | replace('"', '\\"') | replace("'", "\\'") if initial_code else '' }}`.trim();
         const initialLanguage = `{{ initial_language | safe | lower if initial_language else '' }}`;
     
@@ -165,22 +280,21 @@ public class Main {
         if (initialCode) {
             codeTextarea.value = initialCode;
         } else {
-            codeTextarea.value = getDefaultCodeFor(languageSelect.value.toLowerCase());
+            // Only set default code if textarea is empty and no initial code is provided
+            if (codeTextarea.value.trim() === "") {
+                 codeTextarea.value = getDefaultCodeFor(languageSelect.value.toLowerCase());
+            }
         }
     
         // On language change
         languageSelect.addEventListener('change', function() {
             const lang = languageSelect.value.toLowerCase();
-    
-            if (initialLanguage && lang === initialLanguage) {
-                // Restore original code if it exists, otherwise default
-                codeTextarea.value = initialCode || getDefaultCodeFor(lang);
-            } else {
+            // Only change code if user hasn't typed anything or if switching back to initial language
+            // This prevents overwriting user's typed code
+            if (codeTextarea.value.trim() === '' || (initialLanguage && lang === initialLanguage)) {
                 codeTextarea.value = getDefaultCodeFor(lang);
             }
         });
     });
     </script>
-    
-    
-{% endblock %}
+{% endblock scripts %}
