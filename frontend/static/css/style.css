@@ -1429,7 +1429,7 @@ footer .text-muted {
         margin-bottom: 1rem;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border: 1px solid var(--white);
+        border: 1px solid var(--border-color);
     }
     
     .card-body {
