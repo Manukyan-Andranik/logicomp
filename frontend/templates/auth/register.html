@@ -1,31 +1,587 @@
 {% extends "base.html" %}
-{% block title %}Register{% endblock %}
+{% block title %}<span data-translate-key="page_register">Register</span>{% endblock %}
+
+{% block extra_css %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/auth-forms.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/pages/auth_register.css') }}" rel="stylesheet">
+<style>
+    /* Mobile-First Adjustments for Register Page */
+
+    /* General Layout Adjustments */
+    .auth-main {
+        padding: 1.5rem 0.5rem !important; /* Reduced padding for smaller screens */
+        min-height: calc(100vh - var(--navbar-height) - var(--footer-height, 0px)); /* Ensure it fills screen */
+        display: flex; /* Ensure flex properties if not already set by auth-forms.css */
+        align-items: center;
+        justify-content: center;
+    }
+    .auth-main .col-md-7.col-lg-5.col-xl-4 {
+        max-width: 100%; /* Ensure it doesn't exceed screen width */
+        padding: 0 0.5rem; /* Add some internal padding to column for very small screens */
+    }
+
+    /* Auth Card Enhancements */
+    .card.auth-card {
+        margin: 0.75rem auto; /* Center card and provide vertical margin */
+        border-radius: 1rem; /* Slightly more rounded for mobile */
+        /* Disable hover effects for touch devices */
+        transform: none !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important; /* Keep a static shadow */
+    }
+    .card.auth-card:hover {
+        transform: none; /* Override auth-forms hover */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important; /* Keep static shadow */
+    }
+
+    /* Header Section (Icon, Title, Contest Title) */
+    .auth-icon {
+        font-size: 2.5rem; /* Smaller icon for mobile */
+        margin-bottom: 0.75rem; /* Adjusted margin */
+    }
+    .auth-card .card-title {
+        font-size: 1.75rem; /* Smaller title for mobile */
+        margin-bottom: 0.25rem; /* Reduced space */
+    }
+    .contest-title {
+        font-size: 0.9rem; /* Smaller contest title for mobile */
+        padding: 0.5rem 1rem; /* Adjust padding */
+        margin-top: -5px; /* Adjust original negative margin */
+        margin-bottom: 1.5rem !important; /* Ensure enough space below */
+    }
+    .text-center.mb-5 {
+        margin-bottom: 2rem !important; /* Adjusted margin for header block */
+    }
+    .card-body.p-4.p-md-5 {
+        padding: 1.5rem !important; /* Unified smaller padding for card body */
+    }
+
+    /* Progress Indicator */
+    .form-progress {
+        margin-bottom: 1.5rem; /* Adjusted margin */
+    }
+    .progress-step {
+        width: 25px; /* Smaller steps */
+        height: 25px; /* Smaller steps */
+        font-size: 0.75rem; /* Smaller font for step numbers */
+    }
+    .progress-line {
+        top: 12.5px; /* Center line with smaller steps */
+    }
+
+
+    /* Form Controls (inherited from auth-forms.css, fine-tuned here) */
+    .form-group {
+        margin-bottom: 1.5rem; /* Slightly reduced margin between form groups */
+    }
+    .form-control-modern {
+        padding: 0.8rem 0.8rem 0.8rem 2.5rem !important; /* Adjust padding for mobile input */
+        font-size: 0.95rem; /* Smaller font for inputs */
+        border-radius: 0.75rem !important; /* Consistent border-radius */
+    }
+    .input-icon {
+        left: 0.8rem; /* Adjust icon position */
+        font-size: 1rem; /* Smaller input icon */
+    }
+    .form-label {
+        font-size: 0.85rem; /* Smaller label font */
+        margin-bottom: 0.5rem; /* Adjusted margin */
+    }
+
+    /* Submit Button */
+    .btn-auth {
+        padding: 0.85rem 1.5rem; /* Larger padding for touch */
+        font-size: 1rem; /* Readable font size */
+        border-radius: 50px; /* Keep original rounded shape */
+        /* Disable hover effects on mobile */
+        transform: none !important;
+        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.25) !important; /* Static shadow */
+    }
+    .btn-auth:hover {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; /* Keep original background on hover */
+        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.25) !important; /* Keep static shadow */
+        transform: none !important; /* Override auth-forms hover */
+    }
+    .btn-auth::before {
+        display: none; /* Remove shimmering effect on mobile */
+    }
+
+    /* Divider */
+    .divider {
+        margin: 1.5rem 0; /* Adjusted margin */
+    }
+
+    /* Extra Links */
+    .extra-links {
+        margin-top: 1rem; /* Adjusted margin */
+    }
+    .extra-links span, .extra-links a {
+        font-size: 0.9rem; /* Smaller font for links */
+    }
+    .extra-links a {
+        padding: 0.4rem 0.8rem; /* Adjusted padding for link button */
+        border-radius: 1rem; /* More rounded */
+        /* Disable hover effects on mobile */
+        transform: none !important;
+        background: rgba(255, 193, 7, 0.05); /* Lighter background */
+    }
+    .extra-links a:hover {
+        background: rgba(255, 193, 7, 0.05); /* Keep stable background */
+        color: var(--primary); /* Keep color stable */
+        transform: none;
+    }
+
+    /* AOS Library Disable on Mobile */
+    @media (max-width: 767px) {
+        [data-aos] {
+            opacity: 1 !important; /* Elements are visible by default */
+            transform: none !important; /* No initial transform */
+            transition: none !important; /* No animation transitions */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    }
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        .auth-main {
+            padding: 2rem 0 !important; /* Restore desktop padding */
+        }
+        .auth-main .col-md-7.col-lg-5.col-xl-4 {
+            padding: 0; /* Remove internal column padding */
+        }
+        .card.auth-card {
+            margin: 0 auto; /* Restore original margin */
+            border-radius: 1.5rem; /* Restore original border-radius */
+            /* Re-enable hover effects for desktop */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.5); 
+        }
+        .card.auth-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .auth-icon {
+            font-size: 3rem; /* Restore original icon size */
+            margin-bottom: 1rem;
+        }
+        .auth-card .card-title {
+            font-size: 2rem; /* Restore original title size */
+            margin-bottom: 0.5rem;
+        }
+        .contest-title {
+            font-size: 1.1rem; /* Restore original contest title size */
+            padding: 0.75rem 1.5rem; /* Restore original padding */
+            margin-top: -5px; /* Restore original margin */
+            margin-bottom: 2rem !important; /* Restore original margin */
+        }
+        .text-center.mb-5 {
+            margin-bottom: 2.5rem !important; /* Restore original margin */
+        }
+        .card-body.p-4.p-md-5 {
+            padding: 2.5rem !important; /* Restore original desktop padding */
+        }
+
+        /* Progress Indicator */
+        .form-progress {
+            margin-bottom: 2rem; /* Restore original margin */
+        }
+        .progress-step {
+            width: 30px; /* Restore original size */
+            height: 30px; /* Restore original size */
+            font-size: 0.875rem; /* Restore original font size */
+        }
+        .progress-line {
+            top: 15px; /* Restore original position */
+        }
+
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 2rem; /* Restore original margin */
+        }
+        .form-control-modern {
+            padding: 1rem 1rem 1rem 3rem !important; /* Restore original padding */
+            font-size: 1rem; /* Restore original font size */
+            border-radius: 12px !important; /* Restore original border-radius */
+        }
+        .input-icon {
+            left: 1rem; /* Restore original icon position */
+            font-size: 1.1rem; /* Restore original icon size */
+        }
+        .form-label {
+            font-size: 0.95rem; /* Restore original label font */
+            margin-bottom: 0.75rem;
+        }
+
+        /* Submit Button */
+        .btn-auth {
+            padding: 1rem 2rem; /* Restore original padding */
+            font-size: 1.1rem; /* Restore original font size */
+            /* Re-enable hover effects for desktop */
+            transition: all 0.3s ease; 
+            box-shadow: none !important; /* Let original style handle shadow */
+        }
+        .btn-auth:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary)) !important; 
+            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.3) !important; 
+            transform: translateY(-3px) !important;
+        }
+        .btn-auth::before {
+            display: block; /* Re-enable shimmering effect */
+        }
+
+        .divider {
+            margin: 2rem 0; /* Restore original margin */
+        }
+
+        .extra-links {
+            margin-top: 1.5rem; /* Restore original margin */
+        }
+        .extra-links span, .extra-links a {
+            font-size: 1rem; /* Restore original font size */
+        }
+        .extra-links a {
+            padding: 0.5rem 1rem; /* Restore original padding */
+            border-radius: 20px; /* Restore original border-radius */
+            /* Re-enable hover effects for desktop */
+            transition: all 0.3s ease;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        .extra-links a:hover { 
+            background: rgba(255, 193, 7, 0.2);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Re-enable AOS animations for larger screens */
+        [data-aos] {
+            opacity: 0; /* Allow AOS to control opacity */
+            transform: translateY(20px); /* Allow AOS to control transform */
+            transition: all 0.3s cubic-bezier(0.3, 0.5, 0.4, 1.2); /* AOS default transition */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+             opacity: 0; /* Ensure hidden initially for AOS animation */
+             transform: translateY(20px);
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h2>Register for {{ contest.title }}</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-
-        <div class="mb-3">
-            {{ form.username.label(class="form-label") }}
-            {{ form.username(class="form-control") }}
-            {% for error in form.username.errors %}
-                <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+<div class="auth-main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5 col-xl-4" data-aos="fade-up">
+                <div class="card auth-card">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-5">
+                            <i class="bi bi-person-plus-fill auth-icon"></i>
+                            <h2 class="card-title" data-translate-key="register_title">Create an Account</h2>
+                            {% if contest %}
+                                <p class="contest-title">
+                                    <span data-translate-key="register_for_contest">for contest</span> "{{ contest.title }}"
+                                </p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Progress Indicator -->
+                        <div class="form-progress">
+                            <div class="progress-line">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-step active" data-step="1">1</div>
+                            <div class="progress-step" data-step="2">2</div>
+                            <div class="progress-step" data-step="3">3</div>
+                        </div>
+                        
+                        <form method="POST" id="registerForm">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="form-group" data-step="1">
+                                {{ form.username.label(class="form-label", **{'data-translate-key': 'username_label'}) }}
+                                <div class="position-relative">
+                                    {{ form.username(class="form-control form-control-modern", placeholder="e.g. johndoe", **{'data-translate-key': 'username_placeholder'}) }}
+                                    <i class="bi bi-person-fill input-icon"></i>
+                                </div>
+                                {% for error in form.username.errors %}
+                                    <div class="invalid-feedback-custom">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="form-group" data-step="2">
+                                {{ form.email.label(class="form-label", **{'data-translate-key': 'email_label'}) }}
+                                <div class="position-relative">
+                                    {{ form.email(class="form-control form-control-modern", placeholder="e.g. john.doe@example.com", **{'data-translate-key': 'email_placeholder'}) }}
+                                    <i class="bi bi-envelope-fill input-icon"></i>
+                                </div>
+                                {% for error in form.email.errors %}
+                                    <div class="invalid-feedback-custom">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            
+                            <div class="form-group" data-step="3">
+                                <div class="d-grid mt-4">
+                                    <button type="submit" class="btn btn-auth" id="registerBtn">
+                                        <span data-translate-key="register_button_text">Create Account</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <hr class="divider">
+                            
+                            <div class="extra-links">
+                                <span data-translate-key="have_account">Already have an account?</span>
+                                <a href="{{ url_for('auth.login') }}" data-translate-key="sign_in">Sign In</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-3">
-            {{ form.email.label(class="form-label") }}
-            {{ form.email(class="form-control") }}
-            {% for error in form.email.errors %}
-                <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-
-        <div class="mb-3">
-            {{ form.submit(class="btn btn-primary") }}
-        </div>
-    </form>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({ duration: 800, offset: 50, once: true });
+    
+    // Form validation and enhancement
+    const form = document.getElementById('registerForm');
+    const inputs = form.querySelectorAll('.form-control-modern');
+    const submitBtn = document.getElementById('registerBtn');
+    const progressSteps = document.querySelectorAll('.progress-step');
+    const progressFill = document.getElementById('progressFill');
+    
+    // Real-time validation and progress tracking
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', function() {
+            validateField(this);
+            updateProgress();
+        });
+        
+        input.addEventListener('blur', function() {
+            validateField(this);
+            updateProgress();
+        });
+        
+        input.addEventListener('focus', function() {
+            this.closest('.form-group').classList.add('focused'); // Use closest to handle different nested structures
+            updateProgress();
+        });
+        
+        // Add step attribute for progress tracking
+        // This is handled by data-step on form-group in HTML directly now, so no need to set here
+        // input.closest('.form-group').setAttribute('data-step', index + 1); // Removed: already in HTML
+    });
+    
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Show loading state
+        submitBtn.classList.add('loading');
+        // Update button text to 'Creating Account...'
+        const currentLang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[currentLang];
+        const creatingAccountText = langDict.creating_account_text || 'Creating Account...';
+        submitBtn.querySelector('span').textContent = creatingAccountText;
+    });
+    
+    function validateField(field) {
+        const value = field.value.trim();
+        const fieldName = field.name;
+        
+        // Remove existing validation classes
+        field.classList.remove('is-valid', 'is-invalid');
+        
+        if (value === '') {
+            field.classList.add('is-invalid');
+            return false;
+        }
+        
+        // Specific validation rules
+        if (fieldName === 'username') {
+            if (value.length < 3) {
+                field.classList.add('is-invalid');
+                return false;
+            }
+            if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+                field.classList.add('is-invalid');
+                return false;
+            }
+        }
+        
+        if (fieldName === 'email') {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                field.classList.add('is-invalid');
+                return false;
+            }
+        }
+        
+        field.classList.add('is-valid');
+        return true;
+    }
+    
+    function validateForm() {
+        let isValid = true;
+        inputs.forEach(input => {
+            if (!validateField(input)) {
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+    
+    function updateProgress() {
+        let completedSteps = 0;
+        let totalSteps = inputs.length; // Number of input fields
+        
+        inputs.forEach(input => {
+            if (input.classList.contains('is-valid')) {
+                completedSteps++;
+            }
+        });
+        
+        // Update progress bar
+        const progressPercentage = (completedSteps / totalSteps) * 100;
+        progressFill.style.width = progressPercentage + '%';
+        
+        // Update step indicators
+        progressSteps.forEach((step, index) => {
+            step.classList.remove('active', 'completed');
+            
+            // The step number corresponds to index + 1
+            if ((index + 1) <= completedSteps) { // If the actual step number is less than or equal to completed inputs
+                step.classList.add('completed');
+            } else if ((index + 1) === (completedSteps + 1)) { // The next step to be completed
+                step.classList.add('active');
+            }
+        });
+
+        // If all steps are completed, make the last step 'completed' as well
+        if (completedSteps === totalSteps) {
+            progressSteps[totalSteps - 1].classList.add('completed');
+            progressSteps[totalSteps - 1].classList.remove('active'); // Remove active from last if completed
+        }
+    }
+    
+    // Enhanced accessibility
+    inputs.forEach(input => {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.type !== 'textarea') {
+                e.preventDefault();
+                const nextInput = inputs[Array.from(inputs).indexOf(this) + 1];
+                if (nextInput) {
+                    nextInput.focus();
+                } else {
+                    submitBtn.click();
+                }
+            }
+        });
+    });
+    
+    // Auto-focus first input
+    // Only auto-focus if not on a small mobile device to avoid keyboard popping up immediately
+    if (window.innerWidth >= 576) { 
+        inputs[0].focus();
+    }
+    
+    // Language translations
+    const registerTranslations = {
+        'en': { 
+            'page_register': 'Register', 
+            'register_title': 'Create an Account', 
+            'register_for_contest': 'for contest', 
+            'username_label': 'Username', 
+            'email_label': 'Email Address', 
+            'username_placeholder': 'e.g. johndoe', 
+            'email_placeholder': 'e.g. john.doe@example.com',
+            'have_account': 'Already have an account?', 
+            'sign_in': 'Sign In',
+            'register_button_text': 'Create Account', /* New key for the button text */
+            'creating_account_text': 'Creating Account...' /* New key for loading state */
+        },
+        'hy': { 
+            'page_register': 'Գրանցում', 
+            'register_title': 'Ստեղծել Հաշիվ', 
+            'register_for_contest': 'մրցույթի համար', 
+            'username_label': 'Օգտանուն', 
+            'email_label': 'Էլ․ հասցե', 
+            'username_placeholder': 'օր.՝ poghosyan', 
+            'email_placeholder': 'օր.՝ poghos@example.com',
+            'have_account': 'Արդեն ունե՞ք հաշիվ', 
+            'sign_in': 'Մուտք',
+            'register_button_text': 'Ստեղծել Հաշիվ', /* New key */
+            'creating_account_text': 'Հաշիվը ստեղծվում է...' /* New key */
+        },
+        'ru': { 
+            'page_register': 'Регистрация', 
+            'register_title': 'Создать Аккаунт', 
+            'register_for_contest': 'для конкурса', 
+            'username_label': 'Имя пользователя', 
+            'email_label': 'Адрес электронной почты', 
+            'username_placeholder': 'напр. ivanov', 
+            'email_placeholder': 'напр. ivan.ivanov@example.com',
+            'have_account': 'Уже есть аккаунт?', 
+            'sign_in': 'Войти',
+            'register_button_text': 'Создать аккаунт', /* New key */
+            'creating_account_text': 'Создание аккаунта...' /* New key */
+        }
+    };
+    
+    // Merge translations into global window.translations object
+    if (!window.translations) window.translations = {}; // Ensure global object exists
+    Object.keys(registerTranslations).forEach(lang => { 
+        if (!window.translations[lang]) window.translations[lang] = {};
+        Object.assign(window.translations[lang], registerTranslations[lang]); 
+    });
+    
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en'; 
+        const langDict = window.translations[lang] || window.translations['en'];
+        
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            
+            // Handle placeholders for input fields
+            if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+                if (key === 'username_placeholder') el.placeholder = langDict.username_placeholder || '';
+                if (key === 'email_placeholder') el.placeholder = langDict.email_placeholder || '';
+            } 
+            // Handle button text (specifically the span inside it)
+            else if (el.tagName === 'SPAN' && el.closest('#registerBtn') && key === 'register_button_text') {
+                el.textContent = langDict.register_button_text || '';
+            }
+            // For regular text content
+            else if (langDict[key]) { 
+                el.textContent = langDict[key]; 
+            }
+        });
+    };
+    
+    updatePageText(); 
+    window.addEventListener('languageChanged', updatePageText);
+    
+    // Initialize progress on load
+    updateProgress();
+});
+</script>
 {% endblock %}

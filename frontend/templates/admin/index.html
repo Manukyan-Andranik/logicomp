@@ -3,7 +3,7 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link href="{{ url_for('static', filename='css/pages/admin_index.css') }}" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <div class="col-md-9 col-xl-10 py-3">
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-3">
             <h2 class="mb-4">Admin Dashboard</h2>
 
             {% set active_contests = contests.items | selectattr('is_active', 'equalto', True) | list %}
@@ -40,7 +40,7 @@
 
             <div class="row mb-4">
                 <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-success h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Active Contests</h5>
                             <p class="card-text display-4">{{ active_contests | length }}</p>
@@ -49,7 +49,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-success h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Participants</h5>
                             <p class="card-text display-4">{{ participants_count }}</p>
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card text-white bg-info h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Submissions Today</h5>
                             <p class="card-text display-4">{{ submissions_today }}</p>
@@ -67,89 +67,87 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Recent Contests</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Start Time</th>
-                                    <th>End Time</th>
-                                    <th>Status</th>
-                                    <th colspan="2">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for contest in contests.items %}
-                                <tr>
-                                    <td>{{ contest.title }}</td>
-                                    <td>{{ contest.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
-                                    <td>{{ contest.end_time.strftime('%Y-%m-%d %H:%M') }}</td>
-                                    <td>
-                                        {% if contest.is_active() %}
-                                            <span class="badge bg-success">Active</span>
-                                        {% elif contest.start_time > datetime.utcnow() %}
-                                            <span class="badge bg-warning text-dark">Upcoming</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary">Ended</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}"
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-eye"></i> View
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="{{ url_for('admin.export_reports', contest_id=contest.id) }}"
-                                           class="btn btn-sm btn-outline-primary">
-                                            <i class="bi bi-file-earmark-text"></i> Get Reports
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a href="{{url_for('admin.delete_contest', contest_id=contest.id) }}"
-                                           class="btn btn-sm btn-outline-primary">
-                                           <i class="bi bi-delete"></i> Delete
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <nav aria-label="Contests pagination">
-                        <ul class="pagination">
-                            {% if contests.has_prev %}
-                            <li class="page-item">
-                                <a class="page-link" href="{{ url_for('admin.index', page=contests.prev_num) }}">Previous</a>
-                            </li>
-                            {% endif %}
-
-                            {% for page_num in contests.iter_pages() %}
-                                {% if page_num %}
-                                    <li class="page-item {% if page_num == contests.page %}active{% endif %}">
-                                        <a class="page-link" href="{{ url_for('admin.index', page=page_num) }}">{{ page_num }}</a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item disabled"><span class="page-link">...</span></li>
-                                {% endif %}
+            <!-- Removed .card and .card-body wrapper -->
+            <div class="contests-table">
+                <div class="table-responsive">
+                    <table class="table"> <!-- Removed table-hover to avoid color changes -->
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contest in contests.items %}
+                            <tr>
+                                <td data-label="Title">{{ contest.title }}</td>
+                                <td data-label="Start Time">{{ contest.start_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td data-label="End Time">{{ contest.end_time.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td data-label="Status">
+                                    {% if contest.is_active() %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% elif contest.start_time > datetime.now().astimezone() %}
+                                        <span class="badge bg-warning text-dark">Upcoming</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Ended</span>
+                                    {% endif %}
+                                </td>
+                                <td class="actions-cell">
+                                    <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                    <a href="{{ url_for('admin.export_reports', contest_id=contest.id) }}"
+                                       class="btn btn-sm btn-outline-info">
+                                        <i class="bi bi-file-earmark-text"></i> Get Reports
+                                    </a>
+                                    <a href="{{url_for('admin.delete_contest', contest_id=contest.id) }}"
+                                       class="btn btn-sm btn-outline-danger">
+                                       <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
                             {% endfor %}
-
-                            {% if contests.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="{{ url_for('admin.index', page=contests.next_num) }}">Next</a>
-                            </li>
-                            {% endif %}
-                        </ul>
-                    </nav>
+                        </tbody>
+                    </table>
                 </div>
+                
+                {% if contests.pages > 1 %}
+                <nav aria-label="Contests pagination" class="d-flex justify-content-center mt-4">
+                    <ul class="pagination">
+                        {% if contests.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin.index', page=contests.prev_num) }}">Previous</a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
+                        {% endif %}
+
+                        {% for page_num in contests.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                            {% if page_num %}
+                                <li class="page-item {% if page_num == contests.page %}active{% endif %}">
+                                    <a class="page-link" href="{{ url_for('admin.index', page=page_num) }}">{{ page_num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if contests.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('admin.index', page=contests.next_num) }}">Next</a>
+                        </li>
+                        {% else %}
+                         <li class="page-item disabled"><span class="page-link">Next</span></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
             </div>
-        </div>
+        </main>
     </div>
 </div>
 {% endblock %}

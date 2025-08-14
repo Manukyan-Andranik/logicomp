@@ -2,50 +2,171 @@
 
 {% block title %}Edit Contest - {{ contest.title }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* ============================================= */
+    /* ==         NEO-BRUTALIST INSPIRED THEME      == */
+    /* ============================================= */
+
+    .form-page-container-brutalist {
+        background-color: #111;
+        padding: 3rem 0;
+        min-height: calc(100vh - var(--navbar-height));
+    }
+
+    /* The main card with hard shadow and border */
+    .form-card-brutalist {
+        background-color: var(--primary, #FFC107);
+        border: 2px solid #000;
+        box-shadow: 8px 8px 0px #000;
+        border-radius: 0.25rem;
+        transition: all 0.2s ease-out;
+        color: #000;
+    }
+    .form-card-brutalist:hover {
+        transform: translate(-4px, -4px);
+        box-shadow: 12px 12px 0px #000;
+    }
+
+    /* Card header with a distinct background */
+    .card-header-brutalist {
+        background-color: #000;
+        color: var(--primary, #FFC107);
+        padding: 1rem 1.5rem;
+        border-bottom: 2px solid #000;
+    }
+    .card-header-brutalist h3 {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-size: 1.25rem;
+        color: inherit;
+    }
+    
+    .card-body-brutalist {
+        background-color: #1a1a1a;
+        padding: 2rem;
+    }
+    
+    /* Input field styling */
+    .form-label-brutalist {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-weight: 700;
+        color: #eee;
+    }
+    .form-control-brutalist {
+        background-color: #111 !important;
+        border: 2px solid #444 !important;
+        border-radius: 0.25rem !important;
+        color: white !important;
+        padding: 0.75rem 1rem !important;
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        box-shadow: none !important;
+        transition: all 0.2s ease;
+    }
+    .form-control-brutalist:focus {
+        background-color: #000 !important;
+        border-color: var(--primary, #FFC107) !important;
+    }
+
+    /* Brutalist styled checkbox */
+    .form-check-brutalist .form-check-input {
+        appearance: none;
+        width: 1.5em;
+        height: 1.5em;
+        border: 2px solid #444;
+        border-radius: 0.15rem;
+        cursor: pointer;
+        position: relative;
+        background-color: #111;
+        transition: all 0.2s ease;
+    }
+    .form-check-brutalist .form-check-input:checked {
+        background-color: var(--primary, #FFC107);
+        border-color: #000;
+    }
+    .form-check-brutalist .form-check-input:checked::after {
+        content: '✔';
+        font-size: 1.2em;
+        color: #000;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .form-check-brutalist .form-check-label {
+        color: #eee;
+    }
+
+    /* Buttons with hard shadows */
+    .btn-brutalist {
+        background-color: var(--primary, #FFC107);
+        color: #000;
+        border: 2px solid #000;
+        font-weight: 700;
+        box-shadow: 4px 4px 0px #000;
+        transition: all 0.2s ease-out;
+        border-radius: 0.25rem;
+    }
+    .btn-brutalist:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0px #000;
+    }
+    .btn-brutalist-secondary {
+        background-color: #333;
+        color: #eee;
+        border: 2px solid #000;
+        box-shadow: 4px 4px 0px #000;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Edit Contest</h3>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('admin.edit_contest', contest_id=contest.id) }}">
-                        {{ form.hidden_tag() }}
-                        
-                        <div class="mb-3">
-                            {{ form.title.label(class="form-label") }}
-                            {{ form.title(class="form-control") }}
-                        </div>
-                        
-                        <div class="mb-3">
-                            {{ form.description.label(class="form-label") }}
-                            {{ form.description(class="form-control", rows=5) }}
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                {{ form.start_time.label(class="form-label") }}
-                                {{ form.start_time(class="form-control") }}
+<div class="form-page-container-brutalist">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card form-card-brutalist mb-4">
+                    <div class="card-header-brutalist">
+                        <h3 class="mb-0">EDIT: {{ contest.title }}</h3>
+                    </div>
+                    <div class="card-body card-body-brutalist">
+                        <form method="POST" action="{{ url_for('admin.edit_contest', contest_id=contest.id) }}">
+                            {{ form.hidden_tag() }}
+                            
+                            <div class="mb-4">
+                                {{ form.title.label(class="form-label-brutalist") }}
+                                {{ form.title(class="form-control form-control-brutalist") }}
                             </div>
-                            <div class="col-md-6">
-                                {{ form.end_time.label(class="form-label") }}
-                                {{ form.end_time(class="form-control") }}
+                            
+                            <div class="mb-4">
+                                {{ form.description.label(class="form-label-brutalist") }}
+                                {{ form.description(class="form-control form-control-brutalist", rows=5) }}
                             </div>
-                        </div>
-                        
-                        <div class="mb-3 form-check">
-                            {{ form.is_public(class="form-check-input") }}
-                            {{ form.is_public.label(class="form-check-label") }}
-                        </div>
-                        
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" 
-                               class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Update Contest</button>
-                        </div>
-                    </form>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    {{ form.start_time.label(class="form-label-brutalist") }}
+                                    {{ form.start_time(class="form-control form-control-brutalist") }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.end_time.label(class="form-label-brutalist") }}
+                                    {{ form.end_time(class="form-control form-control-brutalist") }}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4 form-check form-check-brutalist">
+                                {{ form.is_public(class="form-check-input") }}
+                                {{ form.is_public.label(class="form-check-label ms-2") }}
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" 
+                                   class="btn btn-brutalist-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-brutalist">Update Contest</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

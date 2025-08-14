@@ -26,7 +26,7 @@ from app.utils import generate_leaderboard_pdf, generate_leaderboard_excel
 @bp.route('/')
 @login_required
 def index():
-    if not current_user.role == 'admin':
+    if current_user.role != 'admin':
         flash('You do not have permission to access this page.', 'danger')
         return redirect(url_for('main.index'))
     
@@ -36,14 +36,14 @@ def index():
 
     
     active_contests = Contest.query.filter(
-        Contest.start_time <= datetime.utcnow(),
-        Contest.end_time >= datetime.utcnow()
+        Contest.start_time <= datetime.now().astimezone(),
+        Contest.end_time >= datetime.now().astimezone()
     ).count()
     
     participants = User.query.filter_by(role='participant').count()
     
     submissions_today = Submission.query.filter(
-        Submission.timestamp >= datetime.utcnow().date()
+        Submission.timestamp >= datetime.now().astimezone().date()
     ).count()
     
     return render_template('admin/index.html', 
@@ -79,10 +79,19 @@ def create_contest():
             participants_file_path = participants_folder / 'participants.json'
 
             # Create folder and file
-            participants_folder.mkdir(parents=True, exist_ok=True)
+            try:
+                participants_folder.mkdir(parents=True, exist_ok=True)
+            except OSError as e:
+                flash(f"Error creating directory: {str(e)}", "danger")
+                return redirect(url_for('admin.index'))
+            
             if not participants_file_path.exists() or participants_file_path.stat().st_size == 0:
-                with open(participants_file_path, 'w', encoding='utf-8') as f:
-                    json.dump([], f, indent=2)
+                try:
+                    with open(participants_file_path, 'w', encoding='utf-8') as f:
+                        json.dump([], f, indent=2)
+                except IOError as e:
+                    flash(f"Error creating participants file: {str(e)}", "danger")
+                    return redirect(url_for('admin.index'))
             
 
             # Step 3: Save the folder path in the contest
@@ -131,49 +140,29 @@ def edit_contest(contest_id):
 def delete_contest(contest_id):
     contest = Contest.query.get_or_404(contest_id)
 
-    if not current_user.role == 'admin':
+    if current_user.role != 'admin':
         return redirect(url_for('admin.contest_details', contest_id=contest.id))
 
     # Delete folder if exists
     participants_folder = contest.participants_folder
     if participants_folder and os.path.exists(participants_folder):
-        shutil.rmtree(participants_folder)
+        try:
+            shutil.rmtree(participants_folder)
+        except OSError as e:
+            flash(f"Warning: Could not delete folder {participants_folder}: {str(e)}", "warning")
 
     try:
-        # Process each participant
-        participants = contest.participants.all()
-        for participant in participants:
-            # Submissions by this participant in this contest
-            submissions = Submission.query.filter_by(user_id=participant.id, contest_id=contest.id).all()
-
-            # Save to history
-            history = ParticipantsHistory(
-                username=participant.username,
-                email=participant.email,
-                contest_id=contest.id
-            )
-            db.session.add(history)
-
-            # Delete all their submissions in this contest
-            for sub in submissions:
-                db.session.delete(sub)
-
-            # Remove from association table
+        # Remove all participants from the contest (many-to-many relationship)
+        # We need to manually clear the association table entries
+        participants_to_remove = list(contest.participants.all())
+        for participant in participants_to_remove:
             contest.participants.remove(participant)
-
-            # Check if participant is in any other contest
-            other_contests = db.session.query(contest_participants).filter(
-                contest_participants.c.user_id == participant.id
-            ).count()
-
-            if other_contests == 0:
-                db.session.delete(participant)
-
-        # Delete contest (cascades will delete problems, test_cases, etc.)
+        
+        # Delete contest - database will automatically delete all related data due to CASCADE constraints
         db.session.delete(contest)
         db.session.commit()
 
-        flash('Contest and related data deleted successfully!', 'success')
+        flash('Contest and all related data deleted successfully!', 'success')
     except Exception as e:
         db.session.rollback()
         flash(f'Error deleting contest: {str(e)}', 'danger')
@@ -291,14 +280,21 @@ def edit_problem(problem_id):
 @login_required
 def generate_credentials(contest_id):
     contest = Contest.query.get_or_404(contest_id)
-
+    base_url = request.url.replace(request.path, '', 1)
+    contest_url = f"{base_url}/contest/{contest.id}"
     participants_file = f"{contest.participants_folder}/participants.json" 
 
     if not os.path.exists(participants_file):    
         flash("The contest does not have any participants yet.", "info")
         return render_template('admin/contest_details.html', contest=contest, datetime=datetime)
-    with open(participants_file, 'r', encoding='utf-8') as f:
-        json_data = json.load(f)    
+    
+    try:
+        with open(participants_file, 'r', encoding='utf-8') as f:
+            json_data = json.load(f)
+    except (IOError, json.JSONDecodeError) as e:
+        flash(f"Error reading participants file: {str(e)}", "danger")
+        return render_template('admin/contest_details.html', contest=contest, datetime=datetime)
+        
     if not json_data:
         flash("The contest does not have any participants yet.", "info")
         return render_template('admin/contest_details.html', contest=contest, datetime=datetime)
@@ -319,6 +315,9 @@ def generate_credentials(contest_id):
                 user = User(username=username, email=email, role='participant')
                 user.set_password(password)
                 db.session.add(user)
+
+            else:
+                User.update_password(user, password)
             
             if user not in contest.participants:
                 contest.participants.append(user)
@@ -334,12 +333,17 @@ def generate_credentials(contest_id):
                     f"Password: {participant['password']}")
             
             # TODO: Send email with credentials
-            # send_credentials_email(
-            #     participant['email'],
-            #     participant['username'],
-            #     participant['password'],
-            #     contest
-            # )
+            try:
+                send_credentials_email(
+                    participant['email'],
+                    participant['username'],
+                    participant['password'],
+                    contest,
+                    contest_url=contest_url
+                )
+            except Exception as e:
+                flash(f"Error sending email to {participant['email']}: {str(e)}", "warning")
+                continue
         
         flash(f'Generated credentials for {len(participants)} participants from JSON file.', 'success')
         return redirect(url_for('admin.contest_details', contest_id=contest.id))
@@ -353,18 +357,27 @@ def generate_credentials(contest_id):
 def view_submissions():
     page = request.args.get('page', 1, type=int)
     contest_id = request.args.get('contest_id', type=int)
-    contest = Contest.query.get_or_404(contest_id)
+    
+    query = Submission.query
 
-    submissions_pagination = Submission.query.filter_by(contest_id=contest_id)\
-        .order_by(Submission.timestamp.desc())\
-        .paginate(page=page, per_page=current_app.config['SUBMISSIONS_PER_PAGE'], error_out=False)
-
-    return render_template(
-        'admin/submissions.html',
-        submissions=submissions_pagination,  
-        contest=contest
+    contest = None
+    if contest_id:
+        contest = Contest.query.get_or_404(contest_id)
+        query = query.filter_by(contest_id=contest_id)
+    
+    submissions_pagination = query.order_by(Submission.timestamp.desc()).paginate(
+        page=page, per_page=10, error_out=False
     )
 
+    all_contests = Contest.query.order_by(Contest.title).all()
+
+    return render_template(
+        'admin/submissions.html', 
+        submissions=submissions_pagination,
+        contest=contest, 
+        all_contests=all_contests, 
+        title="Submissions"
+    )
 
 @bp.route('/contest/<int:contest_id>/export_reports', methods=['GET'])
 @login_required
@@ -373,8 +386,8 @@ def export_reports(contest_id):
 
     if current_user.role != 'admin':
         abort(403)
-    print(contest.end_time , datetime.utcnow())
-    # if contest.end_time > datetime.utcnow():
+    print(contest.end_time , datetime.now().astimezone())
+    # if contest.end_time > datetime.now().astimezone():
     #     flash("Contest has not ended yet.", "warning")
     #     return redirect(url_for('admin.contest_details', contest_id=contest_id))
 
@@ -422,13 +435,17 @@ def export_reports(contest_id):
     os.makedirs(reports_dir, exist_ok=True)
 
     # Generate PDF and Excel
-    pdf_path = os.path.join(reports_dir, f"contest_{contest.id}/leaderboard.pdf")
-    excel_path = os.path.join(reports_dir, f"contest_{contest.id}/leaderboard.xlsx")
+    try:
+        pdf_path = os.path.join(reports_dir, f"contest_{contest.id}/leaderboard.pdf")
+        excel_path = os.path.join(reports_dir, f"contest_{contest.id}/leaderboard.xlsx")
 
-    generate_leaderboard_pdf(pdf_path, contest, problems, leaderboard_data)
-    generate_leaderboard_excel(excel_path, contest, problems, leaderboard_data)
+        generate_leaderboard_pdf(pdf_path, contest, problems, leaderboard_data)
+        generate_leaderboard_excel(excel_path, contest, problems, leaderboard_data)
 
-    flash("PDF and Excel reports generated successfully.", "success")
+        flash("PDF and Excel reports generated successfully.", "success")
+    except Exception as e:
+        flash(f"Error generating reports: {str(e)}", "danger")
+    
     return redirect(url_for('admin.contest_details', contest_id=contest.id))
 
 

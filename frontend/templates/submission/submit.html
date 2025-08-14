@@ -1,84 +1,297 @@
 {% extends "base.html" %}
 
-{% block title %}Submit Solution{% endblock %}
+{% block title %}<span data-translate-key="page_title">Submit Solution</span>{% endblock %}
+
+{% block extra_css %}
+<link href="{{ url_for('static', filename='css/pages/submission_submit.css') }}" rel="stylesheet">
+<style>
+    main { background-color: #121212; }
+    :root {
+        --primary: #FFC107; 
+        --primary-dark: #FFA000;
+        --dark: #121212; 
+        --text-light: #e0e0e0;
+        --text-muted: #888;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --bs-success-bg-subtle: rgba(40, 167, 69, 0.15); 
+        --bs-success-text-emphasis: #28a745; 
+        --bs-danger-bg-subtle: rgba(220, 53, 69, 0.15);   
+        --bs-danger-text-emphasis: #dc3545;     
+        --bs-warning-bg-subtle: rgba(255, 193, 7, 0.15); 
+        --bs-warning-text-emphasis: #FFC107;   
+        --bs-secondary-bg-subtle: rgba(108, 117, 125, 0.15); 
+        --bs-secondary-text-emphasis: #6c757d;  
+    }
+
+    .container.py-5 {
+        padding-top: 2rem !important; 
+        padding-bottom: 2rem !important; 
+    }
+
+    .page-header {
+        flex-direction: row; 
+        align-items: center;
+        margin-bottom: 1.5rem !important; 
+        padding-bottom: 0.5rem !important; 
+    }
+    .page-header h1 { 
+        font-weight: 700; 
+        font-size: 1.75rem;
+        margin-bottom: 0;
+        color: white; 
+    }
+    .page-header h1 .text-primary {
+        color: var(--primary) !important; 
+    }
+    .page-header .btn {
+        width: auto; 
+        padding: 0.375rem 0.75rem; 
+        font-size: 0.875rem; 
+        text-align: unset; 
+    }
+
+    .submission-card {
+        border-radius: 0.75rem; 
+    }
+    .submission-card .card-header {
+        color: var(--card-title-color);
+    }
+    .submission-card .card-body { color: var(--card-text-color); }
+
+    .form-control-dark, .form-select-dark {
+        background-color: #0d0d0d !important;
+        color: #e0e0e0 !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 0.5rem !important;
+        font-size: 0.9rem; 
+    }
+    .form-control-dark:focus, .form-select-dark:focus {
+        border-color: var(--primary) !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25) !important;
+    }
+    .code-textarea {
+        font-family: 'SF Mono', 'Courier New', monospace;
+        font-size: 0.9rem; 
+        min-height: 400px; 
+        white-space: pre-wrap;
+    }
+    
+    .btn-secondary {
+        color: white !important;
+    }
+    .btn-secondary:hover {
+        color: white !important;
+    }
+
+    .d-flex.justify-content-between.align-items-center.border-top.border-secondary.pt-4.mt-4 {
+        flex-direction: row; 
+    }
+    .d-flex.justify-content-between.align-items-center.border-top.border-secondary.pt-4.mt-4 .btn {
+        width: auto;
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem; 
+    }
+
+    @media (max-width: 767px) {
+        .container.py-5 {
+            padding-top: 1.5rem !important; 
+            padding-bottom: 1.5rem !important;
+            padding-left: 0.8rem !important; 
+            padding-right: 0.8rem !important; 
+        }
+
+        .page-header {
+            flex-direction: column; 
+            align-items: flex-start !important; 
+            margin-bottom: 1rem !important; 
+            padding-bottom: 1rem !important; 
+        }
+        .page-header h1 {
+            font-size: 1.6rem; 
+            margin-bottom: 0.75rem; 
+        }
+        .page-header .btn {
+            width: 100%; 
+            padding: 0.6rem 1rem; 
+            font-size: 0.95rem; 
+            text-align: center; 
+        }
+
+        .submission-card {
+            border-radius: 0.75rem; 
+        }
+        .submission-card .card-body {
+            padding: 1rem !important; 
+        }
+
+        .form-label {
+            font-size: 0.9rem; 
+        }
+        .form-control-dark, .form-select-dark {
+            font-size: 0.85rem;
+            padding: 0.6rem 0.75rem !important; 
+            border-radius: 0.5rem !important; 
+        }
+        .code-textarea {
+            font-size: 0.8rem; 
+            min-height: 250px; 
+            padding: 0.6rem 0.75rem !important;
+        }
+        .text-muted.d-block { 
+            font-size: 0.75rem; 
+        }
+
+        .d-flex.justify-content-between.align-items-center.border-top.border-secondary.pt-4.mt-4 {
+            flex-direction: column;
+            gap: 0.75rem; 
+            padding-top: 1rem !important;
+            margin-top: 1rem !important; 
+        }
+        .d-flex.justify-content-between.align-items-center.border-top.border-secondary.pt-4.mt-4 .btn {
+            width: 100%; 
+            padding: 0.6rem 1rem; 
+            font-size: 0.95rem;
+        }
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h1>{{ title }}</h1>
-  {% if contest %}
-  <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
-     class="btn btn-outline-secondary">Back to Contest</a>
-  {% endif %}
-</div>
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card">
-      <div class="card-header">
-        <h3>Submit Solution for {{ problem.title }}</h3>
-      </div>
-      <div class="card-body">
-        <form method="POST" enctype="multipart/form-data">
-          {{ form.hidden_tag() }}
-          
-          <div class="form-group mb-3">
-            {{ form.language.label }}
-            {{ form.language(class="form-control") }}
-          </div>
-          
-          <div class="form-group mb-3">
-            {{ form.code.label }}
-            {{ form.code(class="form-control", rows=15) }}
-            <small class="text-muted">Or upload a file below</small>
-          </div>
-          
-          <div class="form-group mb-3">
-            {{ form.source_file.label }}
-            {{ form.source_file(class="form-control") }}
-          </div>
-          
-          <div class="d-flex justify-content-between">
-            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" 
-               class="btn btn-secondary">
-              Cancel
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 page-header">
+        <h1 class="d-flex align-items-center">
+            <i class="bi bi-cloud-upload-fill me-3"></i>
+            <span data-translate-key="header_submit_solution_for" data-problem-title="{{ problem.title }}">
+                Submit Solution for: {{ problem.title }}
+            </span>
+        </h1>
+        {% if contest %}
+            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
             </a>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
-        </form>
-      </div>
+        {% endif %}
     </div>
-  </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card submission-card">
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.language.id }}" class="form-label fw-bold" data-translate-key="label_language">Programming Language</label>
+                            {{ form.language(class="form-select form-select-dark") }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.code.id }}" class="form-label fw-bold" data-translate-key="label_code">Source Code</label>
+                            {{ form.code(class="form-control form-control-dark code-textarea", rows=18, id="code-textarea", value=initial_code or "") }}
+                            <small class="text-muted mt-2 d-block" data-translate-key="text_or_upload">Or upload a source file below.</small>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.source_file.id }}" class="form-label fw-bold" data-translate-key="label_upload">Upload File</label>
+                            {{ form.source_file(class="form-control form-control-dark") }}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center border-top border-secondary pt-4 mt-4">
+                            <a href="{{ url_for('contest.problem_view', contest_id=contest.id, problem_id=problem.id) }}" class="btn btn-secondary">
+                                <i class="bi bi-x-lg me-1"></i> <span data-translate-key="btn_cancel">Cancel</span>
+                            </a>
+                            <button type="submit" class="btn btn-warning btn-lg fw-bold">
+                                <i class="bi bi-check-circle-fill me-2"></i> <span data-translate-key="btn_submit">Submit Solution</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+{{ super() }}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  const codeTextarea = document.querySelector('textarea[name="code"]');
-  const languageSelect = document.querySelector('select[name="language"]');
+    document.addEventListener('DOMContentLoaded', function() {
+        const codeTextarea = document.getElementById('code-textarea');
+        const languageSelect = document.querySelector('select[name="language"]');
+    
+        if (!codeTextarea || !languageSelect) return;
+    
+        // Data from backend
+        // Note: Jinja2 variables rendered as strings, ensure proper escaping for JS
+        const initialCode = `{{ initial_code | safe | replace('\n', '\\n') | replace('\r', '\\r') | replace('\t', '\\t') | replace('"', '\\"') | replace("'", "\\'") if initial_code else '' }}`.trim();
+        const initialLanguage = `{{ initial_language | safe | lower if initial_language else '' }}`;
+    
+        const defaultCodes = {
+            python: `# Your Python code here...
+def solve():
+    # Read input and solve the problem
+    pass
+    `,
+            cpp: `#include <iostream>
+using namespace std;
+// Your C++ code here...
+void solve() {
+    // Read input and solve the problem
+    }
+    
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+    solve();
+    return 0;
+}
+    `,
+            javascript: `// Your JavaScript code here...
+function solve() {
+    // Read input and solve the problem
+}
+solve();
+    `,
+            java: `import java.util.*;
+import java.io.*;
 
-  const placeholders = {
-    python: `def res(a, b):\n    return a + b`,
-    cpp: `#include <iostream>\nusing namespace std;\n\nint res(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    int a, b;\n    cin >> a >> b;\n    cout << res(a, b) << endl;\n    return 0;\n}`,
-    javascript: `function res(a, b) {\nreturn a + b;\n}\nconst input = require('fs').readFileSync('/dev/stdin', 'utf8');\nconst [a, b] = input.trim().split(" ").map(Number);\nconsole.log(res(a, b));\n`,
-    java: `import java.util.*;\n\npublic class Solution {\n    public static int res(int a, int b) {\n        return a + b;\n    }\n\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int a = sc.nextInt();\n        int b = sc.nextInt();\n        System.out.println(res(a, b));\n    }\n}`
-  };
-
-  if (codeTextarea && languageSelect) {
-    codeTextarea.style.fontFamily = 'monospace';
-    codeTextarea.style.fontSize = '14px';
-
-    function updatePlaceholder() {
-      const lang = languageSelect.value.toLowerCase();
-      const key = lang.includes('python') ? 'python' :
-                  lang.includes('cpp') || lang.includes('c++') ? 'cpp' :
-                  lang.includes('javascript') || lang.includes('js') ? 'javascript' :
-                  lang.includes('java') ? 'java' : '';
-      codeTextarea.placeholder = placeholders[key] || '';
+public class Main {
+    // Your Java code here...
+    public static void solve() {
+        // Read input and solve the problem
     }
 
-    updatePlaceholder(); // set initial placeholder
-    languageSelect.addEventListener('change', updatePlaceholder);
-  }
-});
-</script>
-{% endblock %}
+    public static void main(String[] args) {
+        solve();
+    }
+}
+    `
+        };
+    
+        function getDefaultCodeFor(lang) {
+            const key = Object.keys(defaultCodes).find(k => lang.includes(k));
+            return defaultCodes[key] || '';
+        }
+    
+        // Initialize textarea
+        if (initialCode) {
+            codeTextarea.value = initialCode;
+        } else {
+            // Only set default code if textarea is empty and no initial code is provided
+            if (codeTextarea.value.trim() === "") {
+                 codeTextarea.value = getDefaultCodeFor(languageSelect.value.toLowerCase());
+            }
+        }
+    
+        // On language change
+        languageSelect.addEventListener('change', function() {
+            const lang = languageSelect.value.toLowerCase();
+            // Only change code if user hasn't typed anything or if switching back to initial language
+            // This prevents overwriting user's typed code
+            if (codeTextarea.value.trim() === '' || (initialLanguage && lang === initialLanguage)) {
+                codeTextarea.value = getDefaultCodeFor(lang);
+            }
+        });
+    });
+    </script>
+{% endblock scripts %}

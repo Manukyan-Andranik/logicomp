@@ -1,37 +1,555 @@
 {% extends "base.html" %}
+{% block title %}<span data-translate-key="page_login">Login</span>{% endblock %}
+{% block extra_css %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/auth-forms.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/pages/auth_login.css') }}" rel="stylesheet">
+<style>
+    /* Mobile-First Adjustments for Login Page */
 
-{% block title %}Login{% endblock %}
+    /* General Layout Adjustments */
+    .auth-main {
+        padding: 1.5rem 0.5rem !important; /* Reduced padding for smaller screens */
+        min-height: calc(100vh - var(--navbar-height) - var(--footer-height, 0px)); /* Ensure it fills screen */
+        display: flex; /* Ensure flex properties if not already set by auth-forms.css */
+        align-items: center;
+        justify-content: center;
+    }
+    .auth-main .col-md-7.col-lg-5.col-xl-4 {
+        max-width: 100%; /* Ensure it doesn't exceed screen width */
+        padding: 0 0.5rem; /* Add some internal padding to column for very small screens */
+    }
+
+    /* Auth Card Enhancements */
+    .card.auth-card {
+        margin: 0.75rem auto; /* Center card and provide vertical margin */
+        border-radius: 1rem; /* Slightly more rounded for mobile */
+        /* Disable hover effects for touch devices */
+        transform: none !important;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important; /* Keep a static shadow */
+    }
+    .card.auth-card:hover {
+        transform: none; /* Override auth-forms hover */
+        box-shadow: 0 10px 20px rgba(0,0,0,0.4) !important; /* Keep static shadow */
+    }
+
+    /* Header Section (Icon, Title, Subtitle) */
+    .auth-icon {
+        font-size: 2.5rem; /* Smaller icon for mobile */
+        margin-bottom: 0.75rem; /* Adjusted margin */
+    }
+    .auth-card .card-title {
+        font-size: 1.75rem; /* Smaller title for mobile */
+        margin-bottom: 0.25rem; /* Reduced space */
+    }
+    .auth-card .text-muted {
+        font-size: 0.9rem; /* Smaller subtitle for mobile */
+    }
+    .text-center.mb-5 {
+        margin-bottom: 2rem !important; /* Adjusted margin for header block */
+    }
+    .card-body.p-4.p-md-5 {
+        padding: 1.5rem !important; /* Unified smaller padding for card body */
+    }
+
+    /* Form Controls */
+    .form-group {
+        margin-bottom: 1.5rem; /* Slightly reduced margin between form groups */
+    }
+    .form-control-modern {
+        padding: 0.8rem 0.8rem 0.8rem 2.5rem !important; /* Adjust padding for mobile input */
+        font-size: 0.95rem; /* Smaller font for inputs */
+        border-radius: 0.75rem !important; /* Consistent border-radius */
+    }
+    .input-icon {
+        left: 0.8rem; /* Adjust icon position */
+        font-size: 1rem; /* Smaller input icon */
+    }
+    .form-control-modern:focus + .input-icon,
+    .form-control-modern:not(:placeholder-shown) + .input-icon {
+        color: var(--primary); /* Keep color change on focus/filled */
+    }
+    .form-label {
+        font-size: 0.85rem; /* Smaller label font */
+        margin-bottom: 0.5rem; /* Adjusted margin */
+    }
+
+    /* Password Toggle Specifics (The "Eye Part") */
+    .password-toggle {
+        font-size: 1.1rem; /* Adjusted font size for better tap target */
+        right: 0.8rem; /* Consistent right positioning */
+        padding: 0.4rem; /* More padding for easier tapping */
+        /* Disable hover effects on mobile */
+        transform: translateY(-50%) !important; /* Remove scale transform on hover */
+        background: transparent !important; /* Remove background on hover */
+    }
+    .password-toggle:hover {
+        color: rgba(255, 255, 255, 0.6); /* Keep color stable on hover */
+    }
+
+    /* Remember Me Checkbox */
+    .form-check {
+        margin: 1rem 0; /* Adjusted margin */
+    }
+    .form-check-label {
+        font-size: 0.9rem; /* Smaller font for label */
+    }
+
+    /* Submit Button */
+    .btn-auth {
+        padding: 0.85rem 1.5rem; /* Larger padding for touch */
+        font-size: 1rem; /* Readable font size */
+        border-radius: 50px; /* Keep original rounded shape */
+        /* Disable hover effects on mobile */
+        transform: none !important;
+        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.25) !important; /* Static shadow */
+    }
+    .btn-auth:hover {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; /* Keep original background on hover */
+        box-shadow: 0 8px 20px rgba(255, 193, 7, 0.25) !important; /* Keep static shadow */
+        transform: none !important; /* Override auth-forms hover */
+    }
+    .btn-auth::before {
+        display: none; /* Remove shimmering effect on mobile */
+    }
+
+    /* Divider */
+    .divider {
+        margin: 1.5rem 0; /* Adjusted margin */
+    }
+
+    /* Extra Links */
+    .extra-links {
+        margin-top: 1rem; /* Adjusted margin */
+    }
+    .extra-links span, .extra-links a {
+        font-size: 0.9rem; /* Smaller font for links */
+    }
+    .extra-links a {
+        padding: 0.4rem 0.8rem; /* Adjusted padding for link button */
+        border-radius: 1rem; /* More rounded */
+        /* Disable hover effects on mobile */
+        transform: none !important;
+        background: rgba(255, 193, 7, 0.05); /* Lighter background */
+    }
+    .extra-links a:hover {
+        background: rgba(255, 193, 7, 0.05); /* Keep stable background */
+        color: var(--primary); /* Keep color stable */
+        transform: none;
+    }
+
+    /* AOS Library Disable on Mobile */
+    @media (max-width: 767px) {
+        [data-aos] {
+            opacity: 1 !important; /* Elements are visible by default */
+            transform: none !important; /* No initial transform */
+            transition: none !important; /* No animation transitions */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    }
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        .auth-main {
+            padding: 2rem 0 !important; /* Restore desktop padding */
+        }
+        .auth-main .col-md-7.col-lg-5.col-xl-4 {
+            padding: 0; /* Remove internal column padding */
+        }
+        .card.auth-card {
+            margin: 0 auto; /* Restore original margin */
+            border-radius: 1.5rem; /* Restore original border-radius */
+            /* Re-enable hover effects for desktop */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.5); 
+        }
+        .card.auth-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .auth-icon {
+            font-size: 3rem; /* Restore original icon size */
+            margin-bottom: 1rem;
+        }
+        .auth-card .card-title {
+            font-size: 2rem; /* Restore original title size */
+            margin-bottom: 0.5rem;
+        }
+        .auth-card .text-muted {
+            font-size: 1rem; /* Restore original subtitle size */
+        }
+        .text-center.mb-5 {
+            margin-bottom: 2.5rem !important; /* Restore original margin */
+        }
+        .card-body.p-4.p-md-5 {
+            padding: 2.5rem !important; /* Restore original desktop padding */
+        }
+
+        .form-group {
+            margin-bottom: 2rem; /* Restore original margin */
+        }
+        .form-control-modern {
+            padding: 1rem 1rem 1rem 3rem !important; /* Restore original padding */
+            font-size: 1rem; /* Restore original font size */
+            border-radius: 12px !important; /* Restore original border-radius */
+        }
+        .input-icon {
+            left: 1rem; /* Restore original icon position */
+            font-size: 1.1rem; /* Restore original icon size */
+        }
+        .form-label {
+            font-size: 0.95rem; /* Restore original label font */
+            margin-bottom: 0.75rem;
+        }
+
+        /* Password Toggle */
+        .password-toggle {
+            font-size: 1.2rem; /* Restore original font size */
+            right: 1rem; /* Restore original position */
+            padding: 0.5rem; /* Restore original padding */
+            /* Re-enable hover effects for desktop */
+            transition: all 0.3s ease; 
+        }
+        .password-toggle:hover { 
+            color: var(--primary); 
+            background: rgba(255, 193, 7, 0.1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .form-check {
+            margin: 1.5rem 0; /* Restore original margin */
+        }
+        .form-check-label {
+            font-size: inherit; /* Restore original font size */
+        }
+
+        .btn-auth {
+            padding: 1rem 2rem; /* Restore original padding */
+            font-size: 1.1rem; /* Restore original font size */
+            /* Re-enable hover effects for desktop */
+            transition: all 0.3s ease; 
+            box-shadow: none !important; /* Let original style handle shadow */
+        }
+        .btn-auth:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary)) !important; 
+            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.3) !important; 
+            transform: translateY(-3px) !important;
+        }
+        .btn-auth::before {
+            display: block; /* Re-enable shimmering effect */
+        }
+
+        .divider {
+            margin: 2rem 0; /* Restore original margin */
+        }
+
+        .extra-links {
+            margin-top: 1.5rem; /* Restore original margin */
+        }
+        .extra-links span, .extra-links a {
+            font-size: 1rem; /* Restore original font size */
+        }
+        .extra-links a {
+            padding: 0.5rem 1rem; /* Restore original padding */
+            border-radius: 20px; /* Restore original border-radius */
+            /* Re-enable hover effects for desktop */
+            transition: all 0.3s ease;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        .extra-links a:hover { 
+            background: rgba(255, 193, 7, 0.2);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Re-enable AOS animations for larger screens */
+        [data-aos] {
+            opacity: 0; /* Allow AOS to control opacity */
+            transform: translateY(20px); /* Allow AOS to control transform */
+            transition: all 0.3s cubic-bezier(0.3, 0.5, 0.4, 1.2); /* AOS default transition */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+             opacity: 0; /* Ensure hidden initially for AOS animation */
+             transform: translateY(20px);
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6 col-lg-4">
-        <div class="card shadow-sm">
-            <div class="card-body p-4">
-                <h2 class="card-title text-center mb-4">Sign In</h2>
-                <form method="POST" action="{{ url_for('auth.login') }}">
-                    {{ form.hidden_tag() }}
-                    
-                    <div class="mb-3">
-                        {{ form.username.label(class="form-label") }}
-                        {{ form.username(class="form-control") }}
+<div class="auth-main">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5 col-xl-4" data-aos="fade-up">
+                <div class="card auth-card">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-5">
+                            <i class="bi bi-box-arrow-in-right auth-icon"></i>
+                            <h2 class="card-title" data-translate-key="login_title">Sign In</h2>
+                            <p class="text-muted" data-translate-key="login_subtitle">Welcome back! Please sign in to your account.</p>
+                        </div>
+                        
+                        <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm">
+                            {{ form.hidden_tag() }}
+                            <div class="mb-4" style="color: white;">
+                                {{ form.username.label(class="form-label", **{'data-translate-key': 'username_label'}) }}
+                                <div class="position-relative">
+                                    {{ form.username(class="form-control form-control-modern", placeholder="Enter your username", **{'data-translate-key': 'username_placeholder'}) }}
+                                    <i class="bi bi-person-fill input-icon"></i>
+                                </div>
+                                {% if form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                        {{ form.username.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3" style="color: white;">
+                                {{ form.password.label(class="form-label", **{'data-translate-key': 'password_label'}) }}
+                                <div class="password-wrapper position-relative">
+                                    {{ form.password(class="form-control form-control-modern", placeholder="Enter your password", **{'data-translate-key': 'password_placeholder'}) }}
+                                    <i class="bi bi-lock-fill input-icon"></i>
+                                    <i class="bi bi-eye-slash-fill password-toggle" title="Toggle password visibility"></i>
+                                </div>
+                                {% if form.password.errors %}
+                                    <div class="invalid-feedback">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                        {{ form.password.errors[0] }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-check">
+                                {{ form.remember_me(class="form-check-input") }}
+                                <label class="form-check-label" for="{{ form.remember_me.id }}">
+                                    <span data-translate-key="remember_me">Remember me</span>
+                                </label>
+                            </div>
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-auth" id="loginBtn">
+                                    <span data-translate-key="login_button">Sign In</span>
+                                </button>
+                            </div>
+                            
+                            <hr class="divider">
+                        </form>
                     </div>
-                    
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
-                    </div>
-                    
-                    <div class="mb-3 form-check">
-                        {{ form.remember_me(class="form-check-input") }}
-                        {{ form.remember_me.label(class="form-check-label") }}
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Sign In</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({ duration: 800, offset: 50, once: true });
+    
+    // Password toggle functionality
+    document.querySelectorAll('.password-toggle').forEach(toggle => {
+        toggle.addEventListener('click', function() {
+            // Find the closest parent with class 'password-wrapper'
+            const passwordWrapper = this.closest('.password-wrapper');
+            // Then find the input field within that wrapper
+            const passwordField = passwordWrapper ? passwordWrapper.querySelector('input[name="password"]') : null;
+            
+            if(passwordField) {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                this.classList.toggle('bi-eye-slash-fill');
+                this.classList.toggle('bi-eye-fill');
+                
+                // Update title for accessibility using translated strings
+                const currentLang = localStorage.getItem('language') || 'en';
+                const langDict = window.translations[currentLang];
+                this.title = type === 'password' ? (langDict.show_password_title || 'Show password') : (langDict.hide_password_title || 'Hide password');
+            }
+        });
+    });
+
+    // Form validation and enhancement
+    const form = document.getElementById('loginForm');
+    const inputs = form.querySelectorAll('.form-control-modern');
+    const submitBtn = document.getElementById('loginBtn');
+    
+    // Real-time validation
+    inputs.forEach(input => {
+        input.addEventListener('input', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        
+        input.addEventListener('focus', function() {
+            this.parentElement.classList.add('focused');
+        });
+    });
+    
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        if (!validateForm()) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Show loading state
+        submitBtn.classList.add('loading');
+        // Retrieve translated "Signing in..." text
+        const currentLang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[currentLang];
+        const signingInText = langDict.signing_in_text || 'Signing in...'; // Add this to translations
+        submitBtn.querySelector('span').textContent = signingInText;
+    });
+    
+    function validateField(field) {
+        const value = field.value.trim();
+        const fieldName = field.name;
+        
+        // Remove existing validation classes
+        field.classList.remove('is-valid', 'is-invalid');
+        
+        if (value === '') {
+            field.classList.add('is-invalid');
+            return false;
+        }
+        
+        // Specific validation rules
+        if (fieldName === 'username' && value.length < 3) {
+            field.classList.add('is-invalid');
+            return false;
+        }
+        
+        if (fieldName === 'password' && value.length < 6) {
+            field.classList.add('is-invalid');
+            return false;
+        }
+        
+        field.classList.add('is-valid');
+        return true;
+    }
+    
+    function validateForm() {
+        let isValid = true;
+        inputs.forEach(input => {
+            if (!validateField(input)) {
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+    
+    // Enhanced accessibility
+    inputs.forEach(input => {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.type !== 'textarea') {
+                e.preventDefault();
+                const nextInput = inputs[Array.from(inputs).indexOf(this) + 1];
+                if (nextInput) {
+                    nextInput.focus();
+                } else {
+                    submitBtn.click();
+                }
+            }
+        });
+    });
+    
+    // Auto-focus first input
+    // Only auto-focus if not on a small mobile device to avoid keyboard popping up immediately
+    if (window.innerWidth >= 576) { // Adjust breakpoint as needed (e.g., Bootstrap's sm breakpoint)
+        inputs[0].focus();
+    }
+    
+    // Language translations
+    const loginTranslations = {
+        'en': { 
+            'page_login': 'Login', 
+            'login_title': 'Sign In', 
+            'login_subtitle': 'Welcome back! Please sign in to your account.',
+            'username_label': 'Username', 
+            'password_label': 'Password', 
+            'login_button': 'Sign In',
+            'username_placeholder': 'Enter your username', 
+            'password_placeholder': 'Enter your password',
+            'remember_me': 'Remember me',
+            'contact_support': 'Contact Support',
+            'signing_in_text': 'Signing in...', // Added translation for loading state
+            'show_password_title': 'Show password', // Added translation for password toggle title
+            'hide_password_title': 'Hide password'  // Added translation for password toggle title
+        },
+        'hy': { 
+            'page_login': 'Մուտք', 
+            'login_title': 'Մուտք Գործել', 
+            'login_subtitle': 'Բարի վերադարձ! Խնդրում ենք մուտք գործել ձեր հաշիվ:',
+            'username_label': 'Օգտանուն', 
+            'password_label': 'Գաղտնաբառ', 
+            'login_button': 'Մուտք Գործել', 
+            'username_placeholder': 'Մուտքագրեք ձեր օգտանունը', 
+            'password_placeholder': 'Մուտքագրեք ձեր գաղտնաբառը',
+            'remember_me': 'Հիշել ինձ',
+            'contact_support': 'Կապ հաստատել աջակցության հետ',
+            'signing_in_text': 'Մուտք եք գործում...', // Added translation for loading state
+            'show_password_title': 'Ցուցադրել գաղտնաբառը', // Added translation for password toggle title
+            'hide_password_title': 'Թաքցնել գաղտնաբառը'  // Added translation for password toggle title
+        },
+        'ru': { 
+            'page_login': 'Вход', 
+            'login_title': 'Войти', 
+            'login_subtitle': 'Добро пожаловать! Пожалуйста, войдите в свой аккаунт.',
+            'username_label': 'Имя пользователя', 
+            'password_label': 'Пароль', 
+            'login_button': 'Войти',
+            'username_placeholder': 'Введите имя пользователя', 
+            'password_placeholder': 'Введите ваш пароль',
+            'remember_me': 'Запомнить меня',
+            'contact_support': 'Связаться с поддержкой',
+            'signing_in_text': 'Вход...', // Added translation for loading state
+            'show_password_title': 'Показать пароль', // Added translation for password toggle title
+            'hide_password_title': 'Скрыть пароль'  // Added translation for password toggle title
+        }
+    };
+    
+    // Merge translations into global window.translations object
+    if (!window.translations) window.translations = {}; // Ensure global object exists
+    Object.keys(loginTranslations).forEach(lang => { 
+        if (!window.translations[lang]) window.translations[lang] = {};
+        Object.assign(window.translations[lang], loginTranslations[lang]); 
+    });
+    
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en'; 
+        const langDict = window.translations[lang] || window.translations['en'];
+        
+        document.querySelectorAll('[data-translate-key]').forEach(el => { 
+            const key = el.dataset.translateKey; 
+            // Handle placeholders
+            if (el.tagName === 'INPUT' && el.placeholder) {
+                if (key === 'username_placeholder') el.placeholder = langDict.username_placeholder || '';
+                if (key === 'password_placeholder') el.placeholder = langDict.password_placeholder || '';
+            } else {
+                // For regular text content
+                if(langDict[key]) el.textContent = langDict[key]; 
+            }
+        });
+        
+        // Update password toggle title for current language
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            const isPassword = toggle.previousElementSibling.getAttribute('type') === 'password'; // Still need this for initial title setup
+            toggle.title = isPassword ? (langDict.show_password_title || 'Show password') : (langDict.hide_password_title || 'Hide password');
+        });
+    };
+
+    updatePageText(); 
+    window.addEventListener('languageChanged', updatePageText);
+});
+</script>
 {% endblock %}

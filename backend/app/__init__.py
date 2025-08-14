@@ -14,7 +14,7 @@ login.login_view = 'auth.login'
 migrate = Migrate()
 mail = Mail()
 bootstrap = Bootstrap()
-
+    
 def create_app(config_class=Config):
     base_dir = os.path.abspath(os.path.dirname(__file__))
     template_path = os.path.join(base_dir, '../../frontend/templates')
@@ -25,12 +25,13 @@ def create_app(config_class=Config):
                 static_folder=static_path)
     
     app.config.from_object(config_class)
-
     db.init_app(app)
     login.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
     bootstrap.init_app(app)
+
+
 
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -49,8 +50,10 @@ def create_app(config_class=Config):
 
     @app.context_processor
     def inject_now():
-        return {'now': datetime.utcnow()}
+        return {'now': datetime.now().astimezone()}
 
     return app
 
 from app import models
+
+

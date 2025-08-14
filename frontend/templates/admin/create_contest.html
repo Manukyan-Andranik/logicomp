@@ -2,54 +2,188 @@
 
 {% block title %}Create Contest{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Main container for a modern, centered form */
+    .form-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: calc(100vh - var(--navbar-height) - 4rem);
+    }
+
+    /* Glassmorphism card effect for the form */
+    .form-card {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 193, 7, 0.2);
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        padding: 2.5rem;
+        color: #e0e0e0;
+    }
+
+    /* Form header styling with a prominent icon */
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .form-icon {
+        font-size: 3rem;
+        color: var(--primary, #FFC107);
+        filter: drop-shadow(0 0 10px rgba(255, 193, 7, 0.4));
+        margin-bottom: 0.5rem;
+    }
+    .form-header h3 {
+        color: white;
+        font-weight: 700;
+    }
+    
+    /* Modern input group with an icon inside */
+    .form-group-modern {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, 0.5);
+        transition: color 0.3s ease;
+        pointer-events: none;
+    }
+    
+    /* Modern input field styling */
+    .form-control-modern {
+        background: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 0.5rem !important;
+        color: white !important;
+        padding: 0.75rem 1rem 0.75rem 3rem !important; /* Space for the icon */
+        box-shadow: none !important;
+        transition: all 0.3s ease !important;
+    }
+    .form-control-modern:focus {
+        border-color: var(--primary, #FFC107) !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.15) !important;
+    }
+    .form-control-modern:focus + .input-icon {
+        color: var(--primary, #FFC107);
+    }
+
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+    
+    /* Modern toggle switch */
+    .form-switch .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        cursor: pointer;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    .form-switch .form-check-input:checked {
+        background-color: var(--primary, #FFC107);
+        border-color: var(--primary, #FFC107);
+    }
+    
+    /* Prettier buttons */
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, var(--primary, #FFC107), var(--primary-dark, #FFA000));
+        border: none;
+        color: #121212;
+        font-weight: 700;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+    .btn-primary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+    }
+    .btn-secondary-custom {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+    }
+    .btn-secondary-custom:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+    
+    /* Responsive button layout */
+    @media (max-width: 767.98px) {
+        .form-card {
+            padding: 1.5rem;
+        }
+        .form-actions {
+            display: grid;
+            gap: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <div class="card">
-      <div class="card-header">
-        <h3>Create New Contest</h3>
-      </div>
-      <div class="card-body">
-        <form method="POST" action="{{ url_for('admin.create_contest') }}">
-          {{ form.hidden_tag() }}
-          
-          <div class="form-group mb-3">
-            {{ form.title.label }}
-            {{ form.title(class="form-control") }}
-          </div>
-          
-          <div class="form-group mb-3">
-            {{ form.description.label }}
-            {{ form.description(class="form-control", rows=5) }}
-          </div>
-          
-          <div class="row">
-            <div class="col-md-6">
-              <div class="form-group mb-3">
-                {{ form.start_time.label }}
-                {{ form.start_time(class="form-control") }}
-              </div>
+<div class="form-container">
+    <div class="col-lg-7 col-md-9">
+        <div class="card form-card">
+            <div class="form-header">
+                <i class="bi bi-calendar-plus-fill form-icon"></i>
+                <h3>Create New Contest</h3>
             </div>
-            <div class="col-md-6">
-              <div class="form-group mb-3">
-                {{ form.end_time.label }}
-                {{ form.end_time(class="form-control") }}
-              </div>
+            <div class="card-body p-0">
+                <form method="POST" action="{{ url_for('admin.create_contest') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <label for="{{ form.title.id }}" class="form-label">Contest Title</label>
+                    <div class="form-group-modern">
+                        <i class="input-icon bi bi-type"></i>
+                        {{ form.title(class="form-control form-control-modern", placeholder="e.g., Weekly Coding Challenge #5") }}
+                    </div>
+                    
+                    <label for="{{ form.description.id }}" class="form-label">Description</label>
+                    <div class="form-group-modern">
+                        <i class="input-icon bi bi-text-left" style="top: 1.25rem; transform: none;"></i>
+                        {{ form.description(class="form-control form-control-modern", rows=4, placeholder="Provide a brief overview of the contest...") }}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="{{ form.start_time.id }}" class="form-label">Start Time</label>
+                            <div class="form-group-modern">
+                                <i class="input-icon bi bi-clock"></i>
+                                {{ form.start_time(class="form-control form-control-modern") }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.end_time.id }}" class="form-label">End Time</label>
+                            <div class="form-group-modern">
+                                <i class="input-icon bi bi-clock-fill"></i>
+                                {{ form.end_time(class="form-control form-control-modern") }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check form-switch fs-5 mb-4 mt-2">
+                        {{ form.is_public(class="form-check-input") }}
+                        {{ form.is_public.label(class="form-check-label", for=form.is_public.id) }}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between form-actions mt-4">
+                        <a href="{{ url_for('admin.index') }}" class="btn btn-secondary-custom">Cancel</a>
+                        <button type="submit" class="btn btn-primary-gradient">Create Contest</button>
+                    </div>
+                </form>
             </div>
-          </div>
-          
-          <div class="form-group form-check mb-3">
-            {{ form.is_public(class="form-check-input") }}
-            {{ form.is_public.label(class="form-check-label") }}
-          </div>
-          
-          <div class="d-flex justify-content-between">
-            <a href="{{ url_for('admin.index') }}" class="btn btn-secondary">Cancel</a>
-            <button type="submit" class="btn btn-primary">Create Contest</button>
-          </div>
-        </form>
-      </div>
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}

@@ -1,17 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container">
+<div class="container py-4">
+    <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>{{ title }}</h1>
         {% if contest %}
         <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
-           class="btn btn-outline-secondary">Back to Contest</a>
+           class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Contest
+        </a>
         {% endif %}
     </div>
 
+    <!-- Submission ID Header -->
     <h2>Submission #{{ submission.id }}</h2>
     
+    <!-- Details Card -->
     <div class="card mb-4">
         <div class="card-header">
             <h5>Details</h5>
@@ -55,6 +60,7 @@
         </div>
     </div>
     
+    <!-- Source Code Card -->
     <div class="card mb-4">
         <div class="card-header">
             <h5>Source Code</h5>
@@ -64,14 +70,19 @@
         </div>
     </div>
 
-    <!-- Submissions History Table -->
+    <!-- Go to Submission Page Button -->
+    <a href="{{ url_for('submission.submit', problem_id=problem.id) }}" class="btn btn-warning w-100 fw-bold mt-2">
+        <i class="bi bi-cloud-upload-fill me-2"></i>Go to Submission Page
+    </a>
+
+    <!-- Recent Submissions by You Table -->
     <div class="card">
         <div class="card-header">
             <h5>Recent Submissions by You</h5>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-bordered table-hover submissions-table mb-0">
+                <table class="table table-bordered submissions-table mb-0">
                     <thead class="thead-light text-center">
                         <tr>
                             <th>ID</th>
@@ -119,4 +130,270 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    main { background-color: #121212; }
+    :root {
+        --primary: #FFC107; 
+        --primary-dark: #FFA000;
+        --dark: #121212; 
+        --text-light: #e0e0e0;
+        --text-muted: #6c757d;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --secondary: #FFD700; 
+    }
+
+    .container.py-4 {
+        padding-top: 2rem !important; 
+        padding-bottom: 2rem !important; 
+    }
+
+    .d-flex.justify-content-between.align-items-center.mb-4 {
+        flex-direction: row; 
+        align-items: center;
+        margin-bottom: 1.5rem !important; 
+        padding-bottom: 0.5rem; 
+        border-bottom: 1px solid var(--border-color); 
+    }
+    .d-flex.justify-content-between.align-items-center.mb-4 h1 {
+        font-size: 1.75rem; 
+        font-weight: 700;
+        color: white; 
+        margin-bottom: 0;
+    }
+    .d-flex.justify-content-between.align-items-center.mb-4 .btn {
+        width: auto; 
+        padding: 0.375rem 0.75rem; 
+        font-size: 0.875rem; 
+        text-align: unset; 
+        color: var(--primary); 
+        border-color: var(--border-color); 
+        background-color: transparent;
+    }
+    .d-flex.justify-content-between.align-items-center.mb-4 .btn:hover {
+        color: white; 
+        background-color: var(--primary); 
+        border-color: var(--primary);
+    }
+
+    h2 { 
+        font-size: 2rem; 
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+
+    .card {
+        background: #1a1a1a; 
+        border: 1px solid var(--border-color); 
+        border-radius: 0.25rem; 
+        color: var(--text-light); 
+        box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important; 
+    }
+    .card-header {
+        background-color: #212121;
+        border-bottom: 1px solid var(--border-color);
+        color: white; 
+        font-weight: 600;
+        font-size: 1.25rem; 
+    }
+    .card-header h5:hover {
+        color: var(--primary);
+        transition: color 0.3s ease; 
+    }
+
+    .card-body {
+        padding: 1.25rem; 
+    }
+    .card-body p {
+        margin-bottom: 0.5rem; 
+    }
+    .card-body p:last-child {
+        margin-bottom: 0;
+    }
+    .card-body strong {
+        color: var(--primary); 
+    }
+
+    .badge {
+        font-size: 0.85rem; 
+        padding: 0.4em 0.7em;
+    }
+    .alert.alert-danger {
+        background-color: rgba(220, 53, 69, 0.15);
+        color: #dc3545; 
+        border-color: #dc3545; 
+        font-size: 0.9rem;
+    }
+    .alert.alert-danger h6 {
+        color: #dc3545;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .alert.alert-danger pre {
+        background-color: rgba(0,0,0,0.1); 
+        color: #dc3545;
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        padding: 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.85rem;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    pre code {
+        display: block; 
+        background-color: #0d0d0d; 
+        color: #e0e0e0; 
+        border: 1px solid var(--border-color);
+        border-radius: 0.25rem;
+        padding: 1rem;
+        font-family: 'SF Mono', 'Courier New', monospace;
+        font-size: 0.9rem;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+
+    .btn-warning.w-100.fw-bold.mt-2 {
+        padding: 0.75rem 1.25rem; 
+        font-size: 1rem;
+        background-color: var(--primary); 
+        border-color: var(--primary);
+        color: #000; 
+    }
+    .btn-warning.w-100.fw-bold.mt-2:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+    }
+
+    .submissions-table {
+        border-color: var(--border-color); 
+    }
+    .submissions-table thead th {
+        font-weight: 700; 
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+        text-align: center; 
+        border-bottom: 2px solid var(--primary) !important; 
+    }
+    .submissions-table tbody td {
+        background-color: #1a1a1a;
+        color: var(--text-light); 
+        border-top: 1px solid var(--border-color);
+        text-align: center; 
+    }
+    .submissions-table tbody tr:hover {
+        background-color: #252525;
+    }
+    .submissions-table tbody td:nth-child(2) { 
+        text-align: left; 
+    }
+    .submissions-table tbody td:nth-child(6) { 
+        font-size: 0.85rem; 
+    }
+    .submissions-table tbody tr:last-child td {
+        border-bottom: none; 
+    }
+    .submissions-table tbody tr:only-child td[colspan="6"] {
+        padding: 2rem !important;
+        font-size: 1rem;
+        color: blue;
+    }
+
+    @media (max-width: 767px) {
+        .container.py-4 {
+            padding-top: 1.5rem !important; 
+            padding-bottom: 1.5rem !important;
+            padding-left: 0.8rem !important; 
+            padding-right: 0.8rem !important; 
+        }
+
+        .d-flex.justify-content-between.align-items-center.mb-4 {
+            flex-direction: column; 
+            align-items: flex-start !important; 
+            margin-bottom: 1rem !important; 
+            padding-bottom: 1rem !important; 
+        }
+        .d-flex.justify-content-between.align-items-center.mb-4 h1 {
+            font-size: 1.6rem; 
+            margin-bottom: 0.75rem; 
+        }
+        .d-flex.justify-content-between.align-items-center.mb-4 .btn {
+            width: 100%; 
+            padding: 0.6rem 1rem; 
+            font-size: 0.95rem; 
+            text-align: center; 
+        }
+
+        h2 { 
+            font-size: 1.5rem; 
+            margin-bottom: 1rem;
+        }
+
+        .card {
+            border-radius: 0.75rem; 
+        }
+        .card-header {
+            font-size: 1.05rem; 
+            padding: 0.8rem 1rem; 
+        }
+        .card-header h5:hover {
+            color: inherit; 
+        }
+        .card-body {
+            padding: 1rem !important; 
+        }
+        .card-body p {
+            font-size: 0.9rem; 
+        }
+        .card-body strong {
+            font-size: 0.95rem; 
+        }
+
+        .badge {
+            font-size: 0.75rem; 
+            padding: 0.3em 0.6em;
+        }
+        .alert.alert-danger {
+            margin-top: 1rem !important; 
+            padding: 0.8rem; 
+            font-size: 0.85rem; 
+        }
+        .alert.alert-danger h6 {
+            font-size: 0.95rem; 
+        }
+        .alert.alert-danger pre {
+            padding: 0.5rem; 
+            font-size: 0.75rem; 
+        }
+
+        pre code {
+            padding: 0.8rem !important; 
+            font-size: 0.8rem; 
+            min-height: 200px; 
+        }
+
+        .btn-warning.w-100.fw-bold.mt-2 {
+            padding: 0.6rem 1rem; 
+            font-size: 0.95rem; 
+        }
+
+        .submissions-table th, .submissions-table td {
+            padding: 0.5rem 0.3rem; 
+            font-size: 0.8rem; 
+        }
+        .submissions-table thead th {
+            font-size: 0.7rem; 
+        }
+        .submissions-table tbody td:nth-child(6) { 
+            font-size: 0.65rem; 
+        }
+        .submissions-table tbody tr:only-child td[colspan="6"] {
+            padding: 1.5rem !important; 
+            font-size: 0.85rem; 
+        }
+    }
+</style>
 {% endblock %}

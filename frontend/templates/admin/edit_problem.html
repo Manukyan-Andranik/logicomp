@@ -2,79 +2,155 @@
 
 {% block title %}Edit Problem - {{ problem.title }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Using the same Neo-Brutalist styles for perfect consistency */
+    .form-page-container-brutalist {
+        background-color: #111;
+        padding: 3rem 0;
+        min-height: calc(100vh - var(--navbar-height));
+    }
+    .form-card-brutalist {
+        background-color: var(--primary, #FFC107);
+        border: 2px solid #000;
+        box-shadow: 8px 8px 0px #000;
+        border-radius: 0.25rem;
+        color: #000;
+    }
+    .card-header-brutalist {
+        background-color: #000;
+        color: var(--primary, #FFC107);
+        padding: 1rem 1.5rem;
+        border-bottom: 2px solid #000;
+    }
+    .card-header-brutalist h3 {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        text-transform: uppercase;
+        font-size: 1.25rem;
+        color: inherit;
+    }
+    .card-body-brutalist {
+        background-color: #1a1a1a;
+        padding: 2rem;
+    }
+    .form-label-brutalist {
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-weight: 700;
+        color: #eee;
+    }
+    .form-control-brutalist {
+        background-color: #111 !important;
+        border: 2px solid #444 !important;
+        border-radius: 0.25rem !important;
+        color: white !important;
+        padding: 0.75rem 1rem !important;
+        font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        box-shadow: none !important;
+        transition: all 0.2s ease;
+    }
+    .form-control-brutalist:focus {
+        background-color: #000 !important;
+        border-color: var(--primary, #FFC107) !important;
+    }
+    /* Sub-card for grouping test cases */
+    .sub-card-brutalist {
+        background-color: #111;
+        border: 2px solid #333;
+        padding: 1.5rem;
+        border-radius: 0.25rem;
+    }
+    .sub-card-brutalist h5 {
+        color: #ddd;
+    }
+    .btn-brutalist {
+        background-color: var(--primary, #FFC107);
+        color: #000;
+        border: 2px solid #000;
+        font-weight: 700;
+        box-shadow: 4px 4px 0px #000;
+        transition: all 0.2s ease-out;
+        border-radius: 0.25rem;
+    }
+    .btn-brutalist:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0px #000;
+    }
+    .btn-brutalist-secondary {
+        background-color: #333;
+        color: #eee;
+        border: 2px solid #000;
+        box-shadow: 4px 4px 0px #000;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Edit Problem - {{ problem.title }}</h3>
-                </div>
-                <div class="card-body">
-                    <form method="POST" enctype="multipart/form-data">
-                        {{ form.hidden_tag() }}
+<div class="form-page-container-brutalist">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card form-card-brutalist mb-4">
+                    <div class="card-header-brutalist">
+                        <h3 class="mb-0">Edit Problem</h3>
+                    </div>
+                    <div class="card-body card-body-brutalist">
+                        <form method="POST" enctype="multipart/form-data">
+                            {{ form.hidden_tag() }}
 
-                        <div class="mb-3">
-                            {{ form.title.label(class="form-label") }}
-                            {{ form.title(class="form-control") }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.description.label(class="form-label") }}
-                            {{ form.description(class="form-control", rows=8) }}
-                        </div>
-
-                        <div class="mb-3">
-                            {{ form.time_limit.label(class="form-label") }}
-                            <div class="input-group">
-                                {{ form.time_limit(class="form-control") }}
-                                <span class="input-group-text">seconds</span>
+                            <!-- Section: Statement -->
+                            <h4 class="form-label-brutalist text-warning border-bottom border-secondary pb-2 mb-3">Statement</h4>
+                            <div class="mb-4">
+                                {{ form.title.label(class="form-label-brutalist") }}
+                                {{ form.title(class="form-control form-control-brutalist") }}
                             </div>
-                        </div>
-
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5>Upload Test Cases (JSON)</h5>
+                            <div class="mb-4">
+                                {{ form.description.label(class="form-label-brutalist") }}
+                                {{ form.description(class="form-control form-control-brutalist", rows=8) }}
                             </div>
-                            <div class="card-body">
-                                {{ form.test_case_upload.hidden_tag() }}
 
-                                <div class="mb-3">
-                                    {{ form.test_case_upload.json_file.label(class="form-label") }}
-                                    {{ form.test_case_upload.json_file(class="form-control") }}
-                                    <small class="text-muted">Upload a JSON file with test cases (fields: expected_input, expected_output, is_sample)</small>
-                                </div>
-
-                                <div class="form-check mb-3">
-                                    {{ form.test_case_upload.keep_existing(class="form-check-input") }}
-                                    {{ form.test_case_upload.keep_existing.label(class="form-check-label") }}
-                                </div>
+                            <!-- Section: Configuration -->
+                            <h4 class="form-label-brutalist text-warning border-bottom border-secondary pb-2 mb-3">Configuration</h4>
+                            <div class="mb-4">
+                                {{ form.time_limit.label(class="form-label-brutalist", text="Time Limit (seconds)") }}
+                                {{ form.time_limit(class="form-control form-control-brutalist") }}
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <h5>Manual Test Cases</h5>
-                            <div id="test-cases">
-                                <div class="test-case mb-3 p-3 border rounded">
-                                    <div class="mb-3">
-                                        {{ form.expected_input.label(class="form-label") }}
-                                        {{ form.expected_input(class="form-control", rows=3) }}
-                                    </div>
-                                    <div class="mb-3">
-                                        {{ form.expected_output.label(class="form-label") }}
-                                        {{ form.expected_output(class="form-control", rows=3) }}
+                            
+                            <!-- Section: Test Cases -->
+                            <h4 class="form-label-brutalist text-warning border-bottom border-secondary pb-2 mb-3">Test Cases</h4>
+                            <div class="sub-card-brutalist">
+                                <!-- JSON Upload -->
+                                <div class="mb-4">
+                                    <h5 class="form-label-brutalist">Upload New Test Cases (JSON)</h5>
+                                    {{ form.test_case_upload.hidden_tag() }}
+                                    {{ form.test_case_upload.json_file.label(class="form-label-brutalist") }}
+                                    {{ form.test_case_upload.json_file(class="form-control form-control-brutalist") }}
+                                    <small class="text-muted d-block mt-2">Uploading a new file will replace existing test cases unless you check the box below.</small>
+                                    <div class="form-check mt-3">
+                                        {{ form.test_case_upload.keep_existing(class="form-check-input") }}
+                                        {{ form.test_case_upload.keep_existing.label(class="form-check-label text-white") }}
                                     </div>
                                 </div>
-
-
+                                <hr class="border-secondary">
+                                <!-- Manual / Sample Case Edit -->
+                                <div class="mt-4">
+                                    <h5 class="form-label-brutalist">Edit Sample Case</h5>
+                                    <div class="mb-3">
+                                        {{ form.expected_input.label(class="form-label-brutalist") }}
+                                        {{ form.expected_input(class="form-control form-control-brutalist", rows=4) }}
+                                    </div>
+                                    <div class="mb-3">
+                                        {{ form.expected_output.label(class="form-label-brutalist") }}
+                                        {{ form.expected_output(class="form-control form-control-brutalist", rows=4) }}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ url_for('admin.contest_details', contest_id=problem.contest_id) }}" class="btn btn-secondary">Cancel</a>
-                            {{ form.submit(class="btn btn-primary") }}
-                        </div>
-                    </form>
+                            <div class="d-flex justify-content-between mt-5">
+                                <a href="{{ url_for('admin.contest_details', contest_id=problem.contest_id) }}" class="btn btn-brutalist-secondary">Cancel</a>
+                                {{ form.submit(class="btn btn-brutalist", value="Update Problem") }}
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

@@ -50,8 +50,8 @@ class EditProblemForm(FlaskForm):
 class CreateContestForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
-    start_time = DateTimeField('Start Time', default=datetime.utcnow, validators=[DataRequired()])
-    end_time = DateTimeField('End Time', default=datetime.utcnow, validators=[DataRequired()])
+    start_time = DateTimeField('Start Time', default=datetime.now().astimezone(), validators=[DataRequired()])
+    end_time = DateTimeField('End Time', default=datetime.now().astimezone(), validators=[DataRequired()])
     is_public = BooleanField('Public Contest')
     submit = SubmitField('Create Contest')
 

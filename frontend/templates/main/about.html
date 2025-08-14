@@ -1,35 +1,353 @@
 {% extends "base.html" %}
 
-{% block title %}About{% endblock %}
+{% block title %}<span data-translate-key="page_about">About Us</span>{% endblock %}
+
+{% block extra_css %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+<style>
+    /* Mobile-First Default Styles */
+    main { padding: 0 !important; } /* Already there, good */
+    section { padding: 3rem 0; /* Smaller default padding for all sections on mobile */ }
+
+    /* About Hero Section */
+    .about-hero {
+        padding: 4rem 0; /* Adjusted padding for mobile */
+        background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)), url('https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center center;
+        background-size: cover;
+    }
+    .about-hero h1.display-4 { 
+        font-size: 2.5rem; /* Smaller title for mobile */
+        font-weight: 700; 
+    }
+    .about-hero p.lead { 
+        font-size: 1rem; /* Smaller lead text for mobile */
+        padding: 0 1rem; /* Add horizontal padding for text on small screens */
+    }
+
+    /* Mission/Vision Sections */
+    .row.align-items-center.g-5 {
+        --bs-gutter-x: 1.5rem; /* Reduce horizontal gutter for smaller screens */
+        --bs-gutter-y: 2rem;   /* Adjust vertical gutter for clarity */
+    }
+    .col-lg-6 img {
+        width: 100%; /* Ensure image fills its column */
+        height: auto;
+        object-fit: cover;
+        max-height: 250px; /* Limit height of images on mobile */
+    }
+    h2.display-5 { 
+        font-size: 2rem; /* Smaller mission/vision titles for mobile */
+        font-weight: 700; 
+    }
+    p.fs-5 { 
+        font-size: 0.95rem; /* Smaller mission/vision description text for mobile */
+    }
+
+    /* Feature Cards */
+    .feature-card {
+        background: #1a1a1a; 
+        padding: 1.5rem; /* Adjusted padding for mobile */
+        border-radius: 1rem;
+        border: 1px solid var(--border-color); 
+        text-align: center;
+        transition: all 0.3s ease; 
+        height: 100%;
+    }
+    .feature-card:hover {
+        /* Disable hover effects on mobile/touch devices */
+        transform: none; 
+        background: #1a1a1a; /* Keep background stable */
+        border-color: var(--border-color); /* Keep border stable */
+    }
+    .feature-icon {
+        font-size: 2.5rem; /* Smaller icon for mobile feature cards */
+        color: var(--primary); 
+        margin-bottom: 1rem; /* Adjusted margin */
+        display: block;
+    }
+    .feature-card h5 {
+        font-size: 1.15rem; /* Smaller title within feature cards */
+    }
+    .feature-card p {
+        font-size: 0.85rem; /* Smaller description within feature cards */
+    }
+
+    /* Supported Languages Section */
+    .languages-section { background-color: #000; }
+    .row.row-cols-2.row-cols-sm-4.g-5.justify-content-center {
+        --bs-gutter-x: 1.5rem; /* Smaller horizontal gutter for tech icons on mobile */
+        --bs-gutter-y: 2rem;   /* Adjusted vertical gutter for tech icons */
+    }
+    .tech-icon-wrapper {
+        display: flex; justify-content: center; align-items: center;
+        transition: all 0.3s ease;
+        padding: 0.5rem; /* Added padding to wrapper for touch target */
+    }
+    .tech-icon-wrapper:hover {
+        /* Disable hover effects on mobile/touch devices */
+        transform: none;
+    }
+    .tech-icon {
+        font-size: 3rem; /* Smaller tech icons for mobile */
+        height: 48px; /* Adjusted height */
+        width: auto; 
+        color: #888;
+        transition: color 0.3s ease; 
+        vertical-align: middle;
+    }
+    .tech-icon-wrapper:hover .tech-icon { color: #888; /* Keep color stable */ }
+    .tech-icon-wrapper:hover .tech-icon path { fill: #888 !important; /* Keep fill stable */ }
+
+    /* AOS Library Mobile Disable */
+    /* This overrides AOS default styles on smaller screens to ensure visibility and prevent animations */
+    @media (max-width: 767px) {
+        [data-aos] {
+            opacity: 1 !important; /* Elements are visible by default */
+            transform: none !important; /* No initial transform */
+            transition: none !important; /* No animation transitions */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    }
+
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        section { padding: 5rem 0; /* Restore padding for larger screens */ }
+        
+        .about-hero {
+            padding: 5rem 0; /* Restore original padding */
+        }
+        .about-hero h1.display-4 { 
+            font-size: 3.5rem; /* Restore original title size */
+        }
+        .about-hero p.lead { 
+            font-size: 1.25rem; /* Restore original lead text size */
+            padding: 0; /* Remove horizontal padding */
+        }
+
+        .row.align-items-center.g-5 {
+            --bs-gutter-x: 3rem; /* Restore horizontal gutter for larger screens */
+            --bs-gutter-y: 3rem;   /* Restore vertical gutter */
+        }
+        .col-lg-6 img {
+            max-height: none; /* Remove max-height constraint */
+        }
+        h2.display-5 { 
+            font-size: 2.5rem; /* Restore original mission/vision titles */
+        }
+        p.fs-5 { 
+            font-size: 1.25rem; /* Restore original description text */
+        }
+
+        .feature-card {
+            padding: 2rem; /* Restore original padding */
+        }
+        .feature-card:hover {
+            transform: translateY(-10px); /* Re-enable hover transform */
+            background: #212121; 
+            border-color: var(--primary); 
+        }
+        .feature-icon {
+            font-size: 3rem; /* Restore original icon size */
+            margin-bottom: 1.5rem;
+        }
+        .feature-card h5 {
+            font-size: 1.25rem; /* Restore original title size */
+        }
+        .feature-card p {
+            font-size: 1rem; /* Restore original description size */
+        }
+
+        .row.row-cols-2.row-cols-sm-4.g-5.justify-content-center {
+            --bs-gutter-x: 3rem; /* Restore original horizontal gutter for tech icons */
+            --bs-gutter-y: 3rem;   /* Restore original vertical gutter */
+        }
+        .tech-icon-wrapper:hover {
+            transform: scale(1.1); /* Re-enable hover transform */
+        }
+        .tech-icon {
+            font-size: 4rem; /* Restore original tech icon size */
+            height: 64px; /* Restore original height */
+        }
+        .tech-icon-wrapper:hover .tech-icon { 
+            color: var(--primary); /* Re-enable hover color */
+        }
+        .tech-icon-wrapper:hover .tech-icon path { 
+            fill: var(--primary) !important; /* Re-enable hover fill */
+        }
+
+        /* Re-enable AOS animations for larger screens */
+        [data-aos] {
+            opacity: 0; /* Allow AOS to control opacity */
+            transform: translateY(20px); /* Allow AOS to control transform */
+            transition: all 0.3s cubic-bezier(0.3, 0.5, 0.4, 1.2); /* AOS default transition */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+             opacity: 0; /* Ensure hidden initially for AOS animation */
+             transform: translateY(20px);
+        }
+    }
+
+    /* Media Queries for larger desktops (optional, min-width: 992px - Bootstrap's 'lg' breakpoint) */
+    @media (min-width: 992px) {
+        .about-hero h1.display-4 {
+            font-size: 4rem; /* Even larger for very big screens */
+        }
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">About LogiComp</h3>
-                </div>
-                <div class="card-body">
-                    <h4 class="mb-3">Our Mission</h4>
-                    <p>
-                        The LogiComp is designed to provide a comprehensive solution for organizing 
-                        and participating in programming competitions. Our goal is to make it easy for 
-                        educators and organizations to host coding contests while providing participants 
-                        with a seamless experience.
+<div class="content-wrapper">
+
+    <section class="about-hero">
+        <div class="container text-center text-white" data-aos="fade-in">
+            <h1 class="display-4" data-translate-key="about_title">About LogiComp</h1>
+            <p class="lead col-md-8 mx-auto" data-translate-key="about_subtitle">Discover the mission, vision, and the technology that powers our platform.</p>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h2 class="display-5 fw-bold text-white" data-translate-key="mission_title">Our Mission</h2>
+                    <p class="text-white-50 fs-5 mt-3" data-translate-key="mission_desc">
+                        To provide a robust, seamless, and fair platform for programming competitions. We aim to empower educators and organizations to host coding events, while inspiring participants to learn, grow, and showcase their skills in a vibrant community.
                     </p>
-                    
-                    <h4 class="mb-3 mt-4">Features</h4>
-                    <ul>
-                        <li>Create and manage programming contests with multiple problems</li>
-                        <li>Automatic judging of submissions with detailed feedback</li>
-                        <li>Real-time leaderboards to track progress</li>
-                        <li>Secure authentication and participant management</li>
-                        <li>Support for multiple programming languages</li>
-                    </ul>
+                </div>
+                <div class="col-lg-6 text-center" data-aos="fade-left" data-aos-delay="100">
+                    <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="img-fluid rounded-3 shadow-lg" alt="Coding Environment">
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+    
+    <section class="py-5" style="background-color: #0f0f0f;">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <!-- Swapped order: Text content first, then image content -->
+                <div class="col-lg-6" data-aos="fade-right"> {# Text content - fades in from right (left column) #}
+                    <h2 class="display-5 fw-bold text-white" data-translate-key="vision_title">Our Vision</h2>
+                    <p class="text-white-50 fs-5 mt-3" data-translate-key="vision_desc">
+                        To become the leading global hub for competitive programming, fostering innovation and nurturing the next generation of tech talent. We envision a future where anyone, anywhere, can access world-class tools to challenge themselves and connect with a global network of peers.
+                    </p>
+                </div>
+                <div class="col-lg-6 text-center" data-aos="fade-left" data-aos-delay="100"> {# Image content - fades in from left (right column) #}
+                    <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" class="img-fluid rounded-3 shadow-lg" alt="Team Vision">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5" style="background-color: #1a1a1a;">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold" data-translate-key="features_title">Platform Features</h2>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card"><i class="bi bi-diagram-3-fill feature-icon"></i><h5 class="text-white" data-translate-key="feature1_title">Contest Management</h5><p class="text-white-50" data-translate-key="feature1_desc">Easily create and manage contests with multiple, complex problems.</p></div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card"><i class="bi bi-robot feature-icon"></i><h5 class="text-white" data-translate-key="feature2_title">Automatic Judging</h5><p class="text-white-50" data-translate-key="feature2_desc">Instant, reliable feedback on submissions across various test cases.</p></div>
+                </div>
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card"><i class="bi bi-bar-chart-line-fill feature-icon"></i><h5 class="text-white" data-translate-key="feature3_title">Real-time Leaderboard</h5><p class="text-white-50" data-translate-key="feature3_desc">Track progress and competition standings live as they happen.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 languages-section">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold" data-translate-key="supported_languages_title">Supported Languages</h2>
+            </div>
+            
+            <div class="row row-cols-2 row-cols-sm-4 g-5 justify-content-center" data-aos="zoom-in-up">
+                <div class="col tech-icon-wrapper">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" class="tech-icon" alt="Python Logo" title="Python">
+                </div>
+                <div class="col tech-icon-wrapper">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg" class="tech-icon" alt="Java Logo" title="Java">
+                </div>
+                <div class="col tech-icon-wrapper">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" class="tech-icon" alt="C++ Logo" title="C++">
+                </div>
+                <div class="col tech-icon-wrapper">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg" class="tech-icon" alt="JavaScript Logo" title="JavaScript">
+                </div>
+            </div>
+        </div>
+    </section>
+
 </div>
+{% endblock %}
+
+
+{% block scripts %}
+{{ super() }} 
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // AOS.init is called here. The CSS handles disabling animations for smaller screens.
+    AOS.init({ duration: 800, offset: 50, once: true });
+    
+    const aboutTranslations = {
+        'en': {
+            'page_about': 'About Us', 'about_title': 'About LogiComp', 'about_subtitle': 'Discover the mission, vision, and the technology that powers our platform.',
+            'mission_title': 'Our Mission', 'mission_desc': 'To provide a robust, seamless, and fair platform for programming competitions. We aim to empower educators and organizations to host coding events, while inspiring participants to learn, grow, and showcase their skills in a vibrant community.',
+            'vision_title': 'Our Vision', 'vision_desc': 'To become the leading global hub for competitive programming, fostering innovation and nurturing the next generation of tech talent. We envision a future where anyone, anywhere, can access world-class tools to challenge themselves and connect with a global network of peers.',
+            'features_title': 'Platform Features', 'feature1_title': 'Contest Management', 'feature1_desc': 'Easily create and manage contests with multiple, complex problems.',
+            'feature2_title': 'Automatic Judging', 'feature2_desc': 'Instant, reliable feedback on submissions across various test cases.',
+            'feature3_title': 'Real-time Leaderboard', 'feature3_desc': 'Track progress and competition standings live as they happen.',
+            'supported_languages_title': 'Supported Languages', 
+        },
+        'hy': {
+            'page_about': 'Մեր մասին', 'about_title': 'LogiComp-ի մասին', 'about_subtitle': 'Բացահայտեք մեր առաքելությունը, տեսլականը և մեր հարթակը սնուցող տեխնոլոգիաները։',
+            'mission_title': 'Մեր Առաքելությունը', 'mission_desc': 'Տրամադրել կայուն, անխափան և արդար հարթակ ծրագրավորման մրցույթների համար։ Մեր նպատակն է հզորացնել դասախոսներին և կազմակերպություններին՝ կոդավորման միջոցառումներ անցկացնելու համար՝ միաժամանակ ոգեշնչելով մասնակիցներին սովորել, աճել և ցուցադրել իրենց հմտությունները։',
+            'vision_title': 'Մեր Տեսլականը', 'vision_desc': 'Դառնալ մրցակցային ծրագրավորման առաջատար համաշխարհային կենտրոն՝ խթանելով նորարարությունը և զարգացնելով տեխնոլոգիական տաղանդների հաջորդ սերունդը։ Մենք պատկերացնում ենք մի ապագա, որտեղ յուրաքանչյուրը, ցանկացած վայրում, կարող է օգտվել համաշխարհային կարգի գործիքներից՝ իրեն մարտահրավեր նետելու համար։',
+            'features_title': 'Հարթակի Առանձնահատկությունները', 'feature1_title': 'Մրցույթների Կառավարում', 'feature1_desc': 'Հեշտությամբ ստեղծեք և կառավարեք մրցույթներ՝ բազմաթիվ բարդ խնդիրներով։',
+            'feature2_title': 'Ավտոմատ Ստուգում', 'feature2_desc': 'Ակնթարթային, հուսալի արձագանք տարբեր թեստային դեպքերի համար։',
+            'feature3_title': 'Իրական Ժամանակի Աղյուսակ', 'feature3_desc': 'Հետևեք առաջընթացին և մրցակցության դիրքերին ուղիղ եթերում։',
+            'supported_languages_title': 'Աջակցվող Լեզուներ',
+        },
+        'ru': {
+            'page_about': 'О нас', 'about_title': 'О LogiComp', 'about_subtitle': 'Узнайте о миссии, видении и технологиях, на которых работает наша платформа.',
+            'mission_title': 'Наша Миссия', 'mission_desc': 'Предоставить надежную, удобную и справедливую платформу для соревнований по программированию. Мы стремимся дать возможность преподавателям и организациям проводить мероприятия по программированию, вдохновляя участников учиться, расти и демонстрировать свои навыки.',
+            'vision_title': 'Наше Видение', 'vision_desc': 'Стать ведущим мировым центром соревновательного программирования, способствуя инновациям и воспитывая следующее поколение технических талантов. Мы предвидим будущее, в котором любой человек в любом месте сможет получить доступ к инструментам мирового класса, чтобы бросить себе вызов.',
+            'features_title': 'Возможности Платформы', 'feature1_title': 'Управление Конкурсами', 'feature1_desc': 'Легко создавайте и управляйте конкурсами с множеством сложных задач.',
+            'feature2_title': 'Автоматическая Проверка', 'feature2_desc': 'Мгновенная, надежная обратная связь по решениям на различных тестах.',
+            'feature3_title': 'Таблица Лидеров в Реальном Времени', 'feature3_desc': 'Отслеживайте свой прогресс и турнирную таблицу в прямом эфире.',
+            'supported_languages_title': 'Поддерживаемые Языки',
+        }
+    };
+    Object.keys(aboutTranslations).forEach(lang => {
+        if (!window.translations[lang]) { window.translations[lang] = {}; }
+        Object.assign(window.translations[lang], aboutTranslations[lang]);
+    });
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            let translation = langDict[key];
+            if (translation) {
+                if (el.dataset.count) {
+                    translation = translation.replace('%s', el.dataset.count);
+                }
+                el.textContent = translation;
+            }
+        });
+    };
+    updatePageText();
+    window.addEventListener('languageChanged', updatePageText);
+});
+</script>
 {% endblock %}

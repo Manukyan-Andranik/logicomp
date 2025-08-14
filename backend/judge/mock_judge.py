@@ -1,9 +1,9 @@
-# judge/mock_judge.py
 import subprocess
 import os
 import time
 import tempfile
-from enum import Enum, auto
+import re
+from enum import Enum
 from typing import Tuple
 from app.models import TestCase
 
@@ -33,33 +33,60 @@ def run_code(code: str, language: str, input_data: str, time_limit: int) -> Tupl
         filename = filename_map[language]
         code_path = os.path.join(temp_dir, filename)
 
-        # === Auto-wrap for minimal code submission ===
-        if language == 'python' and 'def res' in code and 'print' not in code:
-            code += "\n\nif __name__ == '__main__':\n    a, b = map(int, input().split())\n    print(res(a, b))\n"
+        # === Detect function name ===
+        func_name = None
 
-        elif language == 'java' and 'public static int res' in code and 'Scanner' not in code:
-            code += (
-                "\n\npublic class Solution {\n"
-                "    public static int res(int a, int b) {\n"
-                "        // your logic here\n"
-                "        return a + b;\n"
-                "    }\n"
-                "    public static void main(String[] args) {\n"
-                "        java.util.Scanner sc = new java.util.Scanner(System.in);\n"
-                "        int a = sc.nextInt();\n"
-                "        int b = sc.nextInt();\n"
-                "        System.out.println(res(a, b));\n"
-                "    }\n"
-                "}\n"
-            )
+        if language == 'python':
+            # Match function def: def func_name(
+            m = re.search(r'def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(', code)
+            if m:
+                func_name = m.group(1)
 
-        elif language == 'javascript' and 'function res' in code and 'console.log' not in code:
-            code += (
-                "\n\nconst fs = require('fs');\n"
-                "const input = fs.readFileSync(0, 'utf8').trim().split(' ').map(Number);\n"
-                "console.log(res(input[0], input[1]));\n"
-            )
+            # Auto-wrap minimal code submissions
+            if func_name and 'print' not in code:
+                code += (
+                    "\n\nif __name__ == '__main__':\n"
+                    "    a, b = map(int, input().split())\n"
+                    f"    print({func_name}(a, b))\n"
+                )
 
+        elif language == 'java':
+            # Match function signature e.g. public static int funcName(
+            m = re.search(r'public static (?:int|void|String|double|float|long|boolean) ([a-zA-Z_][a-zA-Z0-9_]*)\s*\(', code)
+            if m:
+                func_name = m.group(1)
+
+            # If function found but no Scanner/input handling, auto-wrap
+            if func_name and 'Scanner' not in code:
+                code = (
+                    "public class Solution {\n"
+                    f"    public static int {func_name}(int a, int b) {{\n"
+                    "        // your logic here\n"
+                    "        return a + b;\n"
+                    "    }\n"
+                    "    public static void main(String[] args) {\n"
+                    "        java.util.Scanner sc = new java.util.Scanner(System.in);\n"
+                    "        int a = sc.nextInt();\n"
+                    "        int b = sc.nextInt();\n"
+                    f"        System.out.println({func_name}(a, b));\n"
+                    "    }\n"
+                    "}\n"
+                )
+
+        elif language == 'javascript':
+            # Match function definition: function funcName(
+            m = re.search(r'function\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(', code)
+            if m:
+                func_name = m.group(1)
+
+            if func_name and 'console.log' not in code:
+                code += (
+                    "\n\nconst fs = require('fs');\n"
+                    "const input = fs.readFileSync(0, 'utf8').trim().split(' ').map(Number);\n"
+                    f"console.log({func_name}(input[0], input[1]));\n"
+                )
+
+        # Write code to file
         with open(code_path, 'w') as f:
             f.write(code)
 
@@ -142,53 +169,88 @@ def run_code(code: str, language: str, input_data: str, time_limit: int) -> Tupl
 
 
 def judge_submission(submission_id: int):
-    # Add this function at the top or near run_code
-    def normalize_output(text: str) -> str:
-        """Normalize output by stripping extra whitespace and newlines."""
-        return '\n'.join(
-            line.strip()
-            for line in text.strip().splitlines()
-            if line.strip() != ''
-        )
-
     """Judge a submission against all test cases"""
     from app import create_app, db
     from app.models import Submission, TestCase
-    
+
     app = create_app()
     with app.app_context():
         submission = Submission.query.get(submission_id)
         if not submission:
-            return
-        
+            print(f"[Judge] Submission {submission_id} not found")
+            return None
+
         problem = submission.problem
         test_cases = TestCase.query.filter_by(problem_id=problem.id).all()
+        
+        print(f"[Judge] Judging submission {submission_id} for problem {problem.id}")
+        print(f"[Judge] Found {len(test_cases)} test cases")
+        
+        if not test_cases:
+            # If no test cases, mark as accepted (legacy support)
+            submission.status = Verdict.ACCEPTED.value
+            submission.execution_time = 0
+            db.session.commit()
+            print(f"[Judge] No test cases found, marked as Accepted")
+            return True
+            
+        # Initialize submission status
         submission.status = Verdict.ACCEPTED.value
         submission.execution_time = 0
+        submission.error_message = None
+
+        def normalize_output(text: str) -> str:
+            """Normalize output by stripping extra whitespace and newlines."""
+            return '\n'.join(
+                line.strip()
+                for line in text.strip().splitlines()
+                if line.strip() != ''
+            )
+
+        print(f"[Judge] Starting test case evaluation...")
         
-        for test_case in test_cases:
+        for i, test_case in enumerate(test_cases, 1):
+            print(f"[Judge] Testing case {i}/{len(test_cases)}: input='{test_case.expected_input}', expected='{test_case.expected_output}'")
+            
+            # Convert time limit from milliseconds to seconds
+            time_limit_seconds = max(1, problem.time_limit / 1000)  # Minimum 1 second
+            
             verdict, output, exec_time = run_code(
                 submission.code,
                 submission.language,
                 test_case.expected_input,
-                problem.time_limit
+                time_limit_seconds
             )
-            
+
             submission.execution_time = max(submission.execution_time, exec_time)
-            
+
             if verdict != Verdict.ACCEPTED:
                 submission.status = verdict.value
                 submission.error_message = output
+                print(f"[Judge] Test case {i} failed with {verdict.value}: {output}")
                 break
 
-            if normalize_output(output) != normalize_output(test_case.expected_output):
+            # Normalize outputs for comparison
+            expected_normalized = normalize_output(test_case.expected_output)
+            actual_normalized = normalize_output(output)
+            
+            if actual_normalized != expected_normalized:
                 submission.status = Verdict.WRONG_ANSWER.value
                 submission.error_message = (
-                    "Output doesn't match expected result\n"
-                    f"Expected: {normalize_output(test_case.expected_output)}\n"
-                    f"Got: {normalize_output(output)}"
+                    f"Test case {i} failed: Output doesn't match expected result\n"
+                    f"Expected: '{expected_normalized}'\n"
+                    f"Got: '{actual_normalized}'"
                 )
+                print(f"[Judge] Test case {i} failed: expected '{expected_normalized}', got '{actual_normalized}'")
                 break
+            else:
+                print(f"[Judge] Test case {i} passed")
 
-        
+        # Commit the final result
         db.session.commit()
+        
+        print(f"[Judge] Final result: {submission.status}")
+        if submission.error_message:
+            print(f"[Judge] Error message: {submission.error_message}")
+        
+        return True

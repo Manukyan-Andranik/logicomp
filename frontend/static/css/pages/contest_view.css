@@ -1,0 +1,38 @@
+/* Extracted from contest/view.html */
+main { background-color: #121212; }
+.container.py-5 { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; padding-left: 0.8rem !important; padding-right: 0.8rem !important; }
+.contest-header { flex-direction: column; align-items: flex-start !important; margin-bottom: 1.5rem !important; gap: 1rem; }
+.contest-header .d-flex.align-items-center:first-child { flex-direction: column; align-items: flex-start; width: 100%; }
+.contest-header .bi-flag-fill { font-size: 2.5rem; margin-right: 0 !important; margin-bottom: 0.5rem; }
+.contest-header h1 { font-weight: 700; font-size: 2rem; margin-bottom: 0.5rem !important; width: 100%; }
+.countdown-badge { background-color: rgba(255, 204, 0, 0.1); border: 1px solid var(--primary); color: var(--primary); padding: 0.4rem 0.8rem; border-radius: 50px; font-weight: 500; font-size: 0.85rem; width: 100%; justify-content: center; margin-top: 0.5rem !important; }
+.countdown-badge i.bi-alarm { font-size: 1rem; margin-right: 0.5rem; }
+.contest-header .d-flex.gap-2 { flex-direction: column; width: 100%; gap: 0.75rem !important; margin-top: 1rem; }
+.contest-header .d-flex.gap-2 .btn { width: 100%; padding: 0.6rem 1rem; font-size: 0.95rem; }
+
+.problem-list-card { background-color: #1a1a1a; border: 1px solid var(--border-color); border-radius: 0.75rem; }
+.problem-list-card .card-header { background-color: #212121; border-bottom: 1px solid var(--border-color); padding: 0.8rem 1rem; font-size: 1.05rem; }
+.problem-item { background-color: #1a1a1a !important; color: var(--text-light) !important; border-top: 1px solid var(--border-color) !important; transition: background-color 0.2s ease; padding: 0.8rem 1rem; }
+.problem-item:first-child { border-top: none !important; }
+.problem-item:hover { background-color: #1a1a1a !important; }
+.problem-item .problem-title { color: white; font-weight: 500; font-size: 1.05rem; }
+.problem-item .text-muted.small { font-size: 0.85rem; }
+
+@media (min-width: 768px) {
+  .container.py-5 { padding-top: 3rem !important; padding-bottom: 3rem !important; padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+  .contest-header { flex-direction: row; align-items: center !important; margin-bottom: 2rem !important; gap: 0; }
+  .contest-header .d-flex.align-items-center:first-child { flex-direction: row; align-items: center; width: auto; }
+  .contest-header .bi-flag-fill { font-size: 3.5rem; margin-right: 1.5rem !important; margin-bottom: 0; }
+  .contest-header h1 { font-size: 2.5rem; margin-bottom: 0 !important; width: auto; }
+  .countdown-badge { padding: 0.5rem 1rem; font-size: inherit; width: auto; justify-content: flex-start; margin-top: 0 !important; }
+  .countdown-badge i.bi-alarm { font-size: 1rem; margin-right: 0.5rem; }
+  .contest-header .d-flex.gap-2 { flex-direction: row; width: auto; gap: 0.5rem !important; margin-top: 0; }
+  .contest-header .d-flex.gap-2 .btn { width: auto; padding: 0.375rem 0.75rem; font-size: 0.875rem; }
+  .problem-list-card { border-radius: 0.75rem; }
+  .problem-list-card .card-header { padding: 1rem 1.25rem; font-size: 1.25rem; }
+  .problem-item { padding: 1rem 1.25rem; }
+  .problem-item:hover { background-color: #252525 !important; }
+  .problem-item .problem-title { font-size: 1.25rem; }
+  .problem-item .text-muted.small { font-size: 0.875rem; }
+}
+

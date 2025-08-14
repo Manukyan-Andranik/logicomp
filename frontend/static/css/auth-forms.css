@@ -1,0 +1,666 @@
+/* Authentication Forms Enhanced Styling */
+/* This file contains all the enhanced styling for login and registration forms */
+
+/* Base Layout */
+body { 
+    overflow-x: hidden; 
+    overflow-y: auto; 
+}
+
+main.auth-main { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    min-height: calc(100vh - var(--navbar-height)); 
+    padding: 2rem 0 !important; 
+    background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.9)), 
+                url('https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=1350&q=80'); 
+    background-size: cover; 
+    background-position: center; 
+}
+
+/* Enhanced Card Design */
+.auth-card { 
+    background: rgba(0, 0, 0, 0.6); 
+    backdrop-filter: blur(20px) saturate(180%); 
+    border: 1px solid var(--border-color); 
+    border-radius: 1.5rem; 
+    box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.5); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px 0 rgba(0, 0, 0, 0.6);
+}
+
+.auth-card .card-title { 
+    color: white; 
+    font-weight: 700; 
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.auth-icon {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 0 10px rgba(255, 193, 7, 0.3));
+}
+
+.contest-title { 
+    color: var(--primary); 
+    font-weight: 600; 
+    font-size: 1.1rem; 
+    margin-top: -5px; 
+    margin-bottom: 2rem; 
+    display: block;
+    background: rgba(255, 193, 7, 0.1);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 193, 7, 0.2);
+}
+
+/* Enhanced Form Controls */
+.form-group {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.form-control-modern { 
+    background: rgba(255, 255, 255, 0.1) !important; 
+    border: 2px solid rgba(255, 255, 255, 0.2) !important; 
+    border-radius: 12px !important; 
+    color: white !important; 
+    padding: 1rem 1rem 1rem 3rem !important; 
+    box-shadow: none !important; 
+    transition: all 0.3s ease !important;
+    font-size: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.form-control-modern::placeholder { 
+    color: rgba(255, 255, 255, 0.6); 
+    opacity: 1; 
+    font-weight: 400;
+}
+
+.form-control-modern:focus { 
+    border-color: var(--border-color) !important; 
+    background: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.1) !important;
+    transform: translateY(-2px);
+}
+
+.form-control-modern:not(:placeholder-shown) {
+    border-color: var(--border-color) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.form-control-modern.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1) !important;
+}
+
+.form-control-modern.is-valid {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.1) !important;
+}
+
+/* Input Icons */
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+    z-index: 2;
+}
+
+.form-control-modern:focus + .input-icon,
+.form-control-modern:not(:placeholder-shown) + .input-icon {
+    color: var(--primary);
+}
+
+/* Enhanced Labels */
+.form-label { 
+    color: rgba(255, 255, 255, 0.9); 
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+    display: block;
+    transition: color 0.3s ease;
+}
+
+.form-group:focus-within .form-label {
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
+/* Password Toggle */
+.password-wrapper { 
+    position: relative; 
+}
+
+.password-toggle { 
+    position: absolute; 
+    top: 50%; 
+    right: 1rem; 
+    transform: translateY(-50%); 
+    color: rgba(255, 255, 255, 0.6); 
+    cursor: pointer; 
+    transition: all 0.3s ease; 
+    font-size: 1.2rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.password-toggle:hover { 
+    color: var(--primary); 
+    background: rgba(255, 193, 7, 0.1);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Enhanced Button */
+.btn-auth { 
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+    border: none; 
+    color: white; 
+    font-weight: 700; 
+    padding: 1rem 2rem; 
+    border-radius: 50px; 
+    transition: all 0.3s ease; 
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-auth::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-auth:hover { 
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary)); 
+    color: white; 
+    box-shadow: 0 10px 25px rgba(255, 193, 7, 0.3); 
+    transform: translateY(-3px);
+}
+
+.btn-auth:hover::before {
+    left: 100%;
+}
+
+.btn-auth:active {
+    transform: translateY(-1px);
+}
+
+/* Remember Me Checkbox */
+.form-check {
+    margin: 1.5rem 0;
+}
+
+.form-check-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.2);
+}
+
+.form-check-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.form-check-input:checked + .form-check-label {
+    color: var(--primary);
+}
+
+/* Divider */
+.divider {
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    height: 1px;
+    margin: 2rem 0;
+    border: none;
+}
+
+/* Extra Links */
+.extra-links { 
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.extra-links span { 
+    color: rgba(255, 255, 255, 0.7) !important; 
+    font-weight: 500;
+}
+
+.extra-links a { 
+    color: var(--primary); 
+    text-decoration: none; 
+    font-size: 1rem; 
+    font-weight: 600;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.extra-links a:hover { 
+    background: rgba(255, 193, 7, 0.2);
+    color: var(--primary);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* Floating Labels Animation */
+.floating-label {
+    position: absolute;
+    top: 1rem;
+    left: 3rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.form-control-modern:focus ~ .floating-label,
+.form-control-modern:not(:placeholder-shown) ~ .floating-label {
+    top: -0.5rem;
+    left: 1rem;
+    font-size: 0.8rem;
+    color: var(--primary);
+    background: rgba(18, 18, 18, 0.9);
+    padding: 0 0.5rem;
+    border-radius: 4px;
+}
+
+/* Error States */
+.invalid-feedback,
+.invalid-feedback-custom { 
+    color: #ff6b6b; 
+    font-size: 0.875rem; 
+    margin-top: 0.5rem; 
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(220, 53, 69, 0.1);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border-left: 3px solid #dc3545;
+}
+
+.invalid-feedback i,
+.invalid-feedback-custom i {
+    font-size: 1rem;
+    color: #dc3545;
+}
+
+/* Success States */
+.valid-feedback {
+    color: #51cf66;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(40, 167, 69, 0.1);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    border-left: 3px solid #28a745;
+}
+
+.valid-feedback i {
+    font-size: 1rem;
+    color: #28a745;
+}
+
+/* Loading State */
+.btn-auth.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn-auth.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Progress Indicator */
+.form-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.progress-step {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.progress-step.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: scale(1.1);
+}
+
+.progress-step.completed {
+    background: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.progress-line {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 1;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary);
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-card {
+        margin: 1rem;
+        border-radius: 1rem;
+    }
+    
+    .auth-card .card-title {
+        font-size: 1.75rem;
+    }
+    
+    .auth-icon {
+        font-size: 2.5rem;
+    }
+    
+    .form-control-modern {
+        padding: 0.875rem 0.875rem 0.875rem 2.5rem !important;
+        font-size: 0.95rem;
+    }
+    
+    .input-icon {
+        left: 0.875rem;
+        font-size: 1rem;
+    }
+    
+    .floating-label {
+        left: 2.5rem;
+    }
+    
+    .form-control-modern:focus ~ .floating-label,
+    .form-control-modern:not(:placeholder-shown) ~ .floating-label {
+        left: 0.875rem;
+    }
+    
+    .contest-title {
+        font-size: 1rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .btn-auth {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-card {
+        margin: 0.5rem;
+        border-radius: 0.75rem;
+    }
+    
+    .auth-card .card-body {
+        padding: 1.5rem !important;
+    }
+    
+    .auth-card .card-title {
+        font-size: 1.5rem;
+    }
+    
+    .auth-icon {
+        font-size: 2rem;
+    }
+    
+    .form-control-modern {
+        padding: 0.75rem 0.75rem 0.75rem 2.25rem !important;
+        font-size: 0.9rem;
+    }
+    
+    .input-icon {
+        left: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .floating-label {
+        left: 2.25rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-control-modern:focus ~ .floating-label,
+    .form-control-modern:not(:placeholder-shown) ~ .floating-label {
+        left: 0.75rem;
+        font-size: 0.7rem;
+    }
+    
+    .btn-auth {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Focus Visible for Accessibility */
+.form-control-modern:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .form-control-modern {
+        border-width: 3px !important;
+    }
+    
+    .btn-auth {
+        border: 2px solid white;
+    }
+    
+    .auth-card {
+        border-width: 2px !important;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .form-control-modern,
+    .btn-auth,
+    .floating-label,
+    .input-icon,
+    .progress-step,
+    .auth-card {
+        transition: none;
+    }
+    
+    .btn-auth::before {
+        display: none;
+    }
+    
+    .btn-auth:hover {
+        transform: none;
+    }
+    
+    .form-control-modern:focus {
+        transform: none;
+    }
+}
+
+/* Dark Mode Enhancements */
+@media (prefers-color-scheme: dark) {
+    .form-control-modern {
+        background: rgba(255, 255, 255, 0.08) !important;
+    }
+    
+    .form-control-modern:focus {
+        background: rgba(255, 255, 255, 0.12) !important;
+    }
+    
+    .auth-card {
+        background: rgba(0, 0, 0, 0.7);
+    }
+}
+
+/* Print Styles */
+@media print {
+    .auth-card {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+    
+    .form-control-modern {
+        background: white !important;
+        color: black !important;
+        border: 1px solid #ccc !important;
+    }
+    
+    .btn-auth {
+        background: #ccc !important;
+        color: black !important;
+    }
+}
+
+/* Custom Scrollbar for Form Elements */
+.form-control-modern::-webkit-scrollbar {
+    width: 6px;
+}
+
+.form-control-modern::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.form-control-modern::-webkit-scrollbar-thumb {
+    background: rgba(255, 193, 7, 0.5);
+    border-radius: 3px;
+}
+
+.form-control-modern::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 193, 7, 0.7);
+}
+
+/* Focus Ring Animation */
+.form-control-modern:focus {
+    animation: focusRing 0.3s ease-out;
+}
+
+@keyframes focusRing {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.1);
+    }
+}
+
+/* Hover Effects for Interactive Elements */
+.form-control-modern:hover:not(:focus) {
+    border-color: var(--border-color) !important;
+    background: var(--hover-bg) !important;
+}
+
+.input-icon:hover {
+    color: rgba(255, 193, 7, 0.8);
+}
+
+/* Success Animation */
+.form-control-modern.is-valid {
+    animation: successPulse 0.6s ease-out;
+}
+
+@keyframes successPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+}
+
+/* Error Shake Animation */
+.form-control-modern.is-invalid {
+    animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}

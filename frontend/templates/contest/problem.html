@@ -1,111 +1,404 @@
 {% extends "base.html" %}
 
-{% block title %}{{ contest.title }} - {{ problem.title }}{% endblock %}
+{% block title %}<span data-translate-key="page_title" data-contest-title="{{ contest.title }}" data-problem-title="{{ problem.title }}">{{ contest.title }} - {{ problem.title }}</span>{% endblock %}
+
+{% block extra_css %}
+<link href="{{ url_for('static', filename='css/pages/contest_problem.css') }}" rel="stylesheet">
+<style>
+    /* Mobile-First Default Styles */
+    :root {
+        /* Ensure these are aligned with your base.html and style.css for dark theme defaults */
+        --light-bg: #f8f9fa; /* Not used directly in dark theme, but kept for context */
+        --light-card-bg: #ffffff;
+        --light-code-bg: #f1f3f5;
+        --light-border: #dee2e6;
+        --text-dark: #212529;
+        --text-muted-light: #6c757d;
+
+        /* Re-defining primary/dark colors just to be explicit if this file is loaded later */
+        --primary: #FFC107;
+        --primary-dark: #FFA000;
+        --dark: #121212; 
+        --code-bg: #1a1a1a; /* From your style.css */
+        --text-light: #e0e0e0;
+        --text-muted: #888;
+        --border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    main { background-color: var(--dark); padding: 0 !important; }
+    
+    /* Global container padding for mobile */
+    .container.py-4 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+        padding-left: 0.8rem !important; /* Added side padding for mobile */
+        padding-right: 0.8rem !important; /* Added side padding for mobile */
+    }
+
+    /* Page Header */
+    .page-header {
+        flex-direction: column; /* Stack title and button vertically on mobile */
+        align-items: flex-start !important; /* Align items to the left */
+        margin-bottom: 1.5rem !important;
+    }
+    .page-header h2 { 
+        font-size: 1.6rem; /* Smaller main title for mobile */
+        color: white !important; /* Ensure main title is white */
+        margin-bottom: 0.5rem; /* Space before problem title if it's on a new line */
+    }
+    .page-header h2 .text-primary {
+        display: block; /* Force problem title to a new line on mobile */
+        font-size: 1.4rem; /* Slightly smaller font for problem title */
+        margin-left: 0 !important; /* Remove left margin for block element */
+        margin-top: 0.2rem; /* Add a small top margin for spacing */
+    }
+    .page-header .btn {
+        padding: 0.5rem 1rem; /* Adjust button padding for touch */
+        font-size: 0.9rem; /* Smaller font for button */
+        width: 100%; /* Make button full width on mobile */
+        margin-top: 1rem; /* Space between title block and button */
+        text-align: center; /* Center button text */
+    }
+
+    /* Cards - Problem and Info Cards */
+    .problem-card, .info-card {
+        background: #1a1a1a; /* Dark background for cards */
+        border: 1px solid var(--border-color); /* Dark border */
+        border-radius: 0.75rem; /* Softer border-radius for modern look */
+        color: var(--text-light); /* Light text for card content */
+    }
+    .problem-card .card-header, .info-card .card-header {
+        background-color: #212121; /* Slightly lighter dark for headers */
+        border-bottom: 1px solid var(--border-color); /* Dark border for header separator */
+        color: white; /* White text for header title */
+        padding: 0.8rem 1rem; /* Adjusted padding */
+        font-size: 1.05rem; /* Smaller header font size */
+    }
+    .problem-card .card-body, .info-card .card-body {
+        padding: 1.2rem; /* Adjusted padding for card body */
+    }
+
+    /* Problem Description */
+    .problem-description-wrapper {
+        background-color: var(--code-bg); /* Use code-bg from base for consistency */
+        color: var(--text-light); /* Light text on dark code background */
+        white-space: pre-wrap;
+        font-family: 'SF Mono', 'Courier New', monospace;
+        font-size: 0.85rem; /* Smaller font for description on mobile */
+        border: 1px solid var(--border-color); /* Dark border */
+        border-radius: 0.5rem; /* Softer border-radius */
+        padding: 0.8rem; /* Adjusted padding */
+    }
+
+    /* Sample Input/Output */
+    h5.mb-3 {
+        font-size: 1.1rem; /* Smaller heading for sample IO */
+    }
+    .io-section h6 {
+        color: var(--text-muted); /* Use general text-muted */
+        text-transform: uppercase;
+        font-size: 0.75rem; /* Smaller h6 for IO sections */
+        letter-spacing: 1px;
+        padding: 0.5rem; /* Added padding for h6 headers */
+        background-color: #121212; /* Dark background for IO headers */
+        border-radius: 0.3rem; /* Rounded corners */
+    }
+    .io-block {
+        background-color: var(--code-bg); /* Consistent code background */
+        color: var(--text-light);
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem; /* Consistent border-radius */
+        font-family: 'SF Mono', 'Courier New', monospace;
+        font-size: 0.85rem; /* Smaller font for code blocks */
+        min-height: 80px; /* Smaller min-height */
+        padding: 0.8rem; /* Adjusted padding */
+    }
+    .row.g-3 { /* Adjust gutter for sample IO section */
+        --bs-gutter-x: 1rem;
+        --bs-gutter-y: 1rem;
+    }
+
+
+    /* Submit Solution Card */
+    .info-card p.small.text-muted {
+        font-size: 0.85rem; /* Smaller info text */
+        color: var(--text-muted) !important; /* Ensure it matches text-muted */
+    }
+    .btn-primary.w-100 {
+        padding: 0.75rem; /* Larger padding for mobile button */
+        font-size: 1rem; /* Larger font size for mobile button */
+        border-radius: 0.5rem; /* Consistent border-radius */
+    }
+
+    /* Submission History */
+    .submissions-list .list-group-item {
+        background-color: transparent !important; /* Inherit background from card */
+        border-top: 1px solid var(--border-color) !important; /* Dark border */
+        padding: 0.8rem 1rem; /* Adjusted padding */
+    }
+    .submissions-list .list-group-item:first-child { border-top: none !important; }
+    .submissions-list .list-group-item .text-muted.small {
+        font-size: 0.75rem; /* Smaller timestamp font */
+    }
+    .badge-status { 
+        font-weight: 500; 
+        font-size: 0.7rem; /* Smaller badge font size */
+        padding: 0.3em 0.6em; /* Smaller badge padding */
+    }
+    /* Colors for dark theme badges (from style.css) */
+    .badge-status.accepted { background-color: rgba(40, 167, 69, 0.1) !important; color: #51cf66 !important; } /* Green */
+    .badge-status.rejected { background-color: rgba(220, 53, 69, 0.1) !important; color: #ff6b6b !important; } /* Red */
+    .badge-status.compilation_error { background-color: rgba(255, 193, 7, 0.1) !important; color: var(--primary) !important; } /* Yellow */
+    .badge-status.pending { background-color: rgba(108, 117, 125, 0.1) !important; color: var(--text-muted) !important; } /* Grey */
+
+
+    /* Ensure buttons are styled correctly for the dark theme */
+    .btn-outline-secondary {
+        --bs-btn-color: var(--text-muted);
+        --bs-btn-border-color: var(--border-color);
+        --bs-btn-hover-color: #fff;
+        --bs-btn-hover-bg: var(--primary); /* Hover with primary color */
+        --bs-btn-hover-border-color: var(--primary);
+    }   
+    /* Fixing the inline style issue for contest title text-primary */
+    /* This overrides the problematic inline style in your HTML */
+    .page-header h2 .text-primary {
+        color: var(--primary) !important; /* Force primary color */
+    }
+
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        .container.py-4 {
+            padding-top: 2rem !important; /* Restore default py-4 for desktop */
+            padding-bottom: 2rem !important;
+            padding-left: 0.75rem !important; /* Standard Bootstrap container padding */
+            padding-right: 0.75rem !important; /* Standard Bootstrap container padding */
+        }
+
+        /* Page Header */
+        .page-header {
+            flex-direction: row; /* Revert to row layout */
+            align-items: center !important; /* Revert alignment */
+            margin-bottom: 2rem !important; /* Restore spacing */
+        }
+        .page-header h2 {
+            font-size: 2.2rem; /* Restore desktop font size */
+            margin-bottom: 0;
+        }
+        .page-header h2 .text-primary {
+            display: inline; /* Problem title on same line */
+            font-size: inherit; /* Inherit font size */
+            margin-left: 0.5rem !important; /* Restore default Bootstrap ms-2 equivalent */
+            margin-top: 0; /* Remove top margin */
+        }
+        .page-header .btn {
+            width: auto; /* Revert button width */
+            margin-top: 0; /* Remove top margin */
+            text-align: unset; /* Revert text alignment */
+        }
+
+        /* Cards - Problem and Info Cards */
+        .problem-card, .info-card {
+            background: #1a1a1a; /* Restore desktop background */
+            border: 1px solid var(--border-color); /* Restore desktop border */
+            border-radius: 0.05rem; /* Restore original sharp border-radius */
+            color: var(--text-light); /* Restore desktop text color */
+        }
+        .problem-card .card-header, .info-card .card-header {
+            background-color: #212121; /* Restore original header background */
+            border-bottom: 1px solid var(--border-color); /* Restore original border */
+            color: white; /* Restore original header text color */
+            padding: 1rem 1.25rem; /* Restore original padding */
+            font-size: 1.25rem; /* Restore original font size */
+        }
+        .problem-card .card-body, .info-card .card-body {
+            padding: 1.5rem; /* Restore original padding for card body */
+        }
+
+        /* Problem Description */
+        .problem-description-wrapper {
+            font-size: 0.9rem; /* Restore original font size */
+            border-radius: 0.05rem; /* Restore original sharp border-radius */
+            padding: 1rem; /* Restore original padding */
+        }
+
+        /* Sample Input/Output */
+        h5.mb-3 {
+            font-size: 1.25rem; /* Restore original heading size */
+        }
+        .io-section h6 {
+            font-size: 0.8rem; /* Restore original h6 font size */
+            padding: 0.5rem 0; /* Revert padding, as it was only for inline style before */
+            background-color: transparent; /* Remove background */
+            border-radius: 0; /* Remove border-radius */
+        }
+        .io-block {
+            font-size: 0.9rem; /* Restore original font size */
+            min-height: 100px; /* Restore original min-height */
+            padding: 1rem; /* Restore original padding */
+            border-radius: 0.05rem; /* Restore original sharp border-radius */
+        }
+        .row.g-3 {
+            --bs-gutter-x: 1.5rem; /* Restore default gutter */
+            --bs-gutter-y: 1.5rem; /* Restore default gutter */
+        }
+
+        /* Submit Solution Card */
+        .info-card p.small.text-muted {
+            font-size: 0.875rem; /* Restore original info text size */
+        }
+        .btn-primary.w-100 {
+            padding: 0.75rem 1.25rem; /* Standard Bootstrap button padding */
+            font-size: 1rem; /* Standard Bootstrap button font size */
+            border-radius: 0.3rem; /* Standard Bootstrap button border-radius */
+        }
+
+        /* Submission History */
+        .submissions-list .list-group-item {
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+        }
+        .submissions-list .list-group-item .text-muted.small {
+            font-size: 0.875rem; /* Restore original timestamp font */
+            color: var(--dark)
+        }
+        .badge-status { 
+            font-size: 0.8rem; /* Restore original badge font size */
+            padding: 0.4em 0.7em; /* Restore original badge padding */
+        }
+        /* Restore badge colors for desktop as per original style.css */
+        .badge-status.accepted { background-color: rgba(40, 167, 69, 0.15) !important; color: #51cf66 !important; }
+        .badge-status.rejected { background-color: rgba(220, 53, 69, 0.15) !important; color: #ff6b6b !important; }
+        .badge-status.compilation_error { background-color: rgba(255, 193, 7, 0.15) !important; color: var(--primary) !important; }
+        .badge-status.pending { background-color: rgba(108, 117, 125, 0.15) !important; color: var(--text-muted) !important; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h2>Test Contest: Problem 1</h2>
-  {% if current_user.role == 'admin' %}
-  <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
-    Back to Contest
-  </a>
-  {% else %}
-  <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-primary">
-    Back to Contest
-  </a>
-  {% endif %}
-</div>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 page-header">
+        <h2 class="d-flex align-items-center"><i class="bi bi-file-earmark-code me-3"></i>{{ contest.title }}: <span class="text-primary ms-2">{{ problem.title }} </span></h2>
+        {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+            </a>
+        {% else %}
+            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+            </a>
+        {% endif %}
+    </div>
 
-<div class="row">
-  <div class="col-md-8">
-    <div class="card mb-4">
-      <div class="card-header">
-        <h3>{{ problem.title }}</h3>
-      </div>
-      <div class="card-body">
-        <div class="mb-4">
-          <div class="problem-description p-4 rounded"
-            style="background-color: #f8f9fa; white-space: pre-wrap; font-family: 'Courier New', monospace; border: 1px solid #ddd;">
-            {{ problem.description }}
-          </div>
+    <div class="row g-4">
+        <!-- Left Column: Problem Details -->
+        <div class="col-lg-8">
+            <div class="card problem-card h-100">
+                <div class="card-header">
+                    <h4 class="mb-0" data-translate-key="header_statement">Problem Statement</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="problem-description-wrapper p-3 mb-4">{{ problem.description }}</div>
+                    
+                    <h5 class="mb-3" data-translate-key="header_io_examples">Sample Input/Output</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="io-section">
+                                <h6 class="mb-2 p-2" data-translate-key="header_input">Input</h6>
+                                <pre class="io-block p-3 mb-0">{{ problem.expected_input }}</pre>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="io-section">
+                                <h6 class="mb-2 p-2" data-translate-key="header_output">Output</h6>
+                                <pre class="io-block p-3 mb-0">{{ problem.expected_output }}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-
-        <div class="mt-4">
-          <h4>Expected Input/Output</h4>
-          <div class="row">
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header bg-primary">
-                  <h5>Input</h5>
+        <div class="col-lg-4">
+            <div class="card info-card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0" data-translate-key="header_submit_solution">Submit Solution</h5>
                 </div>
                 <div class="card-body">
-                  <pre>{{ problem.expected_input }}</pre>
+                  <p class="small text-muted" data-translate-key="text_submit_info1">You can submit your solution in any programming language supported by the system.</p>
+                  <p class="small text-muted" data-translate-key="text_submit_info2">Make sure to follow the input/output format specified in the problem description.</p>
+                  <a href="{{ url_for('submission.submit', problem_id=problem.id) }}" class="btn btn-primary w-100 fw-bold mt-2">
+                      <i class="bi bi-cloud-upload-fill me-2"></i><span data-translate-key="btn_submit_page">Go to Submission Page</span>
+                  </a>
                 </div>
-              </div>
             </div>
 
-            <div class="col-md-6">
-              <div class="card">
-                <div class="card-header bg-primary">
-                  <h5>Output</h5>
+            <div class="card info-card">
+                <div class="card-header">
+                    <h5 class="mb-0" data-translate-key="header_submissions_history">Submissions History</h5>
                 </div>
-                <div class="card-body">
-                  <pre>{{ problem.expected_output }}</pre>
+                <div class="card-body p-0 submissions-list">
+                    <ul class="list-group list-group-flush">
+                        {% for submission in submissions %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small">{{ submission.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                                <span class="badge rounded-pill badge-status 
+                                    {% if submission.status == 'Accepted' %}accepted
+                                    {% elif submission.status in ['Wrong Answer', 'Runtime Error'] %}rejected
+                                    {% elif submission.status == 'Compilation Error' %}compilation_error
+                                    {% else %}pending{% endif %}">
+                                    {% if submission.status == 'Accepted' %}<i class="bi bi-check-circle-fill me-1"></i>
+                                    {% elif submission.status in ['Wrong Answer', 'Runtime Error', 'Compilation Error'] %}<i class="bi bi-x-circle-fill me-1"></i>
+                                    {% else %}<i class="bi bi-hourglass-split me-1"></i>{% endif %}
+                                    <span data-translate-key="status_{{ submission.status|lower|replace(' ', '_') }}">{{ submission.status }}</span>
+                                </span>
+                            </div>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-center text-muted py-4">
+                            <span data-translate-key="text_no_submissions">No submissions yet.</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-
-  <div class="col-md-4">
-
-    <div class="card">
-      <div class="card-header">
-        <h5>Submit Your Solution</h5>
-      </div>
-
-      <div class="card-body">
-        <p class="text-muted">You can submit your solution in any programming language supported by the system.</p>
-        <p class="text-muted">Make sure to follow the input/output format specified in the problem description.</p>
-        <a href="{{ url_for('submission.submit', problem_id=problem.id) }}" class="btn btn-primary w-100">
-          Submit Solution
-        </a>
-      </div>
-    </div>
-
-
-    <div class="card">
-
-      <div class="card-header">
-        <h5>Your Submissions</h5>
-      </div>
-      <div class="card-body p-0">
-        <ul class="list-group list-group-flush">
-          {% for submission in submissions %}
-          <li class="list-group-item">
-            <div class="d-flex justify-content-between">
-              <span>{{ submission.timestamp.strftime('%H:%M') }}</span>
-              <span class="badge 
-                {% if submission.status == 'Accepted' %}badge-success
-                {% elif submission.status in ['Wrong Answer', 'Runtime Error'] %}badge-danger
-                {% elif submission.status == 'Compilation Error' %}badge-warning
-                {% else %}badge-primary{% endif %}">
-                {{ submission.status }}
-              </span>
-            </div>
-          </li>
-          {% else %}
-          <li class="list-group-item text-center text-muted">
-            No submissions yet
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const problemTranslations = {
+        'en': { 'page_title': '%c - %p', 'btn_back_to_contest': 'Back to Contest', 'header_statement': 'Problem Statement', 'header_io_examples': 'Sample Input/Output', 'header_input': 'Input', 'header_output': 'Output', 'header_submit_solution': 'Submit Solution', 'text_submit_info1': 'You can submit your solution in any programming language supported by the system.', 'text_submit_info2': 'Make sure to follow the input/output format specified.', 'btn_submit_page': 'Go to Submission Page', 'header_submissions_history': 'Submissions History', 'text_no_submissions': 'No submissions yet.', 'status_accepted': 'Accepted', 'status_wrong_answer': 'Wrong Answer', 'status_runtime_error': 'Runtime Error', 'status_compilation_error': 'Compilation Error', 'status_pending': 'Pending' },
+        'hy': { 'page_title': '%c - %p', 'btn_back_to_contest': 'Վերադառնալ', 'header_statement': 'Խնդրի Նկարագրություն', 'header_io_examples': 'Օրինակներ', 'header_input': 'Մուտք', 'header_output': 'Ելք', 'header_submit_solution': 'Ուղարկել Լուծումը', 'text_submit_info1': 'Դուք կարող եք ուղարկել լուծումը համակարգի կողմից աջակցվող ցանկացած լեզվով։', 'text_submit_info2': 'Համոզվեք, որ պահպանում եք մուտքի/ելքի նշված ձևաչափը։', 'btn_submit_page': 'Անցնել Ուղարկման Էջ', 'header_submissions_history': 'Ուղարկումների Պատմություն', 'text_no_submissions': 'Դեռևս ուղարկումներ չկան։', 'status_accepted': 'Ընդունված', 'status_wrong_answer': 'Սխալ Պատասխան', 'status_runtime_error': 'Կատարման Սխալ', 'status_compilation_error': 'Կոմպիլյացիայի Սխալ', 'status_pending': 'Սպասման մեջ' },
+        'ru': { 'page_title': '%c - %p', 'btn_back_to_contest': 'Назад к контесту', 'header_statement': 'Условие Задачи', 'header_io_examples': 'Примеры Ввода/Вывода', 'header_input': 'Ввод', 'header_output': 'Вывод', 'header_submit_solution': 'Отправить Решение', 'text_submit_info1': 'Вы можете отправить решение на любом языке, поддерживаемом системой.', 'text_submit_info2': 'Убедитесь, что вы следуете указанному формату ввода/вывода.', 'btn_submit_page': 'Перейти на страницу отправки', 'header_submissions_history': 'История Посылок', 'text_no_submissions': 'Посылок пока нет.', 'status_accepted': 'Принято', 'status_wrong_answer': 'Неверный Ответ', 'status_runtime_error': 'Ошибка Исполнения', 'status_compilation_error': 'Ошибка Компиляции', 'status_pending': 'В Ожидании' }
+    };
+    Object.keys(problemTranslations).forEach(lang => {
+        if (!window.translations[lang]) { window.translations[lang] = {}; }
+        Object.assign(window.translations[lang], problemTranslations[lang]);
+    });
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            let translation = langDict[key];
+            if (translation) {
+                if (key === 'page_title') {
+                    translation = translation.replace('%c', el.dataset.contestTitle).replace('%p', el.dataset.problemTitle);
+                }
+                el.textContent = translation;
+            }
+        });
+    };
+    
+    updatePageText();
+    window.addEventListener('languageChanged', updatePageText);
+});
+</script>
 {% endblock %}

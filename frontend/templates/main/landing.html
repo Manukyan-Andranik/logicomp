@@ -1,51 +1,442 @@
 {% extends "base.html" %}
 
-{% block title %}Welcome{% endblock %}
+{% block title %}<span data-translate-key="page_index">Home</span>{% endblock %}
+
+{% block extra_css %}
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/pages/main_landing.css') }}" rel="stylesheet">
+<style>
+    /* Mobile-First Default Styles */
+    main { padding: 0 !important; }
+    section { 
+        padding: 3rem 0; /* Reduced padding for all sections on mobile */
+    }
+    .container {
+        padding-left: 0.8rem !important; /* Added side padding for mobile */
+        padding-right: 0.8rem !important; /* Added side padding for mobile */
+    }
+
+    /* Hero Section */
+    .hero-section {
+        padding: 4rem 0; /* Reduced padding for mobile hero */
+        background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.7)), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1350&q=80') center center;
+        background-size: cover;
+    }
+    .hero-section .display-4 { 
+        font-size: 2.5rem; /* Smaller title for mobile */
+        text-shadow: 0 2px 5px rgba(0,0,0,0.5); 
+    }
+    .hero-section .lead {
+        font-size: 1rem; /* Smaller lead text for mobile */
+        padding: 0 0.5rem; /* Add some horizontal padding */
+    }
+    .hero-section .mt-4 > .btn { /* Target hero buttons container */
+        width: 100%; /* Make buttons full width */
+        margin-bottom: 0.75rem; /* Add space between stacked buttons */
+        padding: 0.8rem 1.5rem; /* Adjust padding for touch */
+        font-size: 1rem; /* Adjust font size */
+    }
+    .hero-section .mt-4 > .btn:last-child {
+        margin-bottom: 0; /* No margin for the last button */
+    }
+    .hero-section .mt-4 { /* Ensure buttons stack properly */
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem; /* Space between buttons */
+    }
+    .hero-section .btn-primary, .hero-section .btn-outline-light { 
+        border-radius: 50px; 
+        font-weight: bold;
+        /* Disable hover effects for mobile */
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    .hero-section .btn-primary:hover { 
+        transform: none; 
+        box-shadow: none; 
+    }
+
+    /* Feature Cards Section */
+    .feature-card {
+        background: #1a1a1a;
+        border: 1px solid var(--border-color);
+        padding: 1.5rem 1rem; /* Reduced padding for mobile */
+        border-radius: 1rem; 
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    .feature-card:hover { 
+        transform: none; /* Disable hover transform on mobile */
+        background: #1a1a1a; 
+        border-color: var(--border-color); 
+    }
+    .feature-icon { 
+        font-size: 2.5rem; /* Smaller icon for mobile */
+        margin-bottom: 1rem; /* Adjusted margin */
+    }
+    .feature-card h4 {
+        font-size: 1.2rem; /* Smaller title in cards */
+    }
+    .feature-card p {
+        font-size: 0.85rem; /* Smaller description in cards */
+    }
+
+    /* Active Contests Section */
+    .text-center.mb-5 {
+        margin-bottom: 2.5rem !important; /* Adjusted margin for section titles */
+    }
+    h2.fw-bold {
+        font-size: 1.8rem; /* Smaller section titles */
+    }
+    .text-white-50 {
+        font-size: 0.9rem; /* Smaller subtitles */
+    }
+    .contest-card {
+        border-radius: 0.75rem !important; /* Consistent border-radius */
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .contest-card:hover { 
+        transform: none; /* Disable hover transform on mobile */
+        box-shadow: none; /* Disable hover shadow */
+        border-color: var(--border-color); /* Keep stable border */
+    }
+    .contest-card .card-header { 
+        background: var(--card-title-bg) !important; 
+        border-bottom: 1px solid var(--card-border) !important; 
+        color: var(--card-title-color) !important; 
+        font-weight: bold; 
+        padding: 0.75rem 1rem; /* Smaller padding */
+    }
+    .contest-card .card-header h5 {
+        font-size: 1.1rem; /* Smaller contest title in card header */
+    }
+    .contest-card .card-body {
+        padding: 1rem; /* Smaller card body padding */
+    }
+    .contest-card .card-text {
+        font-size: 0.85rem; /* Smaller description text */
+    }
+    .contest-card .btn {
+        padding: 0.6rem 1rem; /* Smaller button for card */
+        font-size: 0.9rem; /* Smaller button font size */
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background-color: #000;
+        padding: 3rem 0; /* Consistent padding */
+    }
+    .cta-section h2 {
+        font-size: 2rem; /* Smaller title */
+    }
+    .cta-section .lead {
+        font-size: 1rem; /* Smaller lead text */
+    }
+    .cta-section .btn {
+        padding: 0.8rem 1.5rem; /* Adjusted padding */
+        font-size: 1rem; /* Adjusted font size */
+        /* Disable hover effects on mobile */
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+
+    /* AOS Library Disable on Mobile */
+    @media (max-width: 767px) {
+        [data-aos] {
+            opacity: 1 !important; /* Elements are visible by default */
+            transform: none !important; /* No initial transform */
+            transition: none !important; /* No animation transitions */
+        }
+        .aos-init[data-aos][data-aos]:not(.aos-animate) {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    }
+
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        section { 
+            padding: 5rem 0; /* Restore original padding */
+        }
+        .container {
+            padding-left: 0.75rem !important; /* Restore default Bootstrap container padding */
+            padding-right: 0.75rem !important; /* Restore default Bootstrap container padding */
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 6rem 0; /* Restore original padding */
+        }
+        .hero-section .display-4 { 
+            font-size: 3.5rem; /* Restore original title size */
+        }
+        .hero-section .lead {
+            font-size: 1.25rem; /* Restore original lead text size */
+            padding: 0; /* Remove padding */
+        }
+        .hero-section .mt-4 > .btn {
+            width: auto; /* Revert button width */
+            margin-bottom: 0; /* Remove margin */
+            padding: 12px 30px; /* Restore original padding */
+            font-size: inherit; /* Restore original font size */
+        }
+        .hero-section .mt-4 {
+            flex-direction: row; /* Revert to row layout */
+            gap: 0; /* Remove gap */
+        }
+        .hero-section .btn-primary, .hero-section .btn-outline-light {
+            /* Re-enable hover effects */
+            transition: all 0.3s;
+        }
+        .hero-section .btn-primary:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3); 
+        }
+
+        /* Feature Cards Section */
+        .feature-card {
+            padding: 2.5rem 2rem; /* Restore original padding */
+        }
+        .feature-card:hover { 
+            transform: translateY(-10px); 
+            background: #212121; 
+            border-color: var(--primary); 
+        }
+        .feature-icon { 
+            font-size: 3.5rem; /* Restore original icon size */
+            margin-bottom: 1.5rem; 
+        }
+        .feature-card h4 {
+            font-size: 1.5rem; /* Restore original title size */
+        }
+        .feature-card p {
+            font-size: 1rem; /* Restore original description size */
+        }
+
+        /* Active Contests Section */
+        .text-center.mb-5 {
+            margin-bottom: 5rem !important; /* Restore original margin */
+        }
+        h2.fw-bold {
+            font-size: 2.5rem; /* Restore original section titles */
+        }
+        .text-white-50 {
+            font-size: 1rem; /* Restore original subtitles */
+        }
+        .contest-card {
+            border-radius: 1rem !important; /* Keep as is */
+        }
+        .contest-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            border-color: var(--primary); 
+        }
+        .contest-card .card-header { 
+            padding: 1rem 1.25rem; /* Restore original padding */
+        }
+        .contest-card .card-header h5 {
+            font-size: 1.25rem; /* Restore original contest title size */
+        }
+        .contest-card .card-body {
+            padding: 1.25rem; /* Restore original card body padding */
+        }
+        .contest-card .card-text {
+            font-size: inherit; /* Restore original description text */
+        }
+        .contest-card .btn {
+            padding: 0.375rem 0.75rem; /* Restore original button size */
+            font-size: 0.875rem; /* Restore original button font size */
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 0; /* Restore original padding */
+        }
+        .cta-section h2 {
+            font-size: 2.5rem; /* Restore original title */
+        }
+        .cta-section .lead {
+            font-size: 1.25rem; /* Restore original lead text */
+        }
+        .cta-section .btn {
+            padding: 1rem 2rem; /* Restore original padding */
+            font-size: 1.1rem; /* Restore original font size */
+            /* Re-enable hover effects */
+        }
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="container">
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5 text-center">
-            <h1 class="display-5 fw-bold">Welcome to LogiComp</h1>
-            <p class="col-md-8 fs-4 mx-auto">
-                A platform for managing and participating in programming competitions.
+<div class="content-wrapper">
+    <section class="hero-section text-center text-white">
+        <div class="container" data-aos="fade-in">
+            <h1 class="display-4 fw-bold" data-translate-key="hero_title">Welcome to LogiComp</h1>
+            <p class="lead col-md-8 mx-auto mt-3" data-translate-key="hero_subtitle">
+                The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!
             </p>
             <div class="mt-4">
-                <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg me-3">Login</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('contest.index') }}" class="btn btn-primary btn-lg shadow-lg">
+                        <i class="bi bi-grid-3x3-gap-fill me-2"></i><span data-translate-key="view_contests">View Contests</span>
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg me-2">
+                        <i class="bi bi-box-arrow-in-right me-2"></i><span data-translate-key="login">Login</span>
+                    </a>
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg shadow-lg">
+                        <i class="bi bi-person-plus-fill me-2"></i><span data-translate-key="register">Register</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
-    </div>
+    </section>
 
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-trophy fs-1 text-primary mb-3"></i>
-                    <h3>Compete</h3>
-                    <p>Test your skills against other programmers in timed contests</p>
+    <section class="py-5" style="background-color: #121212;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card h-100">
+                        <i class="bi bi-trophy-fill feature-icon"></i>
+                        <h4 class="text-white" data-translate-key="feature1_title">Compete</h4>
+                        <p class="text-white-50" data-translate-key="feature1_desc">Test your skills against other programmers in timed contests.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card h-100">
+                        <i class="bi bi-code-square feature-icon"></i>
+                        <h4 class="text-white" data-translate-key="feature2_title">Solve Problems</h4>
+                        <p class="text-white-50" data-translate-key="feature2_desc">Challenge yourself with algorithmic problems of varying difficulty.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card h-100">
+                        <i class="bi bi-graph-up-arrow feature-icon"></i>
+                        <h4 class="text-white" data-translate-key="feature3_title">Track Progress</h4>
+                        <p class="text-white-50" data-translate-key="feature3_desc">See your ranking on live leaderboards and improve your skills.</p>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-code-square fs-1 text-primary mb-3"></i>
-                    <h3>Solve Problems</h3>
-                    <p>Challenge yourself with algorithmic problems of varying difficulty</p>
+    </section>
+    
+    {% if active_contests %}
+    <section class="py-5" style="background-color: #1a1a1a;">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold text-white" data-translate-key="active_contests_title">Active Contests</h2>
+                <p class="text-white-50" data-translate-key="active_contests_subtitle">Join now and start coding!</p>
+            </div>
+            <div class="row">
+                {% for contest in active_contests[:3] %}
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="{{ 100 * loop.index }}">
+                    <div class="card contest-card h-100 shadow-sm">
+                        <div class="card-header"><h5 class="mb-0 text-truncate"><i class="bi bi-flag-fill me-2"></i>{{ contest.title }}</h5></div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="card-text flex-grow-1" style="color: #ccc;">{{ contest.description|truncate(100) }}</p>
+                            <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-warning mt-auto align-self-start">
+                                <span data-translate-key="enter_contest">Enter Contest</span><i class="bi bi-arrow-right-short ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
-        
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-graph-up fs-1 text-primary mb-3"></i>
-                    <h3>Track Progress</h3>
-                    <p>See your ranking on live leaderboards and improve your skills</p>
-                </div>
-            </div>
+    </section>
+    {% endif %}
+
+    {% if not current_user.is_authenticated %}
+    <section class="py-5 text-center cta-section">
+        <div class="container" data-aos="zoom-in">
+            <h2 class="fw-bold text-white" data-translate-key="cta_title">Ready to Join?</h2>
+            <p class="lead text-white-50" data-translate-key="cta_subtitle">Create an account in seconds and start your competitive journey.</p>
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg mt-3 shadow-lg">
+                <span data-translate-key="create_account_now">Create Account Now</span>
+            </a>
         </div>
-    </div>
+    </section>
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    AOS.init({ duration: 800, offset: 50, once: true });
+    
+    const indexTranslations = {
+        'en': {
+            'page_index': 'Home', 'hero_title': 'Welcome to LogiComp', 'hero_subtitle': 'The ultimate platform for competitive programming. Test your skills, challenge others, and climb the leaderboard!',
+            'login': 'Login', 'register': 'Register', 'view_contests': 'View Contests',
+            'feature1_title': 'Compete', 'feature1_desc': 'Test your skills against other programmers in timed contests.',
+            'feature2_title': 'Solve Problems', 'feature2_desc': 'Challenge yourself with algorithmic problems of varying difficulty.',
+            'feature3_title': 'Track Progress', 'feature3_desc': 'See your ranking on live leaderboards and improve your skills.',
+            'active_contests_title': 'Active Contests', 'active_contests_subtitle': 'Join now and start coding!', 'enter_contest': 'Enter Contest',
+            'cta_title': 'Ready to Join?', 'cta_subtitle': 'Create an account in seconds and start your competitive journey.', 'create_account_now': 'Create Account Now'
+        },
+        'hy': {
+            'page_index': 'Գլխավոր', 'hero_title': 'Բարի Գալուստ LogiComp', 'hero_subtitle': 'Ծրագրավորման մրցույթների լավագույն հարթակը։ Ստուգեք ձեր հմտությունները, մրցեք ուրիշների հետ և բարձրացեք առաջատարների աղյուսակում։',
+            'login': 'Մուտք', 'register': 'Գրանցվել', 'view_contests': 'Դիտել Մրցույթները',
+            'feature1_title': 'Մրցեք', 'feature1_desc': 'Ստուգեք ձեր հմտությունները այլ ծրագրավորողների դեմ ժամանակով մրցույթներում։',
+            'feature2_title': 'Լուծեք Խնդիրներ', 'feature2_desc': 'Մարտահրավեր նետեք ինքներդ ձեզ տարբեր բարդության ալգորիթմական խնդիրներով։',
+            'feature3_title': 'Հետևեք Առաջընթացին', 'feature3_desc': 'Տեսեք ձեր դիրքը կենդանի աղյուսակներում և կատարելագործեք ձեր հմտությունները։',
+            'active_contests_title': 'Ակտիվ Մրցույթներ', 'active_contests_subtitle': 'Միացեք հիմա և սկսեք կոդավորել։', 'enter_contest': 'Մուտք գործել',
+            'cta_title': 'Պատրա՞ստ եք միանալ։', 'cta_subtitle': 'Ստեղծեք հաշիվ վայրկյանների ընթացքում և սկսեք ձեր մրցակցային ուղին։', 'create_account_now': 'Ստեղծել հաշիվ'
+        },
+        'ru': {
+            'page_index': 'Главная', 'hero_title': 'Добро пожаловать в LogiComp', 'hero_subtitle': 'Лучшая платформа для соревновательного программирования. Проверьте свои навыки, бросьте вызов другим и поднимитесь в таблице лидеров!',
+            'login': 'Войти', 'register': 'Регистрация', 'view_contests': 'Смотреть Конкурсы',
+            'feature1_title': 'Соревнуйтесь', 'feature1_desc': 'Проверьте свои навыки в соревнованиях на время с другими программистами.',
+            'feature2_title': 'Решайте Задачи', 'feature2_desc': 'Испытайте себя, решая алгоритмические задачи различной сложности.',
+            'feature3_title': 'Отслеживайте Прогресс', 'feature3_desc': 'Следите за своим рейтингом в реальном времени и совершенствуйте свои навыки.',
+            'active_contests_title': 'Активные Конкурсы', 'active_contests_subtitle': 'Присоединяйтесь и начните программировать!', 'enter_contest': 'Войти в конкурс',
+            'cta_title': 'Готовы присоединиться?', 'cta_subtitle': 'Создайте аккаунт за секунды и начните свой соревновательный путь.', 'create_account_now': 'Создать аккаунт'
+        }
+    };
+    
+    // Merge translations into global window.translations object
+    if (!window.translations) window.translations = {}; // Ensure global object exists
+    Object.keys(indexTranslations).forEach(lang => {
+        if (!window.translations[lang]) window.translations[lang] = {};
+        Object.assign(window.translations[lang], indexTranslations[lang]);
+    });
+    
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            let translation = langDict[key];
+            if (translation) {
+                // For buttons where text is in a child span
+                if (el.tagName === 'A' && el.classList.contains('btn')) {
+                    const spanChild = el.querySelector('span[data-translate-key]');
+                    if (spanChild) {
+                        spanChild.textContent = translation;
+                    } else {
+                        el.textContent = translation;
+                    }
+                } else if (el.tagName === 'SPAN' && el.closest('.btn') && el.hasAttribute('data-translate-key')) {
+                    // This specifically handles the spans *inside* the buttons for cases where the JS logic is tied to the span
+                    el.textContent = translation;
+                }
+                else {
+                    el.textContent = translation;
+                }
+            }
+        });
+    };
+    
+    updatePageText();
+    window.addEventListener('languageChanged', updatePageText);
+});
+</script>
 {% endblock %}

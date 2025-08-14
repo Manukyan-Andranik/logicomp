@@ -1,74 +1,238 @@
 {% extends "base.html" %}
 
-{% block title %}{{ contest.title }} - Leaderboard{% endblock %}
+{% block title %}<span data-translate-key="page_title" data-contest-title="{{ contest.title }}">{{ contest.title }} -
+    Leaderboard</span>{% endblock %}
+
+{% block extra_css %}
+<link href="{{ url_for('static', filename='css/pages/contest_leaderboard.css') }}" rel="stylesheet">
+<style>
+    main {
+        background-color: #121212;
+    }
+
+    .leaderboard-header {
+        color: white;
+    }
+
+    .leaderboard-header h1 {
+        font-weight: 700;
+    }
+
+    .leaderboard-table {
+        background-color: #1a1a1a;
+        border: 1px  var(--border-color);
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+        vertical-align: middle;
+        text-align: center;
+        border-top: 1px solid var(--border-color) !important;
+    }
+
+    .leaderboard-table thead th {
+        background-color: #212121 !important;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid var(--border-color) !important;
+    }
+
+    .leaderboard-table tbody tr {
+        background-color: #1a1a1a;
+        transition: background-color 0.2s ease;
+    }
+
+    .leaderboard-table tbody tr:hover {
+        background-color: #252525;
+    }
+
+    .rank-cell .rank-icon {
+        font-size: 1.5rem;
+    }
+
+    .rank-gold {
+        color: #ffd700;
+    }
+
+    .rank-silver {
+        color: #c0c0c0;
+    }
+
+    .rank-bronze {
+        color: #cd7f32;
+    }
+
+    .username-cell {
+        font-weight: 500;
+        color: white;
+        text-align: left !important;
+    }
+
+    .problem-cell {
+        padding: 0.5rem !important;
+    }
+
+    .problem-cell-content {
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+    }
+
+    .cell-accepted {
+        background-color: rgba(25, 135, 84, 0.2);
+    }
+
+    .cell-accepted .score {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #198754;
+    }
+
+    .cell-rejected {
+        background-color: rgba(220, 53, 69, 0.15);
+    }
+
+    .cell-rejected .attempts {
+        color: #dc3545;
+    }
+
+    .cell-pending {
+        color: var(--text-muted);
+    }
+
+    .attempts-count {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .total-score-cell {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+    }
+
+    /* ===== Responsive Styles for Mobile ===== */
+    @media (max-width: 768px) {}
+</style>
+{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 leaderboard-header">
+        <h1 class="d-flex align-items-center"><i class="bi bi-bar-chart-line-fill me-3"></i><span
+                data-translate-key="header_leaderboard">Leaderboard:</span>&nbsp;{{ contest.title }}</h1>
+        {% if current_user.role == 'admin' %}
+        <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-outline-warning">
+            <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+        </a>
+        {% else %}
+        <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-outline-warning">
+            <i class="bi bi-arrow-left-short"></i> <span data-translate-key="btn_back_to_contest">Back to Contest</span>
+        </a>
+        {% endif %}
+    </div>
 
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>{{ contest.title }} - Leaderboard</h2>
-    {% if current_user.role == 'admin' %}
-    <a href="{{ url_for('admin.contest_details', contest_id=contest.id) }}" class="btn btn-primary">
-      Back to Contest
-    </a>
-    {% else %}
-    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-primary">Back to Contest</a>
-    {% endif %}
-  </div>
+    <div class="table-responsive leaderboard-table">
+        <table class="table table-dark table-borderless mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 5%;" data-translate-key="th_rank">#</th>
+                    <th style="width: 20%; text-align: left;" data-translate-key="th_username">Username</th>
+                    {% for problem in problems %}
+                    <th><span data-translate-key="th_problem">Problem</span> {{ loop.index }}</th>
+                    {% endfor %}
+                    <th style="width: 10%;" data-translate-key="th_total_score">Score</th>
+                    <th style="width: 10%;" data-translate-key="th_total_time">Time</th>
+                    <th style="width: 15%;" data-translate-key="th_last_submission">Last Submit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in leaderboard %}
+                <tr>
+                    <td class="rank-cell fw-bold">
+                        {% if loop.index == 1 %}<i class="bi bi-trophy-fill rank-icon rank-gold"></i>
+                        {% elif loop.index == 2 %}<i class="bi bi-trophy-fill rank-icon rank-silver"></i>
+                        {% elif loop.index == 3 %}<i class="bi bi-trophy-fill rank-icon rank-bronze"></i>
+                        {% else %}{{ loop.index }}{% endif %}
+                    </td>
+                    <td class="username-cell">{{ entry.user.username }}</td>
 
-  <div class="table-responsive">
-    <table class="table table-bordered leaderboard-table">
-      <thead class="thead-dark text-center">
-        <tr>
-          <th>#</th>
-          <th>Username</th>
-          {% for problem in problems %}
-            <th>Problem {{ loop.index }}</th>
-          {% endfor %}
-          <th>Total Score</th>
-          <th>Total Time</th>
-          <th>Last Submission</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for entry in leaderboard %}
-        <tr>
-          <td class="text-center font-weight-bold">{{ loop.index }}</td>
-          <td class="text-center">{{ entry.user.username }}</td>
+                    {% for problem in problems %}
+                    {% set result = entry.problems.get(problem.id) %}
+                    <td class="problem-cell">
+                        {% if result is none %}
+                        <div class="problem-cell-content cell-pending"><i class="bi bi-dash-lg"></i></div>
+                        {% elif result.is_accepted %}
+                        <div class="problem-cell-content cell-accepted" data-bs-toggle="tooltip"
+                            title="{{ result.time|round(2) }}s">
+                            <div class="score">+{{ result.score|default(100) }}</div>
+                            <div class="attempts-count">{{ result.attempts }} <span
+                                    data-translate-key="text_attempts">att.</span></div>
+                        </div>
+                        {% else %}
+                        <div class="problem-cell-content cell-rejected">
+                            <div class="attempts">-{{ result.attempts }}</div>
+                            <div class="attempts-count"><span data-translate-key="text_attempts">att.</span></div>
+                        </div>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
 
-          {% for problem in problems %}
-            {% set result = entry.problems.get(problem.id) %}
-            {% if result is none %}
-              <td class="text-center leaderboard-cell pending">
-                <span class="text-muted">–</span>
-              </td>
-            {% elif result.is_accepted %}
-              <td class="text-center leaderboard-cell accepted">
-                <span data-toggle="tooltip" title="{{ result.attempts }} attempt(s)">
-                  ✓ {{ "%.2f"|format(result.time) }}s
-                </span>
-              </td>
-            {% else %}
-              <td class="text-center leaderboard-cell rejected">
-                <span class="text-muted">✗ {{ result.attempts }}</span>
-              </td>
-            {% endif %}
-          {% endfor %}
-
-          <td class="text-center font-weight-bold">{{ entry.total_score }}</td>
-          <td class="text-center">{{ "%.2f"|format(entry.total_time) }}s</td>
-          <td class="text-center">
-            {% if entry.timestamp %}
-              {{ entry.timestamp.strftime('%Y-%m-%d %H:%M') }}
-            {% else %}
-              N/A
-            {% endif %}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+                    <td class="total-score-cell">{{ entry.total_score }}</td>
+                    <td>{{ "%.0f"|format(entry.total_time) }}s</td>
+                    <td class="small text-muted">
+                        {% if entry.timestamp %}{{ entry.timestamp.strftime('%H:%M:%S') }}{% else %}N/A{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+
+        const leaderboardTranslations = {
+            'en': { 'page_title': '%s - Leaderboard', 'header_leaderboard': 'Leaderboard:', 'btn_back_to_contest': 'Back to Contest', 'th_rank': '#', 'th_username': 'Username', 'th_problem': 'Problem', 'th_total_score': 'Score', 'th_total_time': 'Time', 'th_last_submission': 'Last Submit', 'text_attempts': 'att.' },
+            'hy': { 'page_title': '%s - Առաջատարների Աղյուսակ', 'header_leaderboard': 'Աղյուսակ՝', 'btn_back_to_contest': 'Վերադառնալ', 'th_rank': '№', 'th_username': 'Օգտանուն', 'th_problem': 'Խնդիր', 'th_total_score': 'Միավոր', 'th_total_time': 'Ժամանակ', 'th_last_submission': 'Վերջին ուղարկում', 'text_attempts': 'փորձ' },
+            'ru': { 'page_title': '%s - Таблица лидеров', 'header_leaderboard': 'Таблица:', 'btn_back_to_contest': 'Назад к контесту', 'th_rank': '#', 'th_username': 'Пользователь', 'th_problem': 'Задача', 'th_total_score': 'Очки', 'th_total_time': 'Время', 'th_last_submission': 'Посл. отправка', 'text_attempts': 'поп.' }
+        };
+        Object.keys(leaderboardTranslations).forEach(lang => {
+            if (!window.translations[lang]) { window.translations[lang] = {}; }
+            Object.assign(window.translations[lang], leaderboardTranslations[lang]);
+        });
+
+        const updatePageText = () => {
+            const lang = localStorage.getItem('language') || 'en';
+            const langDict = window.translations[lang] || window.translations['en'];
+
+            document.querySelectorAll('[data-translate-key]').forEach(el => {
+                const key = el.dataset.translateKey;
+                let translation = langDict[key];
+                if (translation) {
+                    if (key === 'page_title') {
+                        const contestTitle = el.dataset.contestTitle;
+                        translation = translation.replace('%s', contestTitle);
+                    }
+                    el.textContent = translation;
+                }
+            });
+        };
+
+        updatePageText();
+        window.addEventListener('languageChanged', updatePageText);
+    });
+</script>
 {% endblock %}

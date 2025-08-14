@@ -1,182 +1,421 @@
 {% extends "base.html" %}
 
-{% block title %}Contests{% endblock %}
+{% block title %}<span data-translate-key="title_contests">Contests</span>{% endblock %}
+
+{% block extra_css %}
+<link href="{{ url_for('static', filename='css/pages/contest_index.css') }}" rel="stylesheet">
+<style>
+    /* Mobile-First Default Styles */
+    main { background-color: #121212; }
+    
+    /* Global Section Padding for mobile */
+    .container.py-5 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
+    /* Header Section (Contests Title) */
+    .d-flex.justify-content-between.align-items-center.mb-4 {
+        flex-direction: column; /* Stack header items vertically on mobile */
+        align-items: flex-start !important; /* Align to the start (left) */
+    }
+    .d-flex.justify-content-between.align-items-center.mb-4 h1 {
+        font-size: 1.8rem; /* Smaller header title for mobile */
+        margin-bottom: 1rem; /* Space below title when stacked */
+    }
+
+    /* Tabs Navigation */
+    .nav-tabs .nav-link {
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: var(--text-muted);
+        font-weight: 500;
+        padding: 0.6rem 1rem; /* Slightly smaller padding for tabs on mobile */
+        font-size: 0.9rem; /* Smaller font for tabs on mobile */
+    }
+    .nav-tabs .nav-link.active,
+    .nav-tabs .nav-link:hover {
+        color: var(--primary);
+        background-color: transparent;
+        border-bottom-color: var(--primary);
+    }
+    .nav-tabs {
+        flex-wrap: wrap; /* Allow tabs to wrap if too many on mobile */
+        justify-content: center; /* Center tabs if they wrap */
+        margin-bottom: 1.5rem !important; /* Adjust margin below tabs */
+    }
+    
+    /* Contest Card (for Active Contests) */
+    .contest-card {
+        transition: all 0.3s ease;
+        padding: 1rem; /* Reduced padding for card content on mobile */
+    }
+    .contest-card:hover {
+        transform: none; /* Disable hover transform on mobile */
+        box-shadow: none; /* Disable hover shadow on mobile */
+    }
+    .contest-card .card-header,
+    .contest-card .card-body,
+    .contest-card .card-footer {
+        background-color: inherit !important;
+        border-color: var(--card-border) !important;
+    }
+    .contest-card .card-header { 
+        background-color: var(--card-title-bg) !important; 
+        padding: 0.75rem 1rem; /* Smaller padding for header on mobile */
+    }
+    .contest-card .card-title { 
+        color: var(--card-title-color); 
+        font-size: 1.1rem; /* Smaller title in card header on mobile */
+    }
+    .contest-card .card-body p {
+        font-size: 0.85rem; /* Smaller description text on mobile */
+    }
+    .contest-card .card-footer {
+        flex-direction: column; /* Stack timer and buttons vertically on mobile */
+        align-items: center !important; /* Center items when stacked */
+        padding: 1rem; /* Adjust padding for stacked items */
+        gap: 0.75rem; /* Space between stacked items */
+    }
+    .contest-card .card-footer .badge {
+        font-size: 0.85rem; /* Smaller badge font size on mobile */
+        margin-bottom: 0.5rem; /* Space below badge when stacked */
+    }
+    .contest-card .card-footer > div { /* For the buttons container */
+        display: flex; /* Keep buttons side by side within their container */
+        gap: 0.5rem; /* Space between buttons */
+    }
+    .contest-card .card-footer .btn {
+        padding: 0.6rem 1rem; /* Smaller buttons for mobile */
+        font-size: 0.85rem;
+    }
+
+    /* List Group Item (for Upcoming/Past Contests) */
+    .list-group-item {
+        background-color: #1a1a1a !important;
+        border-color: var(--border-color) !important;
+        color: var(--text-light) !important;
+        margin-bottom: 1rem;
+        border-radius: 0.5rem !important;
+        padding: 1rem; /* Adjust padding for list items on mobile */
+    }
+    .list-group-item:hover { background-color: #212121 !important; }
+    .list-group-item h5 {
+        font-size: 1rem; /* Smaller title in list items on mobile */
+    }
+    .list-group-item p {
+        font-size: 0.85rem; /* Smaller description in list items on mobile */
+    }
+    .list-group-item .badge {
+        font-size: 0.8rem; /* Smaller badge for list items on mobile */
+        padding: 0.4em 0.7em;
+    }
+    .list-group-item.list-group-item-action:hover { /* For past contests clickable rows */
+        background-color: #212121 !important;
+        color: var(--primary) !important;
+    }
+
+    /* Empty State Card */
+    .empty-state-card {
+        background-color: #1a1a1a;
+        border: 1px dashed var(--border-color);
+        border-radius: 0.75rem;
+        padding: 2.5rem !important; /* Adjust padding */
+    }
+    .empty-state-card i {
+        font-size: 2.5rem; /* Smaller icon */
+    }
+    .empty-state-card h5 {
+        font-size: 1.2rem; /* Smaller title */
+    }
+    .empty-state-card p {
+        font-size: 0.9rem; /* Smaller text */
+    }
+
+
+    /* Media Queries for Larger Screens (min-width: 768px - Bootstrap's 'md' breakpoint) */
+    @media (min-width: 768px) {
+        .container.py-5 {
+            padding-top: 3rem !important; /* Restore default py-5 */
+            padding-bottom: 3rem !important; /* Restore default py-5 */
+        }
+        
+        /* Header Section */
+        .d-flex.justify-content-between.align-items-center.mb-4 {
+            flex-direction: row; /* Revert to row layout */
+            align-items: center !important; /* Revert alignment */
+        }
+        .d-flex.justify-content-between.align-items-center.mb-4 h1 {
+            font-size: 2.5rem; /* Restore header title size */
+            margin-bottom: 0;
+        }
+
+        /* Tabs Navigation */
+        .nav-tabs .nav-link {
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+            font-size: inherit; /* Restore default font size */
+        }
+        .nav-tabs {
+            flex-wrap: nowrap; /* Prevent wrapping */
+            justify-content: flex-start; /* Align tabs to start */
+            margin-bottom: 1.5rem !important; /* Keep consistent margin */
+        }
+
+        /* Contest Card (Active Contests) */
+        .contest-card {
+            padding: 1.25rem; /* Restore slightly larger padding */
+        }
+        .contest-card:hover {
+            transform: translateY(-5px); 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); 
+        }
+        .contest-card .card-header {
+            padding: 1rem 1.25rem; /* Restore original padding */
+        }
+        .contest-card .card-title {
+            font-size: 1.25rem; /* Restore original title size */
+        }
+        .contest-card .card-body p {
+            font-size: 1rem; /* Restore original description text */
+        }
+        .contest-card .card-footer {
+            flex-direction: row; /* Revert to row layout */
+            justify-content: space-between; /* Space out items */
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+            gap: 0; /* Remove gap */
+        }
+        .contest-card .card-footer .badge {
+            font-size: 1rem; /* Restore original badge font size */
+            margin-bottom: 0; /* Remove bottom margin */
+        }
+        .contest-card .card-footer .btn {
+            padding: 0.375rem 0.75rem; /* Standard Bootstrap btn-sm padding */
+            font-size: 0.875rem; /* Standard Bootstrap btn-sm font size */
+        }
+
+        /* List Group Item (Upcoming/Past Contests) */
+        .list-group-item {
+            padding: 0.75rem 1.25rem; /* Restore original padding */
+        }
+        .list-group-item h5 {
+            font-size: 1.25rem; /* Restore original title size */
+        }
+        .list-group-item p {
+            font-size: 1rem; /* Restore original description size */
+        }
+        .list-group-item .badge {
+            font-size: inherit; /* Restore default font size */
+            padding: 0.35em 0.65em; /* Restore default padding */
+        }
+
+        /* Empty State Card */
+        .empty-state-card {
+             padding: 5rem !important; /* Restore original padding */
+        }
+        .empty-state-card i {
+            font-size: 3rem; /* Restore original icon size */
+        }
+        .empty-state-card h5 {
+            font-size: 1.5rem; /* Restore original title size */
+        }
+        .empty-state-card p {
+            font-size: 1rem; /* Restore original text size */
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="page-header">
-        <h1>Contests</h1>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-white fw-bold d-flex align-items-center"><i class="bi bi-trophy-fill text-warning me-3"></i><span data-translate-key="header_contests">Contests</span></h1>
     </div>
-    
+
+    <!-- Tabs Navigation -->
     <ul class="nav nav-tabs mb-4" id="contestTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active" type="button">
-                Active
-            </button>
+            <button class="nav-link active" id="active-tab" data-bs-toggle="tab" data-bs-target="#active-contests-panel" type="button" role="tab"><span data-translate-key="tab_active">Active</span></button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button">
-                Upcoming
-            </button>
+            <button class="nav-link" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming-contests-panel" type="button" role="tab"><span data-translate-key="tab_upcoming">Upcoming</span></button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button">
-                Past
-            </button>
+            <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past-contests-panel" type="button" role="tab"><span data-translate-key="tab_past">Past</span></button>
         </li>
     </ul>
-    
+
+    <!-- Tabs Content -->
     <div class="tab-content" id="contestTabsContent">
-        <div class="tab-pane fade show active" id="active" role="tabpanel">
-            {% if active_contests %}
-                <div class="row">
+        <!-- Active Contests Panel -->
+        <div class="tab-pane fade show active" id="active-contests-panel" role="tabpanel">
+            <div class="row">
+                {% if active_contests %}
                     {% for contest in active_contests %}
-                    <div class="col-md-6 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header bg-success text-white">
-                                <h5 class="mb-0">{{ contest.title }}</h5>
-                            </div>
-                            <div class="card-body">
-                                <p class="card-text">{{ contest.description|truncate(150) }}</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span class="badge bg-light text-dark">
-                                            {{ contest.problems.count() }} problems
-                                        </span>
-                                        <span class="badge bg-light text-dark ms-2">
-                                            {{ contest.participants.count() }} participants
-                                        </span>
-                                    </div>
-                                    <div id="timer-{{ contest.id }}" class="contest-timer"></div>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card contest-card h-100 d-flex flex-column">
+                            <div class="card-header"><h4 class="card-title mb-0">{{ contest.title }}</h4></div>
+                            <div class="card-body flex-grow-1">
+                                <p class="text-white-50" style="color: white !important;">{{ contest.description|truncate(120) }}</p>
+                                <div class="d-flex justify-content-start align-items-center text-white-50 small mt-3">
+                                    <span class="me-3">
+                                        <i class="bi bi-code-slash me-1" style="color: white !important;"></i>
+                                        <strong class="text-white">{{ contest.problems.count() }}</strong>
+                                        <span data-translate-key="text_problems" style="color: white !important;">Problems</span>
+                                    </span>
                                 </div>
                             </div>
-                            <div class="card-footer bg-transparent">
-                                <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
-                                   class="btn btn-sm btn-primary">Enter Contest</a>
-                            </div>
-                            <div class="card-footer bg-transparent">
-                                <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" 
-                                   class="btn btn-sm btn-primary">Register</a>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <span class="badge fs-6" id="timer-{{ contest.id }}"></span>
+                                <div>
+                                {% if current_user.is_authenticated %}
+                                    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-warning"><span data-translate-key="btn_enter">Enter</span> <i class="bi bi-arrow-right-short"></i></a>
+                                {% else %}
+                                    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-secondary"><span data-translate-key="btn_details">Details</span></a>
+                                    <a href="{{ url_for('auth.register') }}?contest_id={{ contest.id }}" class="btn btn-sm btn-warning"><span data-translate-key="btn_register">Register</span></a>
+                                {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">No active contests at the moment.</div>
-            {% endif %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="text-center p-5 empty-state-card">
+                            <i class="bi bi-clock-history mb-3"></i>
+                            <h5 class="text-white" data-translate-key="text_no_active_title">No Active Contests</h5>
+                            <p class="text-muted" data-translate-key="text_no_active_desc">Please check the "Upcoming" tab for future events.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
-        
-        <div class="tab-pane fade" id="upcoming" role="tabpanel">
-            {% if upcoming_contests %}
-                <div class="list-group">
+
+        <!-- Upcoming Contests Panel -->
+        <div class="tab-pane fade" id="upcoming-contests-panel" role="tabpanel">
+            <div class="row">
+                {% if upcoming_contests %}
                     {% for contest in upcoming_contests %}
-                    <div class="list-group-item">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ contest.title }}</h5>
-                            <small>Starts in: 
-                                <span class="badge bg-warning text-dark" id="countdown-{{ contest.id }}"></span>
-                            </small>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card contest-card h-100 d-flex flex-column">
+                            <div class="card-header"><h4 class="card-title mb-0">{{ contest.title }}</h4></div>
+                            <div class="card-body flex-grow-1">
+                                <p class="text-white-50" style="color: white !important;">{{ contest.description|truncate(120) }}</p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <span class="badge fs-6" id="countdown-{{ contest.id }}"></span>
+                                <div>
+                                    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-secondary"><span data-translate-key="btn_details">Details</span></a>
+                                </div>
+                            </div>
                         </div>
-                        <p class="mb-1">{{ contest.description|truncate(100) }}</p>
-                        <small>Starts: {{ contest.start_time.strftime('%Y-%m-%d %H:%M') }}</small>
                     </div>
                     {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">No upcoming contests scheduled.</div>
-            {% endif %}
-        </div>
-        
-        <div class="tab-pane fade" id="past" role="tabpanel">
-            {% if past_contests %}
-                <div class="list-group">
-                    {% for contest in past_contests %}
-                    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" 
-                       class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ contest.title }}</h5>
-                            <small class="text-muted">Ended</small>
+                {% else %}
+                    <div class="col-12">
+                        <div class="text-center p-5 empty-state-card">
+                            <i class="bi bi-calendar-event mb-3"></i>
+                            <h5 class="text-white" data-translate-key="text_no_upcoming_title">No Upcoming Contests</h5>
+                            <p class="text-muted" data-translate-key="text_no_upcoming_desc">Stay tuned for future announcements.</p>
                         </div>
-                        <p class="mb-1">{{ contest.description|truncate(100) }}</p>
-                        <small class="text-muted">
-                            {{ contest.start_time.strftime('%Y-%m-%d') }} to 
-                            {{ contest.end_time.strftime('%Y-%m-%d') }}
-                        </small>
-                    </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Past Contests Panel -->
+        <div class="tab-pane fade" id="past-contests-panel" role="tabpanel">
+            <div class="row">
+                {% if past_contests %}
+                    {% for contest in past_contests %}
+                    <div class="col-lg-6 mb-4">
+                        <div class="card contest-card h-100 d-flex flex-column">
+                            <div class="card-header"><h4 class="card-title mb-0">{{ contest.title }}</h4></div>
+                            <div class="card-body flex-grow-1">
+                                <p class="text-white-50" style="color: white !important;">&nbsp;</p>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <span class="badge bg-secondary"><i class="bi bi-check2-circle me-1"></i><span data-translate-key="status_ended">Ended</span></span>
+                                <div>
+                                    <a href="{{ url_for('contest.contest_view', contest_id=contest.id) }}" class="btn btn-sm btn-outline-secondary"><span data-translate-key="btn_details">Details</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% endfor %}
-                </div>
-            {% else %}
-                <div class="alert alert-info">No past contests available.</div>
-            {% endif %}
+                {% else %}
+                    <div class="col-12">
+                        <div class="text-center p-5 empty-state-card">
+                             <i class="bi bi-archive mb-3"></i>
+                             <h5 class="text-white" data-translate-key="text_no_past_title">No Past Contests</h5>
+                             <p class="text-muted" data-translate-key="text_no_past_desc">Completed contests will appear here.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
+{{ super() }}
 <script>
-// Initialize contest timers
-document.addEventListener('DOMContentLoaded', function() {
-    // Active contest timers
-    "{% for contest in active_contests %}"
-    (function() {
-        const endTime = new Date("{{ contest.end_time.isoformat() }}");
-        
-        function updateTimer() {
-            const now = new Date();
-            const remaining = endTime - now;
-            
-            if (remaining <= 0) {
-                document.getElementById('timer-{{ contest.id }}').innerHTML = `
-                    <span class="badge bg-secondary">Contest ended</span>
-                `;
-                return;
-            }
-            
-            const hours = Math.floor(remaining / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
-            
-            document.getElementById('timer-{{ contest.id }}').innerHTML = `
-                <span class="badge bg-success">
-                    Ends in: ${hours}h ${minutes}m ${seconds}s
-                </span>
-            `;
-        }
-        
-        updateTimer();
-        setInterval(updateTimer, 1000);
-    })();
-    "{% endfor %}"
+document.addEventListener('DOMContentLoaded', () => {
+    const pageTranslations = {
+        en: { "title_contests": "Contests", "header_contests": "Contests", "tab_active": "Active", "tab_upcoming": "Upcoming", "tab_past": "Past", "btn_enter": "Enter", "btn_details": "Details", "btn_register": "Register", "text_problems": "Problems", "text_no_active_title": "No Active Contests", "text_no_active_desc": "Please check the 'Upcoming' tab for future events.", "text_no_upcoming_title": "No Upcoming Contests", "text_no_upcoming_desc": "Stay tuned for future announcements.", "text_no_past_title": "No Past Contests", "text_no_past_desc": "Completed contests will appear here.", "status_ended": "Ended", "status_started": "Started", "timer_ends_in": "Ends in", "timer_starts_in": "Starts in", "timer_d": "d", "timer_h": "h", "timer_m": "m", "timer_s": "s" },
+        hy: { "title_contests": "Մրցույթներ", "header_contests": "Մրցույթներ", "tab_active": "Ակտիվ", "tab_upcoming": "Սպասվող", "tab_past": "Անցած", "btn_enter": "Մուտք", "btn_details": "Մանրամասներ", "btn_register": "Գրանցվել", "text_problems": "խնդիր", "text_no_active_title": "Ակտիվ մրցույթներ չկան", "text_no_active_desc": "Խնդրում ենք ստուգել «Սպասվող» բաժինը։", "text_no_upcoming_title": "Սպասվող մրցույթներ չկան", "text_no_upcoming_desc": "Հետևեք հետագա հայտարարություններին։", "text_no_past_title": "Անցած մրցույթներ չկան", "text_no_past_desc": "Ավարտված մրցույթները կհայտնվեն այստեղ։", "status_ended": "Ավարտված", "status_started": "Սկսված", "timer_ends_in": "Ավարտին՝", "timer_starts_in": "Մեկնարկին՝", "timer_d": "օ", "timer_h": "ժ", "timer_m": "ր", "timer_s": "վ" },
+        ru: { "title_contests": "Конкурсы", "header_contests": "Конкурсы", "tab_active": "Активные", "tab_upcoming": "Ожидаются", "tab_past": "Прошедшие", "btn_enter": "Войти", "btn_details": "Детали", "btn_register": "Регистрация", "text_problems": "задач", "text_no_active_title": "Нет активных конкурсов", "text_no_active_desc": "Проверьте вкладку «Ожидаются» для будущих событий.", "text_no_upcoming_title": "Нет предстоящих конкурсов", "text_no_upcoming_desc": "Следите за будущими объявлениями.", "text_no_past_title": "Нет прошедших конкурсов", "text_no_past_desc": "Завершенные конкурсы появятся здесь.", "status_ended": "Завершён", "status_started": "Начался", "timer_ends_in": "До конца:", "timer_starts_in": "До старта:", "timer_d": "д", "timer_h": "ч", "timer_m": "м", "timer_s": "с" }
+    };
+    Object.keys(pageTranslations).forEach(lang => { if(window.translations && window.translations[lang]) Object.assign(window.translations[lang], pageTranslations[lang]); });
     
-    // Upcoming contest countdowns
-    "{% for contest in upcoming_contests %}"
-    (function() {
-        const startTime = new Date("{{ contest.start_time.isoformat() }}");
-        
-        function updateCountdown() {
-            const now = new Date();
-            const remaining = startTime - now;
-            
+    const setupTimer = (elementId, isoTime, type) => {
+        const timerEl = document.getElementById(elementId);
+        if(!timerEl) return;
+        if (window.timerIntervals && window.timerIntervals[elementId]) clearInterval(window.timerIntervals[elementId]);
+        const targetTime = new Date(isoTime).getTime();
+        const update = () => {
+            const lang = localStorage.getItem('language') || 'en'; const dict = window.translations[lang]; const remaining = targetTime - new Date().getTime();
             if (remaining <= 0) {
-                document.getElementById('countdown-{{ contest.id }}').textContent = 'Started!';
+                if (type === 'active') { timerEl.textContent = dict.status_ended; timerEl.className = 'badge bg-secondary fs-6'; } 
+                else { timerEl.textContent = dict.status_started; timerEl.className = 'badge bg-success fs-6'; }
+                if (window.timerIntervals && window.timerIntervals[elementId]) clearInterval(window.timerIntervals[elementId]);
                 return;
             }
-            
-            const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
-            
-            let text = '';
-            if (days > 0) text += `${days}d `;
-            text += `${hours}h ${minutes}m`;
-            
-            document.getElementById('countdown-{{ contest.id }}').textContent = text;
-        }
-        
-        updateCountdown();
-        setInterval(updateCountdown, 60000); // Update every minute
-    })();
-    "{% endfor %}"
+            const d = Math.floor(remaining / 86400000), h = Math.floor((remaining % 86400000) / 3600000), m = Math.floor((remaining % 3600000) / 60000), s = Math.floor((remaining % 60000) / 1000);
+            let text = d > 0 ? `${d}${dict.timer_d} ${h}${dict.timer_h}` : h > 0 ? `${h}${dict.timer_h} ${m}${dict.timer_m}` : m > 0 ? `${m}${dict.timer_m} ${s}${dict.timer_s}` : `${s}${dict.timer_s}`;
+            const prefix = type === 'active' ? dict.timer_ends_in : dict.timer_starts_in;
+            timerEl.textContent = `${prefix} ${text}`;
+            timerEl.className = type === 'active' ? 'badge bg-success fs-6' : 'badge bg-primary fs-6';
+        };
+        if (!window.timerIntervals) window.timerIntervals = {};
+        window.timerIntervals[elementId] = setInterval(update, 1000);
+        update();
+    };
+
+    const updatePageText = () => {
+        const lang = localStorage.getItem('language') || 'en';
+        const langDict = window.translations[lang] || window.translations['en'];
+        document.querySelectorAll('[data-translate-key]').forEach(el => {
+            const key = el.dataset.translateKey;
+            if (langDict[key]) {
+                el.textContent = langDict[key];
+            }
+        });
+    };
+
+    const initializePage = () => {
+        updatePageText();
+        "{% for contest in active_contests %}"
+        setupTimer('timer-{{ contest.id }}', "{{ contest.end_time.isoformat() }}Z", 'active');
+        "{% endfor %}"
+
+        "{% for contest in upcoming_contests %}"
+        setupTimer('countdown-{{ contest.id }}', "{{ contest.start_time.isoformat() }}Z", 'upcoming');
+        "{% endfor %}"
+    };
+
+    initializePage();
+    window.addEventListener('languageChanged', initializePage);
 });
 </script>
 {% endblock %}

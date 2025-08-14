@@ -7,7 +7,7 @@ from datetime import datetime
 
 @bp.route('/')
 def index():
-    now = datetime.utcnow()
+    now = datetime.now().astimezone()
     
     active_contests = Contest.query.filter(
         Contest.start_time <= now,
