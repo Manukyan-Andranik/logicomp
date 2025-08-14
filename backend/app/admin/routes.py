@@ -36,14 +36,14 @@ def index():
 
     
     active_contests = Contest.query.filter(
-        Contest.start_time <= datetime.utcnow(),
-        Contest.end_time >= datetime.utcnow()
+        Contest.start_time <= datetime.now().astimezone(),
+        Contest.end_time >= datetime.now().astimezone()
     ).count()
     
     participants = User.query.filter_by(role='participant').count()
     
     submissions_today = Submission.query.filter(
-        Submission.timestamp >= datetime.utcnow().date()
+        Submission.timestamp >= datetime.now().astimezone().date()
     ).count()
     
     return render_template('admin/index.html', 
@@ -386,8 +386,8 @@ def export_reports(contest_id):
 
     if current_user.role != 'admin':
         abort(403)
-    print(contest.end_time , datetime.utcnow())
-    # if contest.end_time > datetime.utcnow():
+    print(contest.end_time , datetime.now().astimezone())
+    # if contest.end_time > datetime.now().astimezone():
     #     flash("Contest has not ended yet.", "warning")
     #     return redirect(url_for('admin.contest_details', contest_id=contest_id))
 

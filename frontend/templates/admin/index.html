@@ -89,7 +89,7 @@
                                 <td data-label="Status">
                                     {% if contest.is_active() %}
                                         <span class="badge bg-success">Active</span>
-                                    {% elif contest.start_time > datetime.utcnow() %}
+                                    {% elif contest.start_time > datetime.now().astimezone() %}
                                         <span class="badge bg-warning text-dark">Upcoming</span>
                                     {% else %}
                                         <span class="badge bg-secondary">Ended</span>

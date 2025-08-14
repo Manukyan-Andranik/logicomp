@@ -50,7 +50,7 @@ def create_app(config_class=Config):
 
     @app.context_processor
     def inject_now():
-        return {'now': datetime.utcnow()}
+        return {'now': datetime.now().astimezone()}
 
     return app
 

@@ -86,14 +86,14 @@ main.auth-main {
 }
 
 .form-control-modern:focus { 
-    border-color: var(--primary) !important; 
+    border-color: var(--border-color) !important; 
     background: rgba(255, 255, 255, 0.15) !important;
     box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.1) !important;
     transform: translateY(-2px);
 }
 
 .form-control-modern:not(:placeholder-shown) {
-    border-color: rgba(255, 255, 255, 0.4) !important;
+    border-color: var(--border-color) !important;
     background: rgba(255, 255, 255, 0.12) !important;
 }
 
@@ -626,8 +626,8 @@ main.auth-main {
 
 /* Hover Effects for Interactive Elements */
 .form-control-modern:hover:not(:focus) {
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: var(--border-color) !important;
+    background: var(--hover-bg) !important;
 }
 
 .input-icon:hover {
