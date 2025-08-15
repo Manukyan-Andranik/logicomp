@@ -56,7 +56,7 @@ def create_admin_if_not_exists():
     admin = User.query.filter_by(role='admin').first()
     if not admin:
         admin = User(username='Admin_1', email='admin@example.com', role='admin')
-        admin.set_password('Admin_1')  # փոխիր անվտանգ գաղտնաբառով
+        admin.set_password('Admin_1')
         db.session.add(admin)
         db.session.commit()
         print("Admin user created")

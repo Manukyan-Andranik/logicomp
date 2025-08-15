@@ -151,9 +151,6 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link active" id="upload-tab" data-bs-toggle="tab" data-bs-target="#upload" type="button" role="tab" aria-controls="upload" aria-selected="true">Upload JSON</button>
                             </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button" role="tab" aria-controls="manual" aria-selected="false">Manual Entry</button>
-                            </li>
                         </ul>
 
                         <!-- Tab panes -->
@@ -171,14 +168,6 @@
                                     {{ form.test_case_upload.keep_existing(class="form-check-input") }}
                                     {{ form.test_case_upload.keep_existing.label(class="form-check-label") }}
                                 </div>
-                            </div>
-                            <div class="tab-pane fade" id="manual" role="tabpanel" aria-labelledby="manual-tab">
-                                <div id="manual-test-cases-container">
-                                    <!-- Dynamic test cases will be added here -->
-                                </div>
-                                <button type="button" id="add-test-case" class="btn btn-outline-dashed mt-2">
-                                    <i class="bi bi-plus-lg me-1"></i> Add Test Case
-                                </button>
                             </div>
                         </div>
                     </div>
