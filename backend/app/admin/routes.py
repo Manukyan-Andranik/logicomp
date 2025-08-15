@@ -192,8 +192,6 @@ def add_problem(contest_id):
             json_file = form.test_case_upload.json_file.data
             try:
                 json_data = json.load(json_file)
-                if not form.test_case_upload.keep_existing.data:
-                    form.test_cases.entries = []  # Clear manual inputs
 
                 for tc in json_data:
                     test_case = TestCase(
