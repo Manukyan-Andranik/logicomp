@@ -68,14 +68,17 @@ def run_code(code: str, language: str, input_data: str, time_limit: int) -> Tupl
         # === Execution ===
         try:
             start_time = time.time()
+            env = os.environ.copy()
             process = subprocess.run(
                 executable,
-                input=input_data,  # feed test case input directly
+                input=input_data,
                 capture_output=True,
                 text=True,
                 timeout=time_limit,
-                cwd=temp_dir
+                cwd=temp_dir,
+                env=env
             )
+
             exec_time = time.time() - start_time
 
             if process.returncode != 0:
