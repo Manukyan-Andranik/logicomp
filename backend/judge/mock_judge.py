@@ -63,7 +63,7 @@ def run_code(code: str, language: str, input_data: str, time_limit: int) -> Tupl
             executable = ['node', code_path]
 
         else:  # Python
-            executable = ['python3', code_path]
+            executable = ['/usr/bin/python3', code_path]
 
         # === Execution ===
         try:
